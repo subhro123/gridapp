@@ -48,6 +48,8 @@ class User extends REST_Controller {
 
 		//$this->load->library('plivo');
 		
+		$this->load->library('apnengine');
+		
 		$this->load->library('gcmengine');
 
 		$this->load->library('payeezy');
