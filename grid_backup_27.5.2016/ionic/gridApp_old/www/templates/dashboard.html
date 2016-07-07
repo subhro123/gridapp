@@ -1,0 +1,165 @@
+<ion-view title="DASHBOARD" class="my_interests import_contact">
+  <!-- <div class="bar bar-header bar-blue">
+        <h1 class="title">IMPORT CONTACT</h1>
+        </div>-->
+  
+  <ion-nav-buttons side="left">
+    <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
+  </ion-nav-buttons>
+  <ion-content has-header="true" class="tab_last tab_con_main">
+    <div class="notif">{{dashboard.requestCount}}</div>
+    <ion-tabs class="tabs-striped tabs-top tabs-background-positive tabs-color-light tabs-icon-top tab_con " delegate-handle="dashboard-tabs">
+      <ion-tab title="UPDATES" icon-on="ion-android-sync" icon-off="ion-android-sync" on-select="onDashTabSelect('update')">
+        <ion-content class="has-tabs-top">
+          <div class="tab_pad110"></div>
+         
+          <ion-list class="post_list">
+          <ion-item ng-repeat="eventItem in dashboard.event_list_arr" ng-show='dashboard.dashboardFlag'>
+                <div class="section section2">
+                  <div class="row mar_left">
+                    <div class="col col-67">
+                         <a class="item item-avatar" href="#">
+                         <div class="row">
+                      <div class="col col-25" ng-click="openOtherProfile($index)"> 
+                        <img ng-src="{{eventItem.image == ''?'img/pro01.jpg':'http://grid.digiopia.in/uploads/profile/thumb/'+eventItem.image}}" class="rounded">
+                        
+                       </div>
+                      <div class="col col-75 pad_left" ng-click="openPostDetails($index)">
+                        <h2>{{eventItem.fullname}}</h2>
+                        <p>{{eventItem.description}}</p>
+                        <p class="ion-location">&nbsp;{{eventItem.post_location}}</p>
+                      </div>
+                      </div>
+                      </a> </div>
+                    <div class="col col-33">
+                      <div class="row">
+                        <div class="col logo_icon">
+                          <p class="hours_section"><span>{{eventItem.time_diff}} ago</span><br />
+                            <!--{{eventItem.formated_date}}-->{{formateDate(eventItem.formated_date)}}<br />
+                            {{eventItem.formated_time}}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+          </ion-item>
+          <ion-item ng-hide='dashboard.dashboardFlag' class="no_record">No Record Found</ion-item>
+          </ion-list>
+        </ion-content>
+      </ion-tab>
+      <ion-tab title="GOING" icon-on="ion-android-walk" icon-off="ion-android-walk" on-select="onDashTabSelect('going')">
+        <ion-content class="has-tabs-top">
+          <div class="tab_pad110"></div>
+          
+          <ion-list class="post_list">
+          <ion-item ng-repeat="eventItem in dashboard.event_list_arr" ng-show='dashboard.dashboardFlag'>
+                <div class="section section2">
+                  <div class="row mar_left">
+                    <div class="col col-67">
+                         <a class="item item-avatar" href="#">
+                         <div class="row">
+                      <div class="col col-25" ng-click="openOtherProfile($index)"> 
+                        <img ng-src="{{eventItem.image == ''?'img/pro01.jpg':'http://grid.digiopia.in/uploads/profile/thumb/'+eventItem.image}}" class="rounded">
+                        
+                       </div>
+                      <div class="col col-75 pad_left" ng-click="openPostDetails($index)">
+                        <h2>{{eventItem.fullname}}</h2>
+                        <p>{{eventItem.description}}</p>
+                        <p class="ion-location">&nbsp;{{eventItem.post_location}}</p>
+                      </div>
+                      </div>
+                      </a> </div>
+                    <div class="col col-33">
+                      <div class="row">
+                        <div class="col logo_icon">
+                          <p class="hours_section"><span>{{eventItem.time_diff}} ago</span><br />
+                            {{formateDate(eventItem.formated_date)}}<br />
+                            {{eventItem.formated_time}}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+          </ion-item>
+          <ion-item ng-hide='dashboard.dashboardFlag' class="no_record">No Record Found</ion-item>
+          </ion-list>
+          
+        </ion-content>
+      </ion-tab>
+      <ion-tab title="PENDING" icon-on="ion-alert-circled" icon-off="ion-alert-circled" on-select="onDashTabSelect('pending')">
+        <ion-content class="has-tabs-top">
+          <div class="tab_pad110"></div>
+          <ion-list class="post_list">
+          <ion-item ng-repeat="eventItem in dashboard.event_list_arr" ng-show='dashboard.dashboardFlag'>
+                <div class="section section2">
+                  <div class="row mar_left">
+                    <div class="col col-67">
+                         <a class="item item-avatar" href="#">
+                         <div class="row">
+                      <div class="col col-25" ng-click="openOtherProfile($index)"> 
+                        <img ng-src="{{eventItem.image == ''?'img/pro01.jpg':'http://grid.digiopia.in/uploads/profile/thumb/'+eventItem.image}}" class="rounded">
+                        
+                       </div>
+                      <div class="col col-75 pad_left" ng-click="openPostDetails($index)">
+                        <h2>{{eventItem.fullname}}</h2>
+                        <p>{{eventItem.description}}</p>
+                        <p class="ion-location">&nbsp;{{eventItem.post_location}}</p>
+                      </div>
+                      </div>
+                      </a> </div>
+                    <div class="col col-33">
+                      <div class="row">
+                        <div class="col logo_icon">
+                          <p class="hours_section"><span>{{eventItem.time_diff}} ago</span><br />
+                            {{formateDate(eventItem.formated_date)}}<br />
+                            {{eventItem.formated_time}}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+          </ion-item>
+          <ion-item ng-hide='dashboard.dashboardFlag' class="no_record">No Record Found</ion-item>
+          </ion-list>
+         </ion-content>
+      </ion-tab>
+      <ion-tab title="REQUEST" icon-on="ion-person-add" icon-off="ion-person-add" on-select="onDashTabSelect('request')">
+        <ion-content class="has-tabs-top">
+          <div class="tab_pad110"></div>
+          <ion-list class="post_list">
+          <ion-item ng-repeat="eventItem in dashboard.event_list_arr" ng-show='dashboard.dashboardFlag'>
+                <div class="section section2">
+                  <div class="row mar_left">
+                    <div class="col col-67">
+                         <a class="item item-avatar" href="#">
+                         <div class="row">
+                      <div class="col col-25" ng-click="openOtherProfile($index)"> 
+                        <img ng-src="{{eventItem.image == ''?'img/pro01.jpg':'http://grid.digiopia.in/uploads/profile/thumb/'+eventItem.image}}" class="rounded">
+                        
+                       </div>
+                      <div class="col col-75 pad_left" ng-click="openPostDetails($index)">
+                        <h2>{{eventItem.fullname}}</h2>
+                        <p>{{eventItem.description}}</p>
+                        <p class="ion-location">&nbsp;{{eventItem.post_location}}</p>
+                      </div>
+                      </div>
+                      </a> </div>
+                    <div class="col col-33">
+                      <div class="row">
+                        <div class="col logo_icon">
+                          <p class="hours_section"><span>{{eventItem.time_diff}} ago</span><br />
+                            {{formateDate(eventItem.formated_date)}}<br />
+                            {{eventItem.formated_time}}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+          </ion-item>
+          <ion-item ng-hide='dashboard.dashboardFlag' class="no_record">No Record Found</ion-item>
+          </ion-list>
+        </ion-content>
+      </ion-tab>
+    </ion-tabs>
+  </ion-content>
+</ion-view>

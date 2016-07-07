@@ -1,0 +1,171 @@
+<ion-view title="PROFILE" class="">
+  <!--<div class="bar bar-header bar-blue">
+    <h1 class="title">IMPORT CONTACT</h1>
+  </div>
+     -->
+     <ion-nav-buttons side="left">
+        <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
+  </ion-nav-buttons>
+  
+  <ion-content class="has-header">
+    <div class="list">
+    	<ion-slide-box on-slide-changed="slideHasChanged($index)" auto-play="true" does-continue ="true" slide-interval="2000">
+        <ion-slide>
+            <div class="box slide_part"> <img ng-src="{{profile.backgroundImage[0]}}"> </div>
+        </ion-slide>
+        <ion-slide>
+            <div class="box slide_part"> <img ng-src="{{profile.backgroundImage[1]}}"> </div>
+        </ion-slide>
+        <ion-slide>
+            <div class="box slide_part"> <img ng-src="{{profile.backgroundImage[2]}}"> </div>
+        </ion-slide>
+         
+        </ion-slide-box>
+      <div class="pro_slider">
+        
+        <div class="profile_img"> <!--<img src="img/no_image.jpg" />--> <img  ng-src="{{profile.profileImage}}" /></div>
+        <div class="profile_btn">
+          <button  class='button ion-android-person-add' ng-click='!profile.addFriendStatus||addFriend()'>&nbsp;{{profile.relationTxt}}</button>
+        </div>
+        
+         
+      </div>
+      <div class="row social_section"> 
+      <h4>{{profile.fullname}}</h4>
+      	<a href="" ng-click = "openLink('fb')"> <span><img src="img/facebook_ico.png" /></span> </a>
+       	<a href="" ng-click = "openLink('tw')"> <span><img src="img/twitter_ico.png" /></span> </a> 
+       	<a href="" ng-click = "openLink('in')"> <span><img src="img/linkdin_ico.png" /></span> </a>
+        <a href="" ng-click = "openLink('ing')"> <span><img src="img/instagram_ico.png" /></span> </a>
+        </div>
+      <div class="row input_section">
+        <textarea placeholder="Input your bio here... (max 80 words)" maxlength="80" ng-readonly="!profile.profileEdit" ng-class="profile.profileEdit==true?'edit_profile_field_show':'edit_profile_field_hide'" ng-model='profile.description'></textarea>
+      </div>
+      <div class="clear"></div>
+      <div class="row info_section">
+        <div class="col col-50"> <span class="ion-ios-people">&nbsp;&nbsp;&nbsp;Friends</span><span class="right_section">{{profile.friend_count}}</span> </div>
+        <div class="col col-50"> <span class="ion-calendar">&nbsp;&nbsp;&nbsp;Events</span><span class="right_section">{{profile.event_count}}</span></div>
+      </div>
+      <div class="prfile_list_section">
+          <div class="row item">
+            <div class="col col-33">
+                  <div>
+                   <span class="ion-email icon_span"></span> email
+                  </div>
+            </div>
+            <div class="col col-70" ng-bind="profile.email">
+                
+            </div>
+          </div>
+          <div class="row item">
+            <div class="col col-33">
+                  <div>
+                   <span class="ion-transgender icon_span"></span>Gender
+                  </div>
+            </div>
+            <div class="col col-70" >
+                <!--<input type="text" ng-model="profile.gender"  ng-readonly="!profile.profileEdit" ng-class="profile.profileEdit==true?'edit_profile_field_show':'edit_profile_field_hide'"/>-->
+                
+                 <div class="row no_padding_need" ng-class="profile.profileEdit==true?'edit_profile_field_show':'edit_profile_field_hide'"> 
+                 	<div class="col col-50">
+                    	<input type="radio" class="mar_right_adjust" id="ma" name="job" checked="checked" ng-model="profile.gender" value="M" ng-disabled="!profile.profileEdit" /><label for="ma">MALE</label>
+                    </div>
+                    <div class="col col-50">
+                    <input type="radio" class="mar_right_adjust"  name="job" ng-model="profile.gender" value="F" ng-disabled="!profile.profileEdit" /><label for="fe">FEMALE</label>
+                    </div>
+                 	
+                 </div>
+                
+                
+                
+                
+            </div>
+          </div>
+          <div class="row item">
+            <div class="col col-33" ng-click="!profile.profileEdit||setProfileDOB()" >
+                  <div>
+                   <span class="ion-android-calendar icon_span"></span>Date Of Birth
+                  </div>
+            </div>
+            <div class="col col-70">
+                <div ng-bind="profile.dob" ng-class="profile.profileEdit==true?'edit_profile_field_show':'edit_profile_field_hide'"></div>
+            </div>
+          </div>
+          <div class="row item">
+            <div class="col col-33">
+                  <div>
+                   <span class="ion-ios-briefcase icon_span"></span> Occupation
+                  </div>
+            </div>
+            <div class="col col-70" >
+                <input type="text" ng-model="profile.occupation"  ng-readonly="!profile.profileEdit" ng-class="profile.profileEdit==true?'edit_profile_field_show':'edit_profile_field_hide'"/>
+            </div>
+          </div>
+          <div class="row item">
+            <div class="col col-33">
+                  <div>
+                   <span class="ion-android-call icon_span"></span>Phone
+                  </div>
+            </div>
+            <div class="col col-70" >
+                <input type="tel" ng-model="profile.phone"  ng-readonly="!profile.profileEdit" ng-class="profile.profileEdit==true?'edit_profile_field_show':'edit_profile_field_hide'"/>
+            </div>
+          </div>
+          <!--<div class="row item">
+            <div class="col col-33">
+                  <div>
+                   <span class="ion-android-document icon_span"></span>Upload PDF
+                  </div>
+            </div>
+            <div class="col col-70">
+                professional resume.pdf
+            </div>
+          </div>-->
+          <!--<div class="row">
+          	<div class="fileUpload btn btn-primary col col-33" ng-click="openFile()">
+    			<span><span class="ion-upload"></span>&nbsp;&nbsp;Browse</span>
+    			
+               
+			</div>
+            <div class="col col-67">
+            <span class="note">Note: Maximum size 5 mb.</span>
+            </div>
+            
+          </div>-->
+          <div class="add_interest">
+          	<div class="add_in_heading">Interest</div>
+            <div class="add_in_btn">
+          	<!--<button class="button" ng-click='profile.profileEdit||addInterest()'><span class="add_icon ion-android-add"></span>Add</button>-->
+          </div>
+          <div class="row responsive-sm list_section">
+        <div class="col">
+        <ul >
+        
+            <li ng-repeat="item in profile.interest"><span>{{item.subinterest_name}}<a href="" ng-hide='!profile.profileEdit' ng-click='!profile.profileEdit||deletInterest($index)'>X</a></span></li>
+           <!-- <li><span>Entertainment<a href="">X</a></span></li>
+            <li><span>Vehicles <a href="">X</a></span></li>
+            <li><span>BOOKS <a href="">X</a></span></li>
+            <li><span>FOOD <a href="">X</a></span></li>
+            <li><span>Computers &amp; Electronics <a href="">X</a></span></li>
+            <li><span>PETS <a href="">X</a></span></li>
+            <li><span>NEWS <a href="">X</a></span></li>
+            <li><span>JOB <a href="">X</a></span></li>
+            <li><span>MUSIC <a href="">X</a></span></li>
+            <li><span>PEOPLE <a href="">X</a></span></li>
+            <li><span>World Localities <a href="">X</a></span></li>
+            <li><span>LAW <a href="">X</a></span></li>
+            <li><span>TRAVEL <a href="">X</a></span></li>
+            <li><span>GAME <a href="">X</a></span></li>
+-->        </ul>
+        </div>
+        </div>
+          </div>
+          
+          
+          
+         
+      </div>
+      
+   	  
+    </div>
+  </ion-content>
+</ion-view>

@@ -1,0 +1,37 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Untitled Document</title>
+</head>
+
+<body>
+
+<ion-view class="login_main forgot_main">
+            
+    <ion-content>
+    <form name="accountActivationForm" novalidate="" ng-submit="activateAccount(accountActivationForm)">
+        <div class="padding">
+        <div class="logo"><img src="img/logo.png" alt=""></div>
+        
+        <div class="list">
+        <h4>ACCOUNT ACTIVATION</h4>
+        <label class="item item-input ion-email2" ng-class="{ 'has-error-lr' : accountActivationForm.email.$invalid  && accountActivationForm.$submitted, 'valid-lr' : accountActivationForm.email.$valid  && accountActivationForm.$submitted}">
+        <input type="email" placeholder="E-MAIL" ng-model="accountActivate.activationEmail" name="email"required>
+        </label>
+        <label class="item item-input digit_code2" ng-class="{ 'has-error-lr' : accountActivationForm.code.$invalid  && accountActivationForm.$submitted, 'valid-lr' : accountActivationForm.code.$valid  && accountActivationForm.$submitted}">
+        <input type="text" placeholder="INPUT 6 DIGIT CODE" ng-model="accountActivate.activationCode" name="code" required>
+        </label>
+        </div>
+       
+        <button  class="button button-block button-balanced" type="submit">ACTIVATE</button>
+        <button class="button button-block button_bor" ng-click="cancel()">CANCEL</button>
+        <p class="center"><a ui-sref="resend-activate">Didn’t receive an e-mail with activation code?</a></p>
+        </div>
+     </form>
+    </ion-content>
+    
+</ion-view>
+
+</body>
+</html>

@@ -1,0 +1,291 @@
+<ion-view title="CREATE POST" class="my_interests creat_post">
+  <!--<div class="bar bar-header bar-blue">
+    <h1 class="title">CREATE POST</h1>
+  </div>-->
+  <ion-nav-buttons side="left">
+        <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
+  </ion-nav-buttons>
+  
+  <ion-content class="has-header">
+    <ion-tabs class="tabs-striped tabs-top tabs-background-positive tabs-color-light tabs-icon-top tab_con disable-clickon-tabs" delegate-handle="createpost-tabs">
+      <ion-tab title="STEP 1" icon-on="ion-ios-people" icon-off="ion-ios-people" ng-click="e.stopPropagation()">
+        <ion-content class="padding has-tabs-top">
+          <!--<div class="tab_pad110"></div>-->
+          <div class="row">
+            <div class="ctrat_post_heading">
+              <h4>Event Type</h4>
+            </div>
+          </div>
+          <div class="row ctrat_post_content">
+            <div class="col col-33">
+              <button ng-click="selectPostType('DINING')" ng-class="createPost.postType=='DINING'?'button button-light creat_post_active_btn':'button button-light'"> <span class="ion-android-restaurant"></span>
+              <p>DINING</p>
+              </button>
+            </div>
+            <div class="col col-33">
+              <button ng-click="selectPostType('DRINKS')" ng-class="createPost.postType=='DRINKS'?'button button-light creat_post_active_btn':'button button-light'"> <span class="ion-android-bar"></span>
+              <p>DRINKS</p>
+              </button>
+            </div>
+            <div class="col col-33">
+              <button ng-click="selectPostType('ACTIVITY')" ng-class="createPost.postType=='ACTIVITY'?'button button-light creat_post_active_btn':'button button-light'"> <span class="ion-calendar"></span>
+              <p>ACTIVITY</p>
+              </button>
+            </div>
+          </div>
+          <div class="row">
+            <div class="ctrat_post_heading">
+              <h4>When Are You Planning?</h4>
+            </div>
+          </div>
+          <div class="row ctrat_post_date">
+            <!--<form name="registerForm" novalidate="" ng-submit="userRegistration(registerForm)">
+              <label class="item item-input ion-calendar" ng-class="{ 'has-error-lr' : registerForm.dob.$invalid  && registerForm.$submitted, 'valid-lr' : registerForm.dob.$valid  && registerForm.$submitted}">
+                <input type="date" placeholder="Tuesday, 10 NOV 2015" name="dob" ng-model="register.dob" required>
+                <span>01:50 PM</span> </label>
+            </form>-->
+            
+            <label class="item item-input ion-calendar select_date" ng-click="setDateAndTime()" >
+                <!--<input type="text" placeholder="Tuesday, 10 NOV 2015" name="dob" ng-model="createPost.selectedDate" dateFormat= 'medium'>-->
+                <span class="date_span">{{createPost.selectedDate}}</span>
+                <span class="time_span">{{createPost.selectedTime}}</span>
+            </label>
+            
+           
+            
+          </div>
+          <div class="row">
+            <div class="ctrat_post_heading">
+              <h4>Maximum Number Of People?</h4>
+            </div>
+          </div>
+          <div class="row">
+            <div class=" ctrat_post_content creat_drop">
+              <select  ng-model="data.index" ng-change="selectedPeople()" ng-options="items.indexOf(item) as item for item in items" >
+              </select>
+            </div>
+          </div>
+          <div class="row mar_top">
+            <label class="item item-input">
+              <input type="text" placeholder="Place your title here..." ng-model="createPost.title">
+            </label>
+          </div>
+          <div class="creat_post_content3">
+          </div>
+          
+        </ion-content>
+        <div class="bar bar-footer creat_foot_post">
+                
+                <button class="button button-clear pull-right" ng-click="stepOneNext()">next</button>
+  		</div>
+      </ion-tab>
+      <ion-tab title="STEP 2" icon-on="ion-android-walk" icon-off="ion-android-walk"  ng-click="e.stopPropagation()">
+        <ion-content class="padding has-tabs-top">
+          <!--<div class="tab_pad110"></div>-->
+          <!--<div class="map_part2"></div>-->
+          <div class="bar bar-header item-input-inset">
+           
+          
+          <label class="item-input-wrapper">
+    			<i class="icon ion-android-pin placeholder-icon"></i>
+   				<input id="map-input" type="text" placeholder="Select Location" ng-model="createPost.address" ng-focus="disableTap()">
+  		  </label>
+         <!-- <button class="button button-clear search_loc" ng-click="setPosition()"></button>-->
+          </div>
+          <!--<input id="pac-input" class="controls" type="text" placeholder="Enter a location">-->
+          <div id="mapCreate" data-tap-disabled="true"></div>
+        </ion-content>
+        <div class="bar bar-footer creat_foot_post">
+                <button class="button button-clear pull-left" ng-click="stepTwoBack()">Back</button>
+                <button class="button button-clear pull-right" ng-click="stepTwoNext()">Next</button>
+  		</div>
+      </ion-tab>      
+      <ion-tab title="STEP 3" icon-on="ion-alert-circled" icon-off="ion-alert-circled" ng-click="e.stopPropagation()">
+        <ion-content class="padding has-tabs-top">
+          <!--<div class="tab_pad110"></div>-->
+          <div class="row">
+            <div class="ctrat_post_heading">
+              <h4>Who Can Join?</h4>
+            </div>
+          </div>
+          <div class="row ctrat_post_content btn_part">
+            <div class="col col-33">
+              <button ng-click="selectJoineType('Male')" ng-class="createPost.joineType=='Male'?'button button-light creat_post_active_btn':'button button-light'"> <span class="ion-male"></span>
+              <p>Male</p>
+              </button>
+            </div>
+            <div class="col col-33">
+              <button ng-click="selectJoineType('Female')" ng-class="createPost.joineType=='Female'?'button button-light creat_post_active_btn':'button button-light'"> <span class="ion-female"></span>
+              <p>Female</p>
+              </button>
+            </div>
+            <div class="col col-33">
+              <button ng-click="selectJoineType('Both')" ng-class="createPost.joineType=='Both'?'button button-light creat_post_active_btn':'button button-light'"> <span class="ion-transgender"></span>
+              <p>Both</p>
+              </button>
+            </div>
+          </div>
+          <div class="row">
+            <div class="ctrat_post_heading">
+              <h4>Who Will Pay?</h4>
+            </div>
+          </div>
+          <div class="row ctrat_post_content btn_part">
+            <div class="col col-33 col-offset-10">
+              <button ng-click="selectPayeeType('Me')" ng-class="createPost.payeeType=='Me'?'button button-light creat_post_active_btn':'button button-light'"> <span class="ion-person"></span>
+              <p>Me</p>
+              </button>
+            </div>
+            <div class="col col-33 col-offset-10">
+              <button ng-click="selectPayeeType('Split')" ng-class="createPost.payeeType=='Split'?'button button-light creat_post_active_btn':'button button-light'"> <span class="ion-person-stalker"></span>
+              <p>Split</p>
+              </button>
+            </div>
+          </div>
+          <div class="row mar_top2">
+            <label class="item item-input">
+              <textarea placeholder="Event Summery..." ng-model="createPost.summery"></textarea>
+            </label>
+          </div>
+          <div class="creat_post_content3">
+          </div>
+        </ion-content>
+        <div class="bar bar-footer creat_foot_post">
+                <button class="button button-clear pull-left" ng-click="stepThreBack()">Back</button>
+                <button class="button button-clear pull-right" ng-click="stepThreeNext()">Next</button>
+  		</div>
+      </ion-tab>
+      <ion-tab title="STEP 4" icon-on="ion-backspace-outline" icon-off="ion-backspace-outline" ng-click="e.stopPropagation()">
+        <ion-content class="">
+          <!--<div class="tab_pad110"></div>-->
+          <div class="row ctrat_post_content">
+            <div class="col col-33">
+              <button ng-class="createPost.postType=='DINING'?'button button-light creat_post_active_btn':'button button-light'" > <span class="ion-android-restaurant"></span>
+              <p>DINING</p>
+              </button>
+            </div>
+            <div class="col col-33">
+              <button ng-class="createPost.postType=='DRINKS'?'button button-light creat_post_active_btn':'button button-light'"> <span class="ion-android-bar"></span>
+              <p>DRINKS</p>
+              </button>
+            </div>
+            <div class="col col-33">
+              <button ng-class="createPost.postType=='ACTIVITY'?'button button-light creat_post_active_btn':'button button-light'"> <span class="ion-calendar"></span>
+              <p>ACTIVITY</p>
+              </button>
+            </div>
+          </div>
+          <div class="row ctrat_post_date mar_top">
+            <label class="item item-input ion-calendar select_date"  >
+                <span class="date_span">{{createPost.selectedDate}}</span>
+                <span class="time_span">{{createPost.selectedTime}}</span>
+            </label>
+          </div>
+          <div class="row mar_top">
+            <div class="ctrat_post_content creat_drop">
+              <select  ng-model="data.index" ng-options="items.indexOf(item) as item for item in items" ng-disabled="true">
+              </select>
+            </div>
+          </div>
+          <div class="row mar_top">
+            <label class="item item-input">
+              <input type="text" ng-model="createPost.title">
+            </label>
+          </div>
+          <div class="row">
+            <div class="mar_top nd_map_section">
+            	<label class="item-input-wrapper">
+    			<i class="icon ion-android-pin placeholder-icon"></i>
+   				<label>{{createPost.postPlace}}</label>
+  		  	  </label>
+              <div id="mapView" data-tap-disabled="true">
+              
+              </div>
+            </div>
+            <div style="clear:both"></div>
+          </div>
+          <div class="row ctrat_post_content btn_part mar_top">
+            <div class="col col-33">
+              <button ng-class="createPost.joineType=='Male'?'button button-light creat_post_active_btn':'button button-light'"> <span class="ion-male"></span>
+              <p>Male</p>
+              </button>
+            </div>
+            <div class="col col-33">
+              <button ng-class="createPost.joineType=='Female'?'button button-light creat_post_active_btn':'button button-light'"> <span class="ion-female"></span>
+              <p>Female</p>
+              </button>
+            </div>
+            <div class="col col-33">
+              <button ng-class="createPost.joineType=='Both'?'button button-light creat_post_active_btn':'button button-light'"> <span class="ion-transgender"></span>
+              <p>Both</p>
+              </button>
+            </div>
+          </div>
+          <div class="row ctrat_post_content btn_part mar_top">
+            <div class="col col-33 col-offset-10">
+              <button ng-class="createPost.payeeType=='Me'?'button button-light creat_post_active_btn':'button button-light'"> <span class="ion-person"></span>
+              <p>Me</p>
+              </button>
+            </div>
+            <div class="col col-33 col-offset-10">
+              <button ng-class="createPost.payeeType=='Split'?'button button-light creat_post_active_btn':'button button-light'"> <span class="ion-person-stalker"></span>
+              <p>Split</p>
+              </button>
+            </div>
+          </div>
+          <div class="row mar_top2">
+            <label class="item item-input">
+              <textarea ng-model="createPost.summery"></textarea>
+            </label>
+          </div>
+          
+          <div class="creat_post_content3">
+          </div>
+           
+          
+        </ion-content>
+        <div class="bar bar-footer creat_foot_post">
+   
+    <button class="button button-clear pull-left" ng-click="stepFourBack()">Back</button>
+     <button class="button button-clear pull-left mar_left" ng-click="showFeaturePop()">Feature your Post ?</button>
+    <button class="button button-clear pull-right" ng-click="submitPost('0','')">SUBMIT</button>
+  </div>
+        
+      </ion-tab>
+      
+      
+    </ion-tabs>
+    
+  </ion-content>
+  <!--<div class="bar bar-footer creat_foot_post">
+    <button class="button button-clear pull-left">PREVIOUS</button>
+    <button class="button button-clear pull-right">next</button>
+  </div>-->
+  
+  <!--<div class="bar bar-footer ico_size">
+  <div class="col">
+  	<a href="">
+  		<span class="ion-ios-location green"></span>
+        <span class="bot_icon_txt">Available</span> 
+    </a>
+  </div>
+  <div class="col">
+  
+  	<span class="ion-ios-location red1"></span>
+    <span class="bot_icon_txt">PENDING</span>
+  </div>
+  
+  <a href="">
+  <div class="col">
+  	<span class="ion-ios-location blue2"></span>
+    <span class="bot_icon_txt">GOING</span>
+  </div>
+  </a>
+  <div class="col">
+  
+  	<span class="ion-ios-location red2"></span>
+   <span class="bot_icon_txt">Reserved</span>
+  </div>
+ 
+</div>--> 
+</ion-view>

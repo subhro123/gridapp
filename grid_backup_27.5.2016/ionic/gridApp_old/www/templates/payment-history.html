@@ -1,0 +1,211 @@
+<ion-view title="PAYMENT HISTORY" class="my_interests import_contact cont_list">
+
+        
+        <!--<ion-nav-buttons side="left">
+
+        <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
+
+       </ion-nav-buttons>-->
+       
+      <!-- <ion-nav-back-button class="button-clear" ng-click="importContactBack()">
+    		<i class="ion-arrow-left-c"></i> Back
+  		</ion-nav-back-button>-->
+        
+        
+        <ion-nav-buttons side="left">
+
+        <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
+
+      </ion-nav-buttons>
+       
+       <ion-content scroll="true" class="has-header" padding="true">       	
+      
+      		<div class="post_feature_pannel">
+            	<div class="row p_featured common_st">
+                  <!--<div class="col col-80">Mark your post as featured</div>
+                  <div class="col col-20">$ 20</div>-->
+                  <!-- <label class="item item-input ion-calendar feature_cal" ><span class="dob_register"></span></label>
+                   <input type="text" placeholder="BIRTHDAY" name="dob" class="ion-calendar" >-->
+                   <div class="col col-33">
+                   	<label class="mar_top_label">From Date</label>
+                   </div>
+                   <div class="col col-67">
+                    <label class="item item-input ion-calendar select_date" ng-click="setPaymentDateAndTime('fromDate')" >
+                    	<!--<input type="text" placeholder="Please Insert From Date" name="dob" ng-model="paymentHis.startDate" dateFormat= 'medium' class="select_date_custom_placeholder">-->
+                        <span class="date_span_his">{{paymentHis.startDate}}</span>
+                    </label>
+                   </div>
+                      
+                   
+                   
+                    
+                  
+                </div>
+                <div class="row p_featured common_st">
+                  <!--<div class="col col-80">Mark your post as featured</div>
+                  <div class="col col-20">$ 20</div>-->
+                  <!-- <label class="item item-input ion-calendar feature_cal" ><span class="dob_register"></span></label>
+                   <input type="text" placeholder="BIRTHDAY" name="dob" class="ion-calendar" >-->
+                   <div class="col col-33">
+                   	 	<label class="mar_top_label">To Date</label>
+                   </div>
+                   <div class="col col-67">
+                   	<label class="item item-input ion-calendar select_date" ng-click="setPaymentDateAndTime('toDate')" >
+                <!--<input type="text" placeholder="Please Insert To Date" name="dob" ng-model="paymentHis.endDate" dateFormat= 'medium' class="select_date_custom_placeholder">-->
+                <span class="date_span_his">{{paymentHis.endDate}}</span>
+                <!--<span class="date_span">{{createPost.selectedDate}}</span>
+                <span class="time_span">{{createPost.selectedTime}}</span>-->
+            </label>
+                   </div>
+                      
+                   
+                   
+                    
+                  
+                </div>
+               
+            
+            </div>
+            <h3 class="p_detail_heading">Payment Details</h3>
+            <div class="post_feature_pannel table_look">
+            	 <div class="row header">
+          <div class="col">Date</div>
+          <div class="col">Paid For</div>
+          <div class="col">Amount ($)</div>
+          
+          
+         
+        </div>
+        <ion-item ng-repeat="item in paymentHisResponse" class="list_main_s" ng-show='paymentHis.paymentHisFlag'>
+        <div class="row div_list">
+          <div class="col">{{item.payment_created_date}}</div>
+          <div class="col">{{item.payment_type}}</div>
+          <div class="col view_look_m">
+          <div class="row">
+           <div class="col">{{item.amount}}</div>
+           <!--<div class="col">
+           <span class="ion-eye view_look"></span>
+           </div>-->
+           </div>
+          </div>
+        </div>
+        </ion-item>
+         <ion-item ng-hide='paymentHis.paymentHisFlag' class="no_record">No Record Found</ion-item>
+        <!--<div class="row div_list">
+          <div class="col">05 Jan 2016</div>
+          <div class="col">Dinner- Mark as Reserved</div>
+          <div class="col">12.35 <a href=""><span class="ion-eye view_look"></span></a></div>
+         
+        </div>
+        <div class="row div_list">
+          <div class="col">05 Jan 2016</div>
+          <div class="col">Dinner- Mark as Reserved</div>
+          <div class="col">12.35 <a href=""><span class="ion-eye view_look"></span></a></div>
+         
+        </div>
+        <div class="row div_list">
+          <div class="col">05 Jan 2016</div>
+          <div class="col">Dinner- Mark as Reserved</div>
+          <div class="col">12.35 <a href=""><span class="ion-eye view_look"></span></a></div>
+         
+        </div>
+        <div class="row div_list">
+          <div class="col">05 Jan 2016</div>
+          <div class="col">Dinner- Mark as Reserved</div>
+          <div class="col">12.35 <a href=""><span class="ion-eye view_look"></span></a></div>
+         
+        </div>
+        <div class="row div_list">
+          <div class="col">05 Jan 2016</div>
+          <div class="col">Dinner- Mark as Reserved</div>
+          <div class="col">12.35 <a href=""><span class="ion-eye view_look"></span></a></div>
+         
+        </div>
+        <div class="row div_list">
+          <div class="col">05 Jan 2016</div>
+          <div class="col">Dinner- Mark as Reserved</div>
+          <div class="col">12.35 <a href=""><span class="ion-eye view_look"></span></a></div>
+         
+        </div>
+        <div class="row div_list">
+          <div class="col">05 Jan 2016</div>
+          <div class="col">Dinner- Mark as Reserved</div>
+          <div class="col">12.35 <a href=""><span class="ion-eye view_look"></span></a></div>
+         
+        </div>
+        <div class="row div_list">
+          <div class="col">05 Jan 2016</div>
+          <div class="col">Dinner- Mark as Reserved</div>
+          <div class="col">12.35 <a href=""><span class="ion-eye view_look"></span></a></div>
+         
+        </div>
+        <div class="row div_list">
+          <div class="col">05 Jan 2016</div>
+          <div class="col">Dinner- Mark as Reserved</div>
+          <div class="col">12.35 <a href=""><span class="ion-eye view_look"></span></a></div>
+         
+        </div>-->
+
+
+                <div class="blank"></div>
+                
+            </div>
+      
+	  </ion-content>
+   	 <ul class="alpha_sidebar">
+      <li ng-click="gotoList('index_{{letter}}')"ng-repeat="letter in alphabet"> 
+          {{letter}}
+      </li>
+     </ul>
+        
+      <!--<ion-content has-header="true" padding="true">
+      
+        <div class="list">
+        <div class="item item-input-inset">
+        <label class="item-input-wrapper">
+        <input type="text" placeholder="Search" ng-model="searchContactText" >
+        </label>
+        <button class="button button-small search_icon"></button>
+        </div>
+        
+        <ion-list class="no_pad">
+                <ion-item ng-repeat="contact in contactFromDB| filter:searchContactText" class="ion-llist">
+                
+                		<div class="section border_bot">
+                            <div class="row">
+                                <div class="col col-75">
+                                	<a class="item item-avatar" href="#">
+                                	<img src="img/pro01.jpg">
+                                	<h2>{{contact.fullname}}</h2>
+                                	<p>{{contact.phone}}</p>
+                                	</a>
+                                </div>
+                                <div class="col">
+                              		<div class="row">
+                               			 <div class="col logo_icon">
+                               			 	<img src="img/logo_icon.png" ng-show="contact.grid">
+                                		</div>
+                                	</div>
+                               </div>
+                            </div>
+       					</div>
+                   
+                </ion-item>
+        </ion-list>
+                
+        </div>
+        
+        <div class="row responsive-sm list_section">
+        <div class="col">
+        
+        </div>
+        </div>
+        
+      </ion-content>-->
+      
+        <!--<div class="bar bar-footer bar-gray">
+          <button class="button button-clear pull-left skip_btn">Skip</button>
+          <button class="button button-clear pull-right next_blue">next</button>
+        </div>-->
+      
+  </ion-view>

@@ -1,0 +1,38 @@
+<ion-view title="INTERESTS" class="my_interests">
+
+        <div class="bar bar-header bar-blue">
+        <button  class="button button-icon icon ion-ios-arrow-left interestBack" ng-click="interestBack()"></button>
+        <h1 class="title">INTERESTS</h1>
+        
+        </div>
+       <!-- <ion-nav-buttons side="left">
+        	<button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
+        </ion-nav-buttons>
+        <ion-nav-buttons side="left">
+         <button  class="button button-icon icon ion-ios-arrow-left" ng-click="interestBack()"></button>
+      </ion-nav-buttons>-->
+        
+      <ion-content scroll="true" class="has-header" >
+      
+        <div class="list list-inset">
+        <label class="item item-input">
+        <input type="text" placeholder="Search" class="search_icon" ng-model="searchText" ng-change="update()">
+        </label>
+        </div>
+        
+        <div class="row responsive-sm list_section">
+        <div class="col">
+        <ul>
+        	<li ng-repeat="elm in filterInterest.filteredInterestArr=(interestsArr| filter:searchText)" ng-click="interestsNext($index)"><a href="">{{elm}}</a></li>        	
+        </ul>
+        </div>
+        </div>
+        
+        
+      </ion-content>
+      
+        <div class="bar bar-footer bar-gray">
+          <!--<button class="button button-clear pull-right next" ng-click="interestsNext()">next</button>-->
+        </div>
+      
+  </ion-view>

@@ -1,0 +1,82 @@
+<ion-view title="CHAT" class="my_interests import_contact">
+  <!-- <div class="bar bar-header bar-blue">
+        <h1 class="title">FRIENDS</h1>
+        </div>-->
+  
+  <ion-nav-buttons side="left">
+       
+         <button  class="button button-icon icon ion-ios-arrow-left" ng-click="ChatBack()"></button>
+
+    </ion-nav-buttons>
+ <ion-content has-bouncing="true" class="content">
+	  <div ng-show="chatCtrl.connected">
+	 	<div class="log pad2">"Welcome to Socket.IO Chat – ";</div>
+	 	<div class="log">{{chatCtrl.number_message}}</div>
+	  </div>
+	  <div>
+        <ul>
+        	<li ng-class="{'message':message.style,'log':!message.style}"  ng-repeat="message in messages" >
+        		<!--<span ng-show="message.style" ng-style="{color:message.color}" >{{message.username}} : </span >{{message.content}}-->
+                 <div class="col col-25">
+                      <img ng-src="{{message.image == ''?'img/pro01.jpg':'http://grid.digiopia.in/uploads/profile/thumb/'+message.image}}" class="rounded">
+                  </div>
+               <span >{{message.username}} : </span >{{message.content}}<img ng-src="{{message.content}}" style="width:100px; height:100px"/>
+        	</li>
+        </ul>
+	  </div><img ng-src="data:image/jpeg;base64,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"/>
+	</ion-content>
+  <div class="list light-grey bottommsg">
+		<div class="item item-input-inset light-grey">
+		  <label  class="item-input-wrapper line-light-grey nopadtop">
+		    <input class="line-light-grey" ng-change="chatCtrl.updateTyping()" type="text"  placeholder="Message" ng-enter="sendMessage()" ng-model="message"> 
+		  </label>
+		  <div class="divsend">
+			    <button class="button button-clear ion-android-send iconsend" ng-click="sendMessage()"></button>
+		  </div>
+          <div class="edit_profile_pic">
+          <button class="button ion-ios-camera" ng-click="selectUploadFile()"></button>
+         
+        </div>
+		</div>
+	</div> 	
+</ion-view>
+
+
+
+
+
+
+
+<!--<ion-view title="Main - Chat list">
+
+      <ion-nav-buttons side="left">
+
+        <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
+
+      </ion-nav-buttons>
+      <ion-content has-header="true" padding="true">
+
+        <h3>Chat list</h3>
+        <div class="list">
+
+            <a class="item item-avatar" href="#/main/chat-single">
+              <img src="http://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Zachary_Quinto_2011.jpg/200px-Zachary_Quinto_2011.jpg" />
+              <h2>Oliver Thredson</h2>
+              <p>I'm a psychiatrist at Briarcliff Institute</p>
+            </a>
+            <a class="item item-avatar" href="#/main/chat-single">
+              <img src="http://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Sarah_Paulson_12_Years_a_Slave_55_cropped.jpg/129px-Sarah_Paulson_12_Years_a_Slave_55_cropped.jpg" />
+              <h2>Lana Winters</h2>
+              <p>I'm an ambitious journalist committed to the asylum</p>
+            </a>
+            <a class="item item-avatar" href="#/main/chat-single">
+              <img src="http://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Evan_Peters_by_Gage_Skidmore.jpg/165px-Evan_Peters_by_Gage_Skidmore.jpg" />
+              <h2>Kit Walker</h2>
+              <p>I'm an inmate at Briarcliff Institute</p>
+            </a>
+
+        </div>
+      </ion-content>
+
+      
+    </ion-view>-->

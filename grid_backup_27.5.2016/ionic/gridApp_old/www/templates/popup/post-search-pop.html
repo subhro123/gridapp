@@ -1,0 +1,38 @@
+ <ion-popover-view class="pop_content">
+        <ion-content>
+          <div class="list">
+           <!-- <span ng-click="postFilterByType('dining')">
+              DINING
+            </span>
+             <span ng-click="postFilterByType('drinks')">
+              DRINKS
+             </span>
+             <span ng-click="postFilterByType('activity')">
+              ACTIVITY
+             </span>-->
+             <div class="row ctrat_post_content">
+             <div class="col col-25">
+              <button ng-click="postFilterByType('')" class="button button-light creat_post_active_btn"> <span class="ion-android-done-all"></span>
+              <p>ALL</p>
+              </button>
+            </div>
+            <div class="col col-25">
+              <button ng-click="postFilterByType('dining')" class="button button-light creat_post_active_btn"> <span class="ion-android-restaurant"></span>
+              <p>DINING</p>
+              </button>
+            </div>
+            <div class="col col-25">
+              <button ng-click="postFilterByType('drinks')" class="button button-light creat_post_active_btn"> <span class="ion-android-bar"></span>
+              <p>DRINKS</p>
+              </button>
+            </div>
+            <div class="col col-25">
+              <button ng-click="postFilterByType('activity')" class="button button-light creat_post_active_btn"> <span class="ion-calendar"></span>
+              <p>ACTIVITY</p>
+              </button>
+            </div>
+          </div>
+           
+          </div>
+        </ion-content>
+</ion-popover-view>

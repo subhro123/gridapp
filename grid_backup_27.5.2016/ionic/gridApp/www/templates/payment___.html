@@ -1,0 +1,113 @@
+<ion-view class="register_main login_main">
+            
+    <ion-content>
+    	<div class="logo"><img src="img/logo.png" alt=""></div>
+        <div class="post_feature_pannel">
+            	<div class="row p_featured common_st">
+                	<span>
+                  Payment for mark your post as featured
+                  </span>
+                 
+                </div>
+                
+               <!-- <div class="clear"></div>-->
+            </div>
+            
+            	<div class="row">
+                	<div class="featured_amount">
+                    	<span>${{payment.paymentVal}}</span>
+                  </div>
+                </div>
+    	<!-- <form id="checkout" method="post" action="http://grid.digiopia.in/user/get_braintree">
+  			<div id="payment-form"></div>
+            <button class="button button-block button-balanced" type="submit">Make payment</button>
+            <button class="button button-block button_bor" ng-click="cancel()">CANCEL</button>
+			</form>-->
+                <form method="post" name="payment-info-form" id="payment-info-form">
+                <table>
+                <!--<tr>
+                <td align="right">API Key :</td>
+                <td><input type="text" name="apikey" id="apikey"
+                value="y6pWAJNyJyjGv66IsVuWnklkKUPFbb0a" /></td>
+                </tr>
+                <tr>
+                <td align="right">JS Security Key :</td>
+                <td><input type="text" name="js_security_key" id="js_security_key"
+                value="js-6125e57ce5c46e10087a545b9e9d7354c23e1a1670d9e9c7" /></td>
+                </tr>
+                <tr>
+                <td align="right">Merchant Token :</td>
+                <td><input type="text" name="token" id="token"
+                value="fdoa-a480ce8951daa73262734cf102641994c1e55e7cdf4c02b6" /></td>
+                </tr>
+                <tr>
+                <td align="right">Auth :</td>
+                <td>
+                <select name="auth" id="auth" payeezy-data="auth">
+                <option value="false">false</option>
+                <option value="true">true</option>
+                </select>
+                </td>
+                </tr>
+                <tr>
+                <td align="right">TA Token :</td>
+                <td><input type="text" name="ta_token" id="ta_token"
+                payeezy-data="ta_token" value="NOIW" /></td>
+                </tr>
+                <tr>-->
+                <td align="right">Card Type :</td>
+                <td>
+                <select payeezy-data="card_type">
+                <option value="visa">Visa</option>
+                <option value="mastercard">Master Card</option>
+                <option value="American Express">American Express</option>
+                <option value="discover">Discover</option>
+                </select>
+                </td>
+                </tr>
+                <tr>
+                <td align="right">Cardholder Name :</td>
+                <td><input type="text" payeezy-data="cardholder_name"
+                value="xyz" /></td>
+                </tr>
+                <tr>
+                <td align="right">Card Number :</td>
+                <td><input type="text" payeezy-data="cc_number"
+                value="4788250000028291" /></td>
+                </tr>
+                <tr>
+                <td align="right">CVV Code :</td>
+                <td><input type="text" payeezy-data="cvv_code" value="123" />
+                </td>
+                </tr>
+                <tr>
+                <td align="right">Expiry Date :</td>
+                <td>
+                <select payeezy-data="exp_month">
+                <option value="01">01</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12" selected>12</option>
+                </select>
+                <select payeezy-data="exp_year">
+                <option value="15">2015</option>
+                <option value="16">2016</option>
+                <option value="17">2017</option>
+                </select>
+                </td>
+                </tr>
+                </table>
+                <div id="generate-token">
+                <table>
+                <tr>
+                <td></td>
+                <td><button type="submit" ng-click="sendUserPaymentInfo()">Generate token</button></td>
+                </tr>
+                </table>
+                </div>
+                </form>
+            
+            
+    </ion-content>
+    
+</ion-view>

@@ -1,0 +1,31 @@
+<ion-view class="login_main">
+            
+    <ion-content>
+    	<form name="loginForm" novalidate="" ng-submit="userLogin(loginForm)">
+            <div class="padding">
+            <div class="logo"><img src="img/logo.png" alt=""></div>
+            <ul class="social">
+            <li><a href="#" class="ion-social-facebook" ng-click="facebooklogin()"></a></li>
+            <li><a href="#" class="ion-social-twitter" ng-click="twitterlogin()"></a></li>
+            <li><a href="#" class="ion-social-linkedin" ng-click="linkedinlogin()"></a></li>
+            </ul>
+            <div class="or"><img src="img/or.png" alt=""></div>
+            <div class="list">
+            <label class="item item-input ion-person" ng-class="{ 'has-error-lr' : loginForm.email.$invalid  && loginForm.$submitted, 'valid-lr' : loginForm.email.$valid  && loginForm.$submitted}">
+            	<input type="email" placeholder="Enter Email ID" name="email" ng-model="login.userEmail" required>
+            </label>
+            <label class="item item-input ion-key2" ng-class="{ 'has-error-lr' : loginForm.password.$invalid  && loginForm.$submitted, 'valid-lr' : loginForm.password.$valid  && loginForm.$submitted}">
+            	<input type="password" placeholder="PASSWORD" name="password" ng-model="login.password" required>
+            </label>
+            </div>
+            <button class="button button-block button-balanced" type="submit">Login</button>
+            <div class="row bot_link">
+            <div class="col col-50 but_left"><a ui-sref="forget-password" class="forg">Forgot Password</a></div>
+            <div class="col col-50 but_right"><a ui-sref="account-activate">Activate Account</a></div>
+            </div>
+            <a ui-sref="register" class="button_bor">Register</a>
+            </div>
+         </form>
+    </ion-content>
+    
+</ion-view>

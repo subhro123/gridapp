@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src * 'self' data:; script-src 'self' 'unsafe-inline' 'unsafe-eval' *; style-src  'self' 'unsafe-inline' *">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <title></title>
+
+    <link href="lib/ionic/css/ionic.css" rel="stylesheet">
+    <link href="fonts/stylesheet.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    
+   
+    
+
+    <!-- IF using Sass (run gulp sass first), then uncomment below and remove the CSS includes above
+    <link href="css/ionic.app.css" rel="stylesheet">
+    -->
+
+    <!-- ionic/angularjs js -->
+    <script src="lib/ionic/js/ionic.bundle.js"></script>
+    <script src="lib/ngCordova/dist/ng-cordova.min.js"></script>
+
+    <!-- cordova script (this will be a 404 during development) -->
+    <script src="cordova.js"></script>
+	<script src="js/ngStorage.min.js"></script>
+    <script src="lib/ng-twitter-api/dist/ng-twitter-api.min.js"></script>
+    <script src="js/sha1.js"></script>
+    <script src="js/moment.js"></script>
+    <script type="text/javascript" src="js/md5.js"></script>
+    
+   
+    
+    <!-- paypal's js -->
+    <script type="text/javascript" src="js/paypal-mobile-js-helper.js"></script>
+    <!--<script type="text/javascript" src="js/cdv-plugin-paypal-mobile-sdk.js"></script>-->
+    
+    <!-- your app's js -->
+    <script src="js/app.js"></script>
+    
+     <!-- your controller's js -->
+    <script src="js/controller/loginController.js"></script>
+    <script src="js/controller/registerController.js"></script>
+    <script src="js/controller/paymentController.js"></script>
+    <script src="js/controller/paymentHistoryController.js"></script>
+    <script src="js/controller/forgetPassController.js"></script>
+    <script src="js/controller/forgetPassAccessController.js"></script>
+    <script src="js/controller/activateAccountController.js"></script>
+    <script src="js/controller/resendActiveController.js"></script>
+    <script src="js/controller/interestsController.js"></script>
+    <script src="js/controller/interestsSubController.js"></script>    
+    <script src="js/controller/noemailController.js"></script>
+    <script src="js/controller/mainController.js"></script>
+    <script src="js/controller/homeController.js"></script>
+    <script src="js/controller/profileController.js"></script>
+    <script src="js/controller/profileOtherController.js"></script>
+    <script src="js/controller/dashboardController.js"></script>
+    <script src="js/controller/friendController.js"></script>
+    <script src="js/controller/importContactController.js"></script>
+    <script src="js/controller/importContactMenuController.js"></script>
+    <script src="js/controller/postController.js"></script>
+    <script src="js/controller/postOwnerController.js"></script>
+    <script src="js/controller/postOtherController.js"></script>
+    <script src="js/controller/postWantJoinController.js"></script>
+    <script src="js/controller/postGoingController.js"></script>
+    <script src="js/controller/postGoingOtherController.js"></script>
+    <script src="js/controller/createPostController.js"></script>
+    <script src="js/controller/settingsController.js"></script>
+    <script src="js/controller/drinkController.js"></script>
+    <script src="js/controller/chatController.js"></script>
+    <script src="js/controller/mapController.js"></script>
+    
+    
+     <!-- chat related -->
+    <script src="http://162.144.54.201:9091/socket.io/socket.io.js"></script>
+     <!-- Other Libraries-->
+    <script src="lib/angular-sanitize/angular-sanitize.min.js"></script>
+    <script src="lib/angular-socket-io/socket.js"></script>
+    
+     <!--your services' js -->
+    <script src="js/services/socket.js"></script>
+    
+    <!--your directives' js -->
+    <script src="js/directives.js"></script>
+        
+    <!-- googlemap's js -->
+    
+
+    <script src="https://maps-api-ssl.google.com/maps/api/js?libraries=places"></script>
+    
+    <!-- validation message -->
+    <script src="lib/angular-messages/angular-messages.min.js"></script> 
+    
+    <!-- braintree payment gatway -->
+    <!--<script src="https://js.braintreegateway.com/js/braintree-2.22.2.min.js"></script>-->
+    
+    <!-- date picker -->
+    <!--<script src="lib/ionic-datepicker/dist/ionic-datepicker.bundle.min.js"></script>-->
+    
+    <!-- alpha-scroll -->
+    <!--<script src="js/ion-alpha-scroll.js"></script>
+    <link href="css/ion-alpha-scroll.css" rel="stylesheet"> -->
+    
+    <!-- mobile Number -->
+    
+    
+    
+  </head>
+  <body ng-app="starter">
+
+    <!--<ion-pane>
+      <ion-header-bar class="bar-stable">
+        <h1 class="title">Ionic Blank Starter</h1>
+      </ion-header-bar>
+      <ion-content>
+      </ion-content>
+    </ion-pane>-->
+    <!-- ALL VIEW STATES LOADED IN HERE -->
+	<ion-nav-view></ion-nav-view>
+    
+   
+
+    
+  </body>
+</html>

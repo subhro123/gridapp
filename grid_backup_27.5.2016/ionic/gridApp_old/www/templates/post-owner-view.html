@@ -1,0 +1,143 @@
+<ion-view title="POST VIEW" class="">
+  <!--<div class="bar bar-header bar-blue">
+    <h1 class="title">IMPORT CONTACT</h1>
+  </div>-->
+  
+   <ion-nav-buttons side="left">
+       
+         <button  class="button button-icon icon ion-ios-arrow-left" ng-click="PostDetailsViewBack()"></button>
+
+    </ion-nav-buttons>
+     
+  <ion-content has-header="true">
+    <div class="list">
+    
+    <div class="header-banner">
+        <div class="">
+            <img class="logo-left img-responsive" ng-src="img/{{postOwnerResponse.event_type}}.jpg" />
+            <div class="banner_edit_txt">	
+              <div class="row">
+                  <div class="col col-80 txt_limit"><span class="banner_bot_txt">{{postOwnerResponse.event_title}}</span></div>
+                  <div class="col col-20 compose_ico"><!--<a href=""><i class="icon ion-compose"></i></a>--></div>
+              </div>
+            </div>
+        </div>
+        
+    </div>
+   
+
+   <!-- <a class="item item-avatar" href="#">
+      <img src="venkman.jpg">
+      <h2>Venkman</h2>
+      <p>Back off, man. I'm a scientist.</p>
+    </a>-->
+        <div class="post_view_section view_section">
+            <div class="row view_section">
+                <div class="col col-80">
+                    <p><i class="icon ion-android-calendar mar_right"></i>DATE</p>
+                    <p class="pad_right view_time">{{postOwner.formated_date}}</p>
+                </div>
+                <div class="col col-20">
+                    <p class="view_time">{{postOwnerResponse.formated_time}}</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col col-80">
+                    <p><i class="icon ion-android-pin mar_right"></i>LOCATION</p>
+                    <p class="pad_right view_time">{{postOwnerResponse.location}}</p>
+                </div>
+                <div class="col col-20">
+                    <p class="view_time"></p>
+                </div>
+            </div>
+        </div>  
+        
+        <div class="post_view_section view_section">
+            <div class="row">
+                <div class="col">
+                    <p>POST SUMMERY</p>
+                    <p class="view_time">{{postOwnerResponse.summary}}</p>
+
+                </div>
+                
+                <div class="clear"></div>
+                </div>
+        </div>
+        
+        <div class="post_view_section view_section">
+            <div class="row">
+                <div class="col col-90">
+                    <p><i class="icon ion-person-add mar_right"></i>WHO WANTS TO JOIN </p>
+                    <div class="pad_right view_time">
+                    
+                    	<ul class="want_to_join" ng-show='postOwner.wish_list'>
+                        	<li ng-repeat="item in postOwner.post_wish_dispaly_list">
+                                    <div class="list_image">
+                                 <!--<img ng-src="{{'http://grid.digiopia.in/uploads/profile/thumb/'+item.image}}" />-->
+                                  <img ng-src="{{item.image == ''?'img/pro01.jpg':'http://grid.digiopia.in/uploads/profile/thumb/'+item.image}}" class="">
+                                    </div>
+                            </li>
+                    	</ul>
+                    	<span ng-hide='postOwner.wish_list'>{{postOwner.empty_wish_list_txt}}</span>
+                    
+                    </div>
+                   
+                </div>
+                <div class="col col-10">
+                    <p class="view_time larg_icon" ng-click="openPostWantJoinView()" ng-show='postOwner.wish_list'><a href=""><i class="icon ion-ios-arrow-right"></i></a></p>
+                </div>
+                <div class="clear"></div>
+                
+               
+                
+                	
+                </div>
+                <div class="row">
+                	<!--<p class="pad_right view_time">Dr.Doom, Megan Fox, Angela Smith... <a href="" class="more">15 more</a></p>-->
+                    <p class="pad_right view_time" ng-show='postOwner.wish_list'>{{postOwner.wish_list_name_txt}}<a href="" class="more" ng-show='postOwner.wish_list_more_flag'>{{postOwner.wish_list_more}} more</a></p>
+                </div>
+           
+            
+        </div> 
+        <div class="post_view_section view_section">
+            <div class="row">
+                <div class="col col-90">
+                    <p><i class="icon ion-android-walk mar_right"></i>YOU ARE GOING WITH</p>
+                    <div class="pad_right view_time">
+                    
+                    		<ul class="want_to_join" ng-show='postOwner.going_list'>
+                                <li ng-repeat="item in postOwner.post_going_dispaly_list">
+                                    <div class="list_image">
+                                        <!--<img ng-src="{{'http://grid.digiopia.in/uploads/profile/thumb/'+item.image}}" />-->									 <img ng-src="{{item.image == ''?'img/pro01.jpg':'http://grid.digiopia.in/uploads/profile/thumb/'+item.image}}" class="rounded">
+                                    </div>
+                                </li>
+                    		</ul>
+                    	<span ng-hide='postOwner.going_list'>{{postOwner.empty_going_list_txt}}</span>
+                    
+                    </div>
+                   
+                </div>
+                <div class="col col-10">
+                    <p class="view_time larg_icon" ng-click="openPostWantGoingView()" ng-show='postOwner.going_list'><a href=""><i class="icon ion-ios-arrow-right"></i></a></p>
+                </div>
+                <div class="clear"></div>
+                
+               
+                
+                	
+                </div>
+                <div class="row">
+                	<p class="pad_right view_time" ng-show='postOwner.going_list'>{{postOwner.going_list_name_txt}}<a href="" class="more" ng-show='postOwner.going_list_more_flag'>{{postOwner.going_list_more}} more</a></p>
+                </div>
+           
+            
+        </div>
+        
+       
+
+
+      
+   	  
+    </div>
+  </ion-content>
+</ion-view>

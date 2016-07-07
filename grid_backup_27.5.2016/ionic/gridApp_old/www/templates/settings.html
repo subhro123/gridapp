@@ -1,0 +1,93 @@
+
+<ion-view title="SETTINGS" class="settings_page">
+
+      <ion-nav-buttons side="left">
+
+        <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
+
+      </ion-nav-buttons>
+      <ion-content has-header="true" padding="true">
+<div class="list settings">
+
+  <ul>
+  
+  	 <!--<li class="item item-toggle">
+     Push Notifications
+     <label class="toggle toggle-assertive">
+       <input type="checkbox">
+       <div class="track">
+         <div class="handle"></div>
+       </div>
+     </label>
+  </li>
+   <li class="item item-toggle">
+     Auto Detect Location
+     <label class="toggle toggle-assertive">
+       <input type="checkbox">
+       <div class="track">
+         <div class="handle"></div>
+       </div>
+     </label>
+  </li>-->
+  <li>
+      <a class="item item-button-right" href="#">
+        Radius Settings	
+       <!-- <span class="button">
+          <i class="icon ion-ios-arrow-right"></i>
+        </span>-->
+      </a>
+      <div class="tog_range">
+       <!--<p class="value_range">Volume :( {{data1.volume}})</p>-->
+       <p class="value_range">Map Radius : {{setting.volume}}</p>
+      	<div class="range" id="red">
+       <span class="min_max_size">min-{{setting.min_radius}}</span>
+        <input type="range" name="volume_paid" ng-model="setting.volume" style="-webkit-slider-thumb:before {background: green !important;}" min="1" max="2000" ng-change="onRangeChange(setting.volume)" ng-show="setting.rangePaidFlag">
+        <input type="range" name="volume_free" ng-model="setting.volume" style="-webkit-slider-thumb:before {background: green !important;}" min="1" max="10" ng-change="onRangeChange(setting.volume)" ng-show="setting.rangeFreeFlag">
+        
+        <span class="min_max_size">max-{{setting.max_radius}}</span>
+
+      </div>
+      
+     
+      	
+      </div>
+  </li>
+  <li>
+      <a class="item item-button-right" href="#">
+       Change Password?
+        <span class="button">
+          <i class="icon ion-ios-arrow-right"></i>
+        </span>
+      </a>
+  </li>
+  
+  <li>
+      <a class="item item-button-right" href="#">
+        Privacy Policy
+        <span class="button">
+          <i class="icon ion-ios-arrow-right"></i>
+        </span>
+      </a>
+      
+  </li>
+  <!--<li>
+      <a class="item item-button-right" href="#">
+        Logout
+        <span class="button">
+          <i class="icon ion-ios-arrow-right"></i>
+        </span>
+      </a>
+  </li>-->
+  
+  </ul>
+  
+  
+  
+  
+
+  
+
+</div>
+
+      
+    </ion-view>

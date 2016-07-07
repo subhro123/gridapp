@@ -1,0 +1,51 @@
+<ion-view title="WHO WANTS TO JOIN" class="my_interests import_contact">
+  <!-- <div class="bar bar-header bar-blue">
+        <h1 class="title">FRIENDS</h1>
+        </div>-->
+  
+  <ion-nav-buttons side="left">
+       
+         <button  class="button button-icon icon ion-ios-arrow-left" ng-click="PostWantJoinViewBack()"></button>
+
+    </ion-nav-buttons>
+  <ion-content class="has-header tab_last tab_con_main" >
+   
+       
+         
+          <ion-list class="post_list want_to_join">
+            <ion-item ng-repeat="item in postWantJoin.join_list" >
+              <div class="section section2 border_bot">
+                <div class="row mar_left">
+                  <div class="col col-75" > <a class="item item-avatar" href="#">
+                  <div class="row mar_left">
+                   <div class="col col-25">
+                  
+                   <!--<img ng-src="{{'http://grid.digiopia.in/uploads/profile/thumb/'+item.image}}" class="rounded">-->
+                    <img ng-src="{{item.image == ''?'img/pro01.jpg':'http://grid.digiopia.in/uploads/profile/thumb/'+item.image}}" class="rounded">
+                   </div>
+                    <div class="col col-75" ng-click="openOtherProfile($index)">
+                    <h2>{{item.fullname}}</h2>
+                    <!--<p><span>Friend Request since</span> {{item.created_date}}</p>-->
+                    </div>
+                    </div>
+                    </a> </div>
+                  <div class="col col-25">
+                    <div class="row">
+                      <div class="col logo_icon logo_icon_adjust"> <a href="" class="ion-checkmark-circled" ng-click="showConfirm($index,'accept')"></a><a href="" class="ion-close-circled" ng-click="showConfirm($index, 'cancel')"></a> </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ion-item>
+          </ion-list >
+  </ion-content>
+  <div class="bar bar-footer ico_size">
+  <div class="col">
+  	<div class="center_width">
+  		<span class="ion-ios-location green floating"></span>
+        <span class="bot_icon_txt floating_txt">Available: {{postWantJoin.availablePerson}}</span>
+        <div class="clear"></div>
+     </div> 
+  </div>
+</div>
+</ion-view>

@@ -1,0 +1,394 @@
+<!doctype html>
+<html>
+  <head>
+ 
+		<script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+		<script src="/socket.io/socket.io.js"></script>
+		<link href="assets/css/bootstrap.css" rel="stylesheet"   type="text/css" />
+		<!--<script src="db.js"></script>-->
+		<script>
+		$(function() {
+		  var socket = io();
+		  var email='';
+		  var username='';
+		  var surname ='';
+		  var image='';
+		  var typing = false;
+		  var arruser = [];
+		  var userid = '';
+		  //var FADE_TIME = 150; // ms
+		  
+		
+		  // Sets the client's username
+		function setEmail () {
+		  		
+				email = $('#email').val();
+				//alert('aaaa');
+				//alert(email);
+				if (email) {
+				
+						socket.emit('add user', email);
+				}
+		  }
+	
+	     var $window = $(window);  
+		 $window.keydown(function (event) {
+		   			//alert('aaaa');
+					
+							if (event.which === 13) {
+								//alert(username);
+									if (email) {
+									        //alert($('#username').val());
+											
+											username = $('#username').val();
+											arruser = username.split(' ');
+											//alert();
+											surname = arruser[0];
+											image = $('#image').val();
+											//userid=$('#userid').val();
+											sendMessage(surname,image);
+											
+											socket.emit('stop typing');
+											typing = false;
+										  } else {
+										    //alert(username);
+											email = $('#email').val();
+											//alert(email);
+										    socket.emit('list all users',email);
+											setEmail();
+									}
+							
+							}
+				   
+				   })
+		   
+
+		  function sendMessage(surname,image){
+		    var message =  $('#message').val();
+			//alert(name);
+				  $('#message').val('');
+				    addChatMessage({
+						message: message,
+						surname: surname,
+						image: image
+					});
+				socket.emit('chat message', message,surname,image);
+				$('#messages').get(0).scrollTop = 10000000;		
+			return false;
+			
+		  
+		  }
+		  
+		 $("#chat").click(function () {
+		  		
+					if (username) {
+											sendMessage();
+											socket.emit('stop typing');
+											typing = false;
+										  } else {
+										    socket.emit('list all users');
+											setUsername();
+									}
+		  
+		  })
+		 /* function setUsername () {
+		  
+		  		 username = 'Subhro';
+				  if (username) {
+				  		
+						socket.emit('add user', username);
+				  }
+		  }*/
+		   
+		  function addChatMessage(data, options) {
+		 		//alert('index: ' +  json.stringify(data));
+				
+				var usernameDiv = data.surname;
+				var messageDiv = data.message;
+				var imageDiv = data.image;
+				//alert(imageDiv);
+				if(imageDiv!=''){
+				var msg='<li class="media"><div class="media-body"><div class="media"><a class="pull-left" href="javascript:void(0)" style="width:40px;height:40px;" ><img class="media-object img-circle " src="http://grid.digiopia.in/uploads/profile/thumb/'+imageDiv+'" style="width:100%; height: 100%;" /></a><div class="media-body" >'+messageDiv+'<br /><small class="text-muted">'+usernameDiv+' | 23rd June at 5:00pm</small><hr /></div></div></div></li>';		}else{
+				var msg='<li class="media"><div class="media-body"><div class="media"><a class="pull-left" href="javascript:void(0)" style="width:40px;height:40px;" ><img class="media-object img-circle " src="assets/img/user.png"   style="width:100%; height: 100%;"/></a><div class="media-body" >'+messageDiv+'<br /><small class="text-muted">'+usernameDiv+' | 23rd June at 5:00pm</small><hr /></div></div></div></li>';
+				}		
+				$('#messages').append(msg);
+				//var msg = usernameDiv+':'+messageDiv;
+				//alert(messageDiv);
+				//$('#messages').prepend($('<li>').text(msg));
+				//addMessageElement(msg, options);
+			 }
+			 
+	    // Adds the visual chat typing message
+		  function addChatTyping (data) {
+			data.typing = true;
+			//data.message = 'is typing';
+			//alert(data.username);
+			addChatMessage(data);
+		}
+		
+		// Whenever the server emits 'new message', update the chat body
+		 socket.on('chat message', function (data) {
+			alert(data.surname);
+    		addChatMessage(data);
+		});
+			 
+		  // Whenever the server emits 'user joined', log it in the chat body
+		 socket.on('user joined', function (data) {
+    			
+					$('#msg').show();
+					$('#profileimg').html('<a class="pull-left" href="#" style="width:25px;height:25px;"><img class="media-object img-circle" style="width:100%; height: 100%;" src="http://grid.digiopia.in/uploads/profile/thumb/'+data.image+'" /></a>&nbsp;'+data.username);
+					$('#username').val(data.username);
+					$('#image').val(data.image);
+					//alert(data.username);
+					$('#login').hide();
+					
+					//alert(data.results);
+				
+					
+			});
+			
+			socket.on('return list all users', function (data) {
+			
+						//alert(data.rows);
+					   var datacount = data.rows.length;
+						//alert(datacount);
+					   var arr = data.rows;
+					   for (var i = 0; i < datacount; i++) {
+					   		
+									//alert(arr[i].id);
+									
+									if(arr[i].image==''){
+									
+									if(arr[i].chat_login_status==0){
+									
+									var msg = '<li class="media"><div class="media-body"><div class="media"><a class="pull-left" href="javascript:void(0)" onclick="chatWith('+arr[i].id+')"><img class="media-object img-circle" style="max-height:40px;" src="assets/img/user.png" /></a><div class="media-body" ><h5>'+arr[i].fullname+' | User </h5><small class="text-muted">Active From 3 hours</small></div></div></div></li>';
+									
+										}
+										
+									if(arr[i].chat_login_status==1){
+									
+									var msg = '<li class="media"><div class="media-body"><div class="media"><a class="pull-left" href="javascript:void(0)" onclick="chatWith('+arr[i].id+')"><img class="media-object img-circle-green" style="max-height:40px;border: 2px solid;" src="assets/img/user.png" /></a><div class="media-body" ><h5>'+arr[i].fullname+' | User </h5><small class="text-muted">Active From 3 hours</small></div></div></div></li>';
+									
+										}
+									}else{
+									
+									if(arr[i].chat_login_status==0){
+									
+									var msg = '<li class="media"><div class="media-body"><div class="media"><a class="pull-left" href="javascript:void(0)" style="width:40px;height:40px;" onclick="chatWith('+arr[i].id+')"><img class="media-object img-circle" style="width:100%; height: 100%;" src="http://grid.digiopia.in/uploads/profile/thumb/'+arr[i].image+'" /></a><div class="media-body" ><h5>'+arr[i].fullname+' | User </h5><small class="text-muted">Active From 3 hours</small></div></div></div></li>';
+										}
+										
+								     if(arr[i].chat_login_status==1){
+									 
+									 var msg = '<li class="media"><div class="media-body"><div class="media"><a class="pull-left" href="javascript:void(0)" style="width:40px;height:40px;" onclick="chatWith('+arr[i].id+')"><img class="media-object img-circle-green" style="width:100%; height: 100%;border: 2px solid;" src="http://grid.digiopia.in/uploads/profile/thumb/'+arr[i].image+'" /></a><div class="media-body" ><h5>'+arr[i].fullname+' | User </h5><small class="text-muted">Active From 3 hours</small></div></div></div></li>';
+									 	}
+										
+									}
+									
+								   $('#users').append(msg);
+									
+					   
+					   }
+			});
+			
+		 // Whenever the server emits 'typing', show the typing message
+  		socket.on('typing', function (data) {
+   			 	
+				addChatTyping(data);
+		});
+		
+		socket.on('user image', function (data) {
+   			 	
+				//addChatTyping(data);
+				//alert(data.from);
+				//alert(data.image);
+				
+				if(data.profileimage==''){
+				
+				var msg='<li class="media"><div class="media-body"><div class="media"><a class="pull-left" href="#"><img class="media-object img-circle " src="assets/img/user.png" /></a><div class="media-body" ><img src="' + data.image + '"/><br /><small class="text-muted">'+data.from+' | 23rd June at 5:00pm</small><hr /></div></div></div></li>';
+				
+				}else{
+				
+				var msg='<li class="media"><div class="media-body"><div class="media"><a class="pull-left" href="#" style="width:40px;height:40px;"><img class="media-object img-circle" style="width:100%; height: 100%;" src="http://grid.digiopia.in/uploads/profile/thumb/'+data.profileimage+'" /></a><div class="media-body" ><img src="' + data.image + '"/><br /><small class="text-muted">'+data.from+' | 23rd June at 5:00pm</small><hr /></div></div></div></li>';
+				
+				}	
+				//$('#messages').append($('<p>').append($('<b>').text(data.from), msg));
+				$('#messages').append(msg);
+				
+		});
+		/*  socket.on('chat message', function(msg){
+    		$('#messages').append($('<li>').text(msg));
+  		   });*/
+		  /*$('form').submit(function(){
+			socket.emit('chat message', $('#m').val());
+			$('#m').val('');
+			return false;
+		  });*/
+		  
+		  $('#imagefile').bind('change', function(e){
+			  var data = e.originalEvent.target.files[0];
+			  var reader = new FileReader();
+			  reader.onload = function(evt){
+				//image('me', evt.target.result);
+				var me = $('#username').val();
+				var email = $('#email').val();
+				socket.emit('user image', me,email,evt.target.result);
+			  };
+			  reader.readAsDataURL(data);
+			  //alert(data);
+      
+		});
+	})
+	
+	    function chatWith(userid){
+		
+					//alert(id);
+					 var socket = io();
+					 socket.emit('init',userid);
+					 $('#userid').val(userid);
+		}
+		
+		$(function(){
+				$("#addClass").click(function () {
+				  $('#sidebar_secondary').addClass('popup-box-on');
+					});
+				  
+					$("#removeClass").click(function () {
+				  $('#sidebar_secondary').removeClass('popup-box-on');
+					});
+					
+				/*$('#uploadfile').bind('change', function(e){
+						var data = e.originalEvent.target.files[0];
+						
+						readThenSendFile(data);      
+					});*/
+
+			})
+		
+		
+			/*function readThenSendFile(data){
+
+				var reader = new FileReader();
+				reader.onload = function(evt){
+					var msg ={};
+					msg.username = username;
+					msg.file = evt.target.result;
+					msg.fileName = data.name;
+					alert(msg);
+					//socket.emit('base64 file', msg);
+				};
+				reader.readAsDataURL(data);
+}*/
+</script>
+<title>BOOTSTRAP CHAT EXAMPLE</title>
+	
+</head>
+    <!--<style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font: 13px Helvetica, Arial; }
+      form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
+      form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
+      form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
+      #messages { list-style-type: none; margin: 0; padding: 0; }
+      #messages li { padding: 5px 10px; }
+      #messages li:nth-child(odd) { background: #eee; }
+    </style>-->
+<style>
+.fileUpload {
+    position: relative;
+    overflow: hidden;
+    margin: 4px;
+}
+.fileUpload input.upload {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 0;
+    padding: 0;
+    font-size: 20px;
+    cursor: pointer;
+    opacity: 0;
+    filter: alp;
+}
+</style>
+<body style="font-family:Verdana">
+	<div class="container" id="msg" style="display:none;">
+		<div class="row " style="padding-top:40px;">
+			<h3 class="text-center" >BOOTSTRAP CHAT EXAMPLE</h3>
+			<br /><br />
+			<div class="col-md-8">
+				<div class="panel panel-info">
+					<div class="panel-heading">
+						<span id='profileimg'></span><!--RECENT CHAT HISTORY-->
+					</div>
+					<div class="panel-body">
+		<ul class="media-list">
+		
+											 <span id='messages'></span>
+										
+										</ul>
+										<!--<div id="lines"></div>-->
+					</div>
+					<div class="panel-footer">
+						<div class="input-group">
+											<input type="text" class="form-control"  id="message" placeholder="Enter Message" />
+											<div class="fileUpload btn btn-primary">
+												<span>Upload</span>
+												<input id="imagefile" type="file" class="upload" />
+													</div>
+
+											<span class="input-group-btn">
+												<button class="btn btn-info" type="button">SEND</button>
+											</span>
+											<input type="hidden" id="userid" value="">
+											<input type="hidden" id="username" value="">
+											<input type="hidden" id="image" value="">
+										</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-4">
+				  <div class="panel panel-primary">
+					<div class="panel-heading">
+					   ONLINE USERS
+					</div>
+					<div class="panel-body">
+						<ul class="media-list">
+		
+										<span id='users'></span>
+											
+										</ul>
+										
+						</div>
+					</div>
+				
+			</div>
+		</div>
+		  </div>
+  <section class="containers">
+    <div class="login" id="login">
+      <h1 style="font-family:'Lucida Grande', Tahoma, Verdana, sans-serif; size:20px;">Login to Web Chat</h1>
+      
+        <p><input type="text" name="email" id="email" value="" placeholder="What's your email?" autocomplete="off"></p>
+      <!--  <p><input type="password" name="password" value="" placeholder="Email"></p>-->
+        <!--<p class="remember_me">
+          <label>
+            <input type="checkbox" name="remember_me" id="remember_me">
+            Remember me on this computer
+          </label>
+        </p>-->
+      <p class="submit"><input type="button" name="commit" value="Login"  id="chat"></p>
+      
+    </div>
+</section>
+    <!--<div class="login-help">
+      <p>Forgot your password? <a href="index.html">Click here to reset it</a>.</p>
+    </div>-->
+  
+	 <!--<div  id="login" align="center" style="margin-top:120px;">
+	  	<h3 >What's your nickname?</h3>
+	    <div   style="float: right; padding-right: 320px; margin-top: -38px;">
+       <input id="username" type="text" maxlength="14" autocomplete="off"/>
+		 </div>
+      </div>-->
+  </body>
+</html>

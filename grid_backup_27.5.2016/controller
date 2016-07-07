@@ -1,0 +1,8 @@
+Controller :
+
+
+  $response = $this->MyModel->auth();
+		        if($response['status'] == 200){
+		        	$resp = $this->MyModel->book_all_data();
+	    			json_output($response['status'],$resp);
+		        }

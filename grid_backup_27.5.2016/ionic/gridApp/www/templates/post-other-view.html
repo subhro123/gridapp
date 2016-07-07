@@ -1,0 +1,204 @@
+<ion-view title="POST VIEW" class="">
+  <!--<div class="bar bar-header bar-blue">
+    <h1 class="title">IMPORT CONTACT</h1>
+  </div>-->
+  
+  <ion-nav-buttons side="left">
+       
+         <button  class="button button-icon icon ion-ios-arrow-left" ng-click="PostDetailsViewBack()"></button>
+
+      </ion-nav-buttons>
+     
+  <ion-content has-header="true">
+    <div class="list">
+    
+    <div class="header-banner">
+        <div class="">
+            <img class="logo-left img-responsive" ng-src="img/{{postOtherResponse.event_type}}.jpg" />
+            <div class="banner_edit_txt">	
+              <div class="row">
+                  <div class="col col-80 txt_limit"><span class="banner_bot_txt">{{postOtherResponse.event_title}}</span></div>
+                  <!--<div class="col col-20 compose_ico"><a href=""><i class="icon ion-compose"></i></a></div>-->
+              </div>
+            </div>
+        </div>
+        
+    </div>
+   
+
+   <!-- <a class="item item-avatar" href="#">
+      <img src="venkman.jpg">
+      <h2>Venkman</h2>
+      <p>Back off, man. I'm a scientist.</p>
+    </a>-->
+        <div class="post_view_section view_section">
+            <div class="row view_section">
+                <div class="col col-80">
+                    <p><i class="icon ion-android-calendar mar_right"></i>DATE</p>
+                    <p class="pad_right view_time">{{postOther.formated_date}}</p>
+                </div>
+                <div class="col col-20">
+                    <p class="view_time">{{postOtherResponse.formated_time}}</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col col-80">
+                    <p><i class="icon ion-android-pin mar_right"></i>LOCATION</p>
+                    <p class="pad_right view_time">{{postOtherResponse.location}}</p>
+                </div>
+                <div class="col col-20">
+                    <p class="view_time"></p>
+                </div>
+            </div>
+        </div>  
+        
+        <div class="post_view_section view_section">
+            <div class="row">
+                <div class="col">
+                    <p>POST SUMMERY</p>
+                    <p class="view_time">{{postOtherResponse.summary}}</p>
+
+                </div>
+                
+                <div class="clear"></div>
+                </div>
+        </div>
+        
+        <div class="post_view_section view_section">
+        	<div class="row view_section" ng-show="postOther.post_join">
+  				<div class="col col-50"><p>WANT TO JOIN ?</p></div>
+   				<div class="col col-25"><button class="button button-stable mar_both" ng-click="join_post('request')">YES</button></div>
+   				
+            </div>
+            <div class="row view_section" ng-show="postOther.post_request">
+  				<div class="col col-50"><p>APPROVAL PENDING</p></div>
+   				<div class="col col-25"><button class="button button-stable mar_both" ng-click="join_post('cancel')">CANCEL</button></div>
+            </div>
+        	<div class="row view_section" ng-show="postOther.post_accept">
+  				<div class="col col-50"><p>YOU ARE GOING</p></div>
+   				<div class="col col-25"><button class="button button-stable mar_both">CHAT</button></div>
+   				<div class="col col-25"><button class="button button-stable mar_both" ng-click="join_post('cancel')">CANCEL</button></div>
+            </div>
+        </div>
+        
+         
+        <div class="post_view_section view_section">
+            <div class="row">
+                <div class="col col-90">
+                    <p><i class="icon ion-android-walk mar_right"></i>GOING</p>
+                    <div class="pad_right view_time">
+                    
+                    
+                    	<ul class="want_to_join" ng-show='postOther.going_list'>
+                        	<li ng-repeat="item in postOther.post_going_dispaly_list">
+                            	<div class="list_image">
+                                	<!--<img ng-src="{{'http://grid.digiopia.in/uploads/profile/thumb/'+item.image}}"/>-->									 <img ng-src="{{item.image == ''?'img/pro01.jpg':'http://grid.digiopia.in/uploads/profile/thumb/'+item.image}}" class="rounded">
+                                </div>
+                            </li>
+                            <div class="clear"></div>
+                        </ul>
+                    	<span ng-hide='postOther.going_list'>{{postOther.empty_going_list_txt}}</span>
+                    	<!--<ul class="want_to_join">
+                        	<li>
+                            	<div class="list_image">
+                                	<img src="../img/pro01.jpg" />
+                                </div>
+                            </li>
+                            <li>
+                            	<div class="list_image">
+                                	<img src="../img/pro01.jpg" />
+                                </div>
+                            </li>
+                            <li>
+                            	<div class="list_image">
+                                	<img src="../img/pro01.jpg" />
+                                </div>
+                            </li>
+                            <li>
+                            	<div class="list_image">
+                                	<img src="../img/pro01.jpg" />
+                                </div>
+                            </li>
+                            <li>
+                            	<div class="list_image">
+                                	<img src="../img/pro01.jpg" />
+                                </div>
+                            </li>
+                            <div class="clear"></div>
+                        </ul>-->
+                    
+                    </div>
+                   
+                </div>
+                <div class="col col-10">
+                    <p class="view_time larg_icon" ng-show='postOther.going_list' ng-click="openPostWantGoingView()"><a href=""><i class="icon ion-ios-arrow-right"></i></a></p>
+                </div>
+                <div class="clear"></div>
+                
+               
+                
+                	
+                </div>
+                <div class="row">
+                	<p class="pad_right view_time" ng-show='postOther.going_list'>{{postOther.going_list_name_txt}}<a href="" class="more" ng-show='postOther.going_list_more_flag'>{{postOther.going_list_more}} more</a></p>
+                </div>
+           
+            
+        </div>
+        
+        <!--<div class="post_view_section view_section">
+        	<div class="row view_section">
+            	
+                
+  			<p><a href="" class="spot">YOU ARE GOING</a></p>
+   
+
+            </div>
+        </div>-->
+        
+        
+        <div class="post_view_section view_section">
+            <div class="row">
+                <div class="col col-80">
+                    <p>POST CREATED BY</p>
+                    <div class="view_time">
+                    
+                    	<ul class="want_to_join">
+                        	<li>
+                            	<div class="list_image">
+                                	<!--<img ng-src="http://grid.digiopia.in/uploads/profile/thumb/{{postOtherResponse.user_image}}"/>-->
+                                     <img ng-src="{{postOtherResponse.user_image == ''?'img/pro01.jpg':'http://grid.digiopia.in/uploads/profile/thumb/'+postOtherResponse.user_image}}" class="rounded">
+                                </div>
+                            </li>
+                            <li>
+                            	<p class="created_name">{{postOtherResponse.created_by}}</p>
+                            </li>
+                           
+                            <div class="clear"></div>
+                        </ul>
+                    
+                    </div>
+                   
+                </div>
+                <div class="col col-20">
+                <button class="button button-stable mar_both btn_top_mar ion-person-add person_add" ng-click="openOtherProfile()" ng-show="postOther.add_friend_flag"></button>
+                  
+                </div>
+                <div class="clear"></div>
+                
+               
+                
+                	
+                </div>
+                
+           
+            
+        </div>
+       
+
+
+      
+   	  
+    </div>
+  </ion-content>
+</ion-view>

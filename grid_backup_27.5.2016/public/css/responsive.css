@@ -1,0 +1,14 @@
+@media (min-width:320px) and (max-width:600px) {
+	.content{width:100%}
+	.logo{ left:0; text-align:center;}
+	.logo img{ width:300px}
+	.owl-buttons{ display:none;}
+	.pouler_2nd img{ width:280px;}
+	.pouler_2nd{ height:208px;}
+	.heading_content h1{ font-size:27px;}
+	
+	}
+
+
+@media (min-width:601px) and (max-width:767px) {}
+@media (min-width:768px) and (max-width:1024px) {}

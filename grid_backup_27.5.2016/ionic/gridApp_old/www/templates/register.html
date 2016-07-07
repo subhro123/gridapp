@@ -1,0 +1,79 @@
+<ion-view class="register_main">
+            
+    <ion-content>
+    	<form name="registerForm" novalidate="" ng-submit="userRegistration(registerForm)">
+            <div class="padding">
+            <div class="logo"><img src="img/logo.png" alt=""></div>
+            <div class="list">
+            <label class="item item-input ion-person" ng-class="{ 'has-error-lr' : registerForm.fullname.$invalid  && registerForm.$submitted, 'valid-lr' : registerForm.fullname.$valid  && registerForm.$submitted}">
+            	<input type="text" placeholder="FULL NAME" name="fullname" ng-model="register.fullname" ng-minlength="5" ng-maxlength="100" required>
+            </label>
+            
+            
+            <label class="item item-input ion-email2" ng-class="{ 'has-error-lr' : registerForm.email.$invalid  && registerForm.$submitted, 'valid-lr' : registerForm.email.$valid  && registerForm.$submitted}">
+            <input type="email" placeholder="E-MAIL" name="email" ng-model="register.email" required>
+            </label>
+            
+            
+            
+            <label class="item item-input ion-key2" ng-class="{ 'has-error-lr' : registerForm.password.$invalid  && registerForm.$submitted, 'valid-lr' : registerForm.password.$valid  && registerForm.$submitted}">
+            <input type="password" placeholder="PASSWORD" name="password" ng-model="register.password" required>
+            </label>
+            
+            <label class="item item-input ion-phone" ng-class="{ 'has-error-lr' : registerForm.phone.$invalid  && registerForm.$submitted, 'valid-lr' : registerForm.phone.$valid  && registerForm.$submitted}">
+            <span class="country_code">{{register.contrycode}}</span>
+            <input type="tel" placeholder="PHONE" name="phone" ng-model="register.phone" required class="phone_t_box" maxlength="10">
+            
+            </label>
+            
+            <label class="item item-input ion-occupation" ng-class="{ 'has-error-lr' : registerForm.occupation.$invalid  && registerForm.$submitted, 'valid-lr' : registerForm.occupation.$valid  && registerForm.$submitted}">
+            <input type="text" placeholder="OCCUPATION" name="occupation" ng-model="register.occupation" required>
+            </label>
+            
+            <label class="item item-input ion-calendar" ng-class="{ 'has-error-lr' : registerForm.$submitted, 'valid-lr' : registerForm.$submitted}" ng-click="setDateOfBirth()"><span class="dob_register">{{register.dobFormat}}</span>
+            <!--<input type="text" placeholder="BIRTHDAY" name="dob" ng-model="register.dobFormat"  ng-click="setDateAndTime()" required>-->
+            </label>
+            
+            <div class="row">
+            <div class="col col-50 left_male"  ng-click="selectGenderMale()" ng-class="register.gender=='male'?'selectedBG':'mormalBG'" >
+            <span class="ion-male">&nbsp;&nbsp;MALE</span>
+           	<!--<label class="item item-input ">
+            <input type="text" placeholder="MALE">
+            </label>-->
+            </div>
+            <div class="col col-50 right_female" ng-click="selectGenderFemale()" ng-class="register.gender=='female'?'selectedBG':'mormalBG'">
+            <span class="ion-female">&nbsp;&nbsp;FEMALE</span>
+             <!--<label class="item item-input ion-female">
+           <input type="text" placeholder="FEMALE">
+            </label>-->
+            </div>
+            </div>
+            
+            <div class="row p_section">
+            <div class="col col-25">
+            <label class="icr-label">
+            <span class="icr-item type_radio"></span>
+            <span class="icr-hidden"><input class="icr-input" type="radio" name="job" checked="checked" ng-model="register.subcription" value="FREE"/></span>
+            <span class="icr-text">FREE</span>
+            </label>
+            </div>
+            <div class="col col-25">
+            <label class="icr-label">
+            <span class="icr-item type_radio"></span>
+            <span class="icr-hidden"><input class="icr-input" type="radio" name="job" ng-model="register.subcription" value="PAID"/></span>
+            <span class="icr-text">PAID</span>
+            </label>
+            </div>
+            </div>
+            
+            
+            </div>
+            <p class="but_left">By registering, you conifm that you accept our <a ui-sref="#">Terms of use</a> &amp; have read our <a ui-sref="#">Privacy Policy</a></p>
+            <button class="button button-block button-balanced" type="submit" >Register</button>
+            <p class="center_c"><a ui-sref="login">Already have an Account?</a></p>
+            
+            </div>
+        </form>
+    </ion-content>
+    
+</ion-view>

@@ -1,0 +1,17 @@
+<ion-modal-view>
+	<ion-header-bar class="bar bar-header bar-positive">
+          <h1 class="title">Select Profile Background</h1>
+    </ion-header-bar>
+    
+    <ion-content>
+    	<ion-list>        	
+      		<ion-item ng-repeat="item in profile.backgroundImage"
+            class="item-thumbnail-left" ng-click="editProBackgndImg($index)">
+    			<img ng-src="{{item}}">
+      		</ion-item>
+		</ion-list>
+       <p>
+        <button class="button button-full button-positive" ng-click="closeModal()">CLOSE</button>
+       </p>
+    </ion-content>
+ </ion-modal-view>

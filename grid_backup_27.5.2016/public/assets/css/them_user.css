@@ -1,0 +1,10 @@
+@charset "utf-8";
+/* CSS Document */
+.page-header-fixed .page-container {
+    margin-top:100px !important;
+}
+.header{ height:100px; background:url(../../images/dashbord_header_bg.png) left top repeat; border-bottom:#d8d7d7 solid 1px;}
+.header_top{ background:#87d5f7; height:30px;}
+.header .page-logo img { margin-top:5px !important;}
+.footer{ padding:0 !important;}
+div.checker, div.checker span, div.checker input{ float:left !important}

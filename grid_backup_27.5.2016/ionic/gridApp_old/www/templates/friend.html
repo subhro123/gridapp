@@ -1,0 +1,124 @@
+<ion-view title="FRIENDS" class="my_interests import_contact">
+  <!-- <div class="bar bar-header bar-blue">
+        <h1 class="title">FRIENDS</h1>
+        </div>-->
+  
+  <ion-nav-buttons side="left">
+    <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
+  </ion-nav-buttons>
+  <ion-content class="has-header tab_last tab_con_main" >
+    <ion-tabs class="tabs-striped tabs-top tabs-background-positive tabs-color-light tabs-icon-top tab_con " delegate-handle="friend-tabs">
+      <ion-tab title="MY FRIENDS" icon-on="ion-android-contacts" icon-off="ion-android-contacts" on-select="onFriendStepOneTabSelct()">
+        <ion-content class="has-tabs-top" >
+          <div class="tab_pad110"></div>
+          <ion-list class="post_list" >
+            <ion-item ng-repeat="item in friendListRes" ng-show='friend.myFriendFlag'>
+              <div class="section section2 border_bot mar_top">
+                <div class="row mar_left">
+                  <div class="col col-75" ng-click="openOtherProfileFriend($index)"> 
+                  <a class="item item-avatar" href="#">
+                  <div class="row mar_left">
+                       <div class="col col-25">
+                      
+                      <!-- <img ng-src="{{'http://grid.digiopia.in/uploads/profile/thumb/'+item.image}}" class="rounded">-->						
+                      <img ng-src="{{item.image == ''?'img/pro01.jpg':'http://grid.digiopia.in/uploads/profile/thumb/'+item.image}}" class="rounded">
+                       </div>
+                        <div class="col col-75">
+                            <h2>{{item.fullname}}</h2>
+                            <p><span>Friends since</span> {{item.created_date}}</p>
+                        </div>
+                        </div>
+                    </a>
+                     </div>
+                  <div class="col col-25">
+                    <div class="row">
+                      <div class="col logo_icon logo_icon_adjust" ng-click="openChatLink($index)"> <a href="#" class="ion-android-chat"></a> </div>
+                     <!-- <div class="col logo_icon logo_icon_adjust"> <a href="#" class="ion-android-chat"></a> </div>-->
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ion-item>
+            <ion-item ng-hide='friend.myFriendFlag' class="no_record">No Record Found</ion-item>
+           
+          </ion-list >
+        </ion-content>
+      </ion-tab>
+      <ion-tab title="REQUESTS" icon-on="ion-person-add" icon-off="ion-person-add" on-select="onFriendStepTwoTabSelct()">
+        <ion-content class="has-tabs-top">
+          <div class="tab_pad110"></div>
+          <ion-list class="post_list">
+            <ion-item ng-repeat="item in friendRequestRes" ng-show='friend.requestFlag'>
+              <div class="section section2 border_bot mar_top">
+                <div class="row mar_left">
+                  <div class="col col-75" ng-click="openOtherProfilePending($index)"> <a class="item item-avatar" href="#">
+                  <div class="row mar_left">
+                   <div class="col col-25">
+                  
+                   <img ng-src="{{'http://grid.digiopia.in/uploads/profile/thumb/'+item.image}}" class="rounded">
+                   </div>
+                    <div class="col col-75" ng-click="openOtherProfile($index)">
+                    <h2>{{item.fullname}}</h2>
+                    <p><span>Friend Request since</span> {{item.created_date}}</p>
+                    </div>
+                    </div>
+                    </a> </div>
+                  <div class="col col-25">
+                    <div class="row">
+                      <div class="col logo_icon logo_icon_adjust"> <a href="" class="ion-checkmark-circled" ng-click="showConfirm($index,'accept')"></a><a href="" class="ion-close-circled" ng-click="showConfirm($index,'decline')"></a> </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ion-item>
+            <ion-item ng-hide='friend.requestFlag' class="no_record">No Record Found</ion-item>
+          </ion-list >
+          
+        </ion-content>
+      </ion-tab>
+      <ion-tab title="PENDING" icon-on="ion-alert-circled" icon-off="ion-alert-circled" on-select="onFriendStepThreeTabSelct()">
+        <ion-content class="has-tabs-top">
+          <div class="tab_pad110"></div>
+          <ion-list class="post_list">
+            <ion-item ng-repeat="item in friendPendingRes" ng-show='friend.pendingFlag'>
+              <div class="section section2 border_bot mar_top">
+                <div class="row mar_left">
+                  <div class="col col-75" ng-click="openOtherProfilePending($index)">
+                   <a class="item item-avatar" href="#">
+                   <div class="row mar_left">
+                  
+                  		<div class="col col-25">
+                  
+                   			<img ng-src="{{'http://grid.digiopia.in/uploads/profile/thumb/'+item.image}}" class="rounded">
+                  		</div>
+                       <div class="col col-75 pad_left">
+                            <h2>{{item.fullname}}</h2>
+                            <p><span>Friend Request since</span>{{item.created_date}}</p>
+                       </div>
+                       </div>
+                    </a>
+                    
+                    
+                     </div>
+                  <div class="col col-25">
+                    <div class="row">
+                      <div class="col logo_icon logo_icon_adjust"> <a href="#" class="ion-close-circled" ng-click="cancelPending($index,'pendingcancel')"></a> </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ion-item>
+            <ion-item ng-hide='friend.pendingFlag' class="no_record">No Record Found</ion-item>
+          </ion-list >
+        </ion-content>
+      </ion-tab>
+      <ion-tab title="NEARBY" icon-on="ion-help-buoy" icon-off="ion-help-buoy" on-select="onFriendStepfourTabSelct()">
+        <ion-content class="has-tabs-top">
+          <div class="tab_pad110"></div>
+          <!--<div data-tap-disabled="true" class="map_n"><img src="../img/map_nearby.jpg" alt="" /></div>-->
+          <div id="friendMapView" data-tap-disabled="true"></div>
+        </ion-content>
+      </ion-tab>
+    </ion-tabs>
+  </ion-content>
+</ion-view>

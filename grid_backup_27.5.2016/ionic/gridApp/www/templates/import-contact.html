@@ -1,0 +1,107 @@
+<ion-view title="Import Contact" class="my_interests import_contact cont_list">
+
+        
+        <!--<ion-nav-buttons side="left">
+
+        <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
+
+       </ion-nav-buttons>-->
+       
+      <!-- <ion-nav-back-button class="button-clear" ng-click="importContactBack()">
+    		<i class="ion-arrow-left-c"></i> Back
+  		</ion-nav-back-button>-->
+        
+        
+        <ion-nav-buttons side="left">
+       
+         <button  class="button button-icon icon ion-ios-arrow-left" ng-click="importContactBack()"></button>
+
+      </ion-nav-buttons>
+       
+       <ion-content scroll="true" class="has-header" padding="true">       	
+        <div data-ng-repeat="(letter, authors) in sorted_users" class="alpha_list">
+          <ion-item class="item item-divider" id="index_{{letter}}">
+            {{letter}}
+          </ion-item>
+          <ion-item ng-repeat="author in authors" ng-click="openSelectedProfile(author.index)" data="{{author.import_user_id}}">
+            		<div class="section no_padding" >
+                            <div class="row">
+                                <div class="col col-75">
+                                	<a class="item item-avatar" href="#">
+                                    <img ng-src="{{author.image == null?'img/pro01.jpg':'http://grid.digiopia.in/uploads/profile/thumb/'+author.image}}">
+                                	<h2>{{author.fullname}}</h2>
+                                	<p>{{author.phone}}</p>
+                                	</a>
+                                </div>
+                                <div class="col">
+                              		<div class="row">
+                               			 <div class="col" ng-class="author.grid ==true?' logo_icon':'invite_icon'">
+                               			 	<!--<img src="img/logo_icon.png" ng-show="author.grid">-->
+                                            <img ng-src="{{author.grid == true?'img/logo_icon.png':'img/invite_button.png'}}">
+                                		</div>
+                                	</div>
+                               </div>
+                            </div>
+       					</div>
+            
+            
+          </ion-item>
+        </div>
+	  </ion-content>
+   	 <ul class="alpha_sidebar">
+      <li ng-click="gotoList('index_{{letter}}')"ng-repeat="letter in alphabet"> 
+          {{letter}}
+      </li>
+     </ul>
+        
+      <!--<ion-content has-header="true" padding="true">
+      
+        <div class="list">
+        <div class="item item-input-inset">
+        <label class="item-input-wrapper">
+        <input type="text" placeholder="Search" ng-model="searchContactText" >
+        </label>
+        <button class="button button-small search_icon"></button>
+        </div>
+        
+        <ion-list class="no_pad">
+                <ion-item ng-repeat="contact in contactFromDB| filter:searchContactText" class="ion-llist">
+                
+                		<div class="section border_bot">
+                            <div class="row">
+                                <div class="col col-75">
+                                	<a class="item item-avatar" href="#">
+                                	<img src="img/pro01.jpg">
+                                	<h2>{{contact.fullname}}</h2>
+                                	<p>{{contact.phone}}</p>
+                                	</a>
+                                </div>
+                                <div class="col">
+                              		<div class="row">
+                               			 <div class="col logo_icon">
+                               			 	<img src="img/logo_icon.png" ng-show="contact.grid">
+                                		</div>
+                                	</div>
+                               </div>
+                            </div>
+       					</div>
+                   
+                </ion-item>
+        </ion-list>
+                
+        </div>
+        
+        <div class="row responsive-sm list_section">
+        <div class="col">
+        
+        </div>
+        </div>
+        
+      </ion-content>-->
+      
+        <!--<div class="bar bar-footer bar-gray">
+          <button class="button button-clear pull-left skip_btn">Skip</button>
+          <button class="button button-clear pull-right next_blue">next</button>
+        </div>-->
+      
+  </ion-view>

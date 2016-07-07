@@ -1,0 +1,86 @@
+<ion-view title="My Interests" class="my_interests" >
+
+        <div class="bar bar-header bar-blue bar-positive">
+        <button  class="button button-icon icon ion-ios-arrow-left" ng-click="getInterestsPageBack()"></button>
+       	 <h1 class="title">MY INTERESTS</h1>
+        </div>
+        
+        <!--<ion-nav-buttons side="left">       
+         <button  class="button button-icon icon ion-ios-arrow-left" ng-click="getInterestsPageBack()"></button>
+        </ion-nav-buttons>
+        -->
+         
+        
+      <ion-content scroll="true" class="has-header">
+      
+        <div class="list list-inset">
+        <label class="item item-input">
+        <input type="text" placeholder="Search" class="search_icon" ng-model="searchText" ng-change="update()">
+        </label>
+        
+        <ion-scroll zooming="true" direction="xy">
+        
+        <div class="row add_section ">
+        <div class="col">
+        
+        <table border="0" class="add_section_main">
+        <tr>
+        <td ng-repeat="elm in selectedSubInterestArr" ng-click="removeSelectItem($index)"><a href="#" class="ion-close-round child_main icon-right ion-chevron-right">{{elm}}</a></td>
+        </tr>
+        </table>
+
+        
+        
+       <!--<ul>
+        	<li ng-repeat="elm in selectedSubInterestArr" ng-click="removeSelectItem($index)"><a href="#" class="ion-close-round button icon-right ion-chevron-right">{{elm}}</a></li> 
+        <li><a href="#" class="ion-close-round button icon-right ion-chevron-right">CAMERA</a></li>
+        <li><a href="#" class="ion-close-round button icon-right ion-chevron-right">PSP</a></li>
+        <li><a href="#" class="ion-close-round button icon-right ion-chevron-right">Antivirus &amp; Malware</a></li>
+        <li><a href="#" class="ion-close-round button icon-right ion-chevron-right">CAMERA</a></li>
+        <li><a href="#" class="ion-close-round button icon-right ion-chevron-right">PSP</a></li>
+        <li><a href="#" class="ion-close-round button icon-right ion-chevron-right">Antivirus &amp; Malware</a></li>
+        </ul>-->
+        </div>
+        </div>
+        
+        </ion-scroll>
+        
+        </div>
+        
+        <div class="row add_text">
+        <div class="col">
+          <h3><a ui-sref="interests" class="ion-android-more-vertical ion_android_m"><!--<img src="../img/and_menu.png" alt="" />--></a>{{selInterest}}</h3>
+        </div>
+        </div>
+        
+        <div class="row responsive-sm list_section">
+        <div class="col">
+        <ul>
+        <li ng-repeat="elm in filterSubInterest.filteredSubInterestArr=(interestsSubArr| filter:searchText)" ng-click="SelectItem($index)"><a href="">{{elm}}</a>
+        <!--<li><a href="#">ART</a></li>
+        <li><a href="#">Entertainment</a></li>
+        <li><a href="#">Vehicles</a></li>
+        <li><a href="#">BOOKS</a></li>
+        <li><a href="#">FOOD</a></li>
+        <li><a href="#">Computers &amp; Electronics</a></li>
+        <li><a href="#">PETS</a></li>
+        <li><a href="#">NEWS</a></li>
+        <li><a href="#">JOB</a></li>
+        <li><a href="#">MUSIC</a></li>
+        <li><a href="#">PEOPLE</a></li>
+        <li><a href="#">World Localities</a></li>
+        <li><a href="#">LAW</a></li>
+        <li><a href="#">TRAVEL</a></li>
+        <li><a href="#">GAME</a></li>-->
+        </ul>
+        </div>
+        </div>
+        
+        
+      </ion-content>
+      
+        <div class="bar bar-footer bar-gray">
+          <button class="button button-clear pull-right next_blue" ng-click="saveInterests()" ng-disabled="selectedSubInterestArr.length==0">SAVE</button>
+        </div>
+      
+  </ion-view>

@@ -1,0 +1,240 @@
+<ion-view title="POSTS" class="my_interests import_contact">
+
+
+  <!--<div class="bar bar-header bar-blue">
+    <h1 class="title">POST</h1>
+  </div>-->
+  <ion-nav-buttons side="left">
+        <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
+  </ion-nav-buttons>
+   
+  <ion-content has-header="true">
+    <ion-tabs class="tabs-striped tabs-top tabs-background-positive tabs-color-light tabs-icon-top tab_con" delegate-handle="post-tabs">
+      <ion-tab title="MY FRIENDS" icon-on="ion-ios-people" icon-off="ion-ios-people" on-select="onPostTabOneSelect()">
+      			<!-- This part for List View Start-->
+                <div class="possitin_fix">
+				<div class="date_slider">
+        	<a href="" class="ion-ios-arrow-left date_arrow" ng-click="nextBackEvent('prev')"></a>
+            	<span>{{formateDate(post.postDate)}} </span>
+            <a href="" class="ion-ios-arrow-right date_arrow" ng-click="nextBackEvent('next')"></a>
+            <span class="ion-calendar right_float" ng-click="setDateAndTimePost()"></span>
+        </div>
+       	<div class="bar bar-header item-input-inset">
+              <label class="item-input-wrapper">
+                <i class="icon ion-android-pin placeholder-icon"></i>
+                <input type="search" placeholder="Search" ng-model="myFriendLocationSearchText.post_location" id="locationSearch" ng-focus="disableTap()" ng-change="checkSearchEmpty()" >
+              </label>
+  			<button class="button button-clear" ng-click="changePostView()" ng-class="post.postView==true?'search_loc':'search_list'"></button>
+		</div>
+  </div>
+                <ion-content class="has-tabs-top tab_mar70_new" ng-show="post.postView">
+                <div class="scroll mar_bot">
+               <!-- <div class="tab_pad115"></div>-->
+                    <ion-list class="post_list">    		
+                            <ion-item ng-repeat="postItem in postResponseFilter">
+                              <div class="section section2 arrange" ng-click="openPostDetailsView(postItem.id,postItem.user_id,postItem.event_date_timestamp)" ng-class="checkPostExpirey(postItem.event_date_timestamp)">
+                              <div class="row">
+                              <div class="col col-90">
+                                 <a class="item item-avatar lock_ico" href="#"> <!--<img src="img/loca_ico.png">-->
+                                    <div ng-class="getPostIcon(postItem.event_type,postItem.event_status)"></div>
+                                   <h2 ng-bind="postItem.post_title"></h2>
+                                    <p><span class="col col-75 gray_color" style="float:left"><span class="ion-ios-location gray_color"></span>  {{postItem.post_location}}</span> <span class="col col-25" style="float:right;">{{postItem.formated_time}}</span></p>
+                                    <p><span class="col col-75 gray_color" style="float:left">Posted by  :  <span>{{postItem.fullname}}</span></span> <span class="col col-25" style="float:right;">
+                                        <span  ng-class="postItem.gender=='female'?'ion-female':(postItem.gender=='male'?'ion-male':'ion-transgender')"></span>
+                                        <span class="ion-ios-arrow-thin-right gray_color"></span>
+                                         <span ng-class="postItem.joinee=='female'?'ion-female':(postItem.joinee=='male'?'ion-male':'ion-transgender')"></span>
+                                        </span></p>
+                                    </a> 
+                              </div>
+                              <div class="col col-10 ribon_main" ng-show="postItem.is_featured=='1'">
+                              	<img ng-src="img/featured-ribbon.png">
+                              </div>
+                              </div>
+                              </div> 
+                            </ion-item>
+                  </ion-list>
+                <div class="tab_pad120"></div>
+                  <div class="clear"></div>
+                  </div>
+                  <div class="clear"></div>
+                </ion-content>
+        <!-- This part for List View End-->
+        <!-- This part for Map View Start-->
+        		<ion-content class="has-tabs-top tab_pad110" ng-hide="post.postView">
+                	<div id="postMapView_myfriend" data-tap-disabled="true"></div>
+                    <div class="tab_pad120"></div>
+                  	<div class="clear"></div>
+                </ion-content>
+        <!-- This part for Map View End-->
+      </ion-tab>
+      
+      <ion-tab title="AROUND ME" icon-on="ion-android-walk" icon-off="ion-android-walk" on-select="onPostTabTwoSelect()">
+      			<!-- This part for List View Start-->
+                <div class="possitin_fix">
+				<div class="date_slider">
+        	<a href="" class="ion-ios-arrow-left date_arrow" ng-click="nextBackEvent('prev')"></a>
+            	<span>{{formateDate(post.postDate)}} </span>
+            <a href="" class="ion-ios-arrow-right date_arrow" ng-click="nextBackEvent('next')"></a>
+            <span class="ion-calendar right_float" ng-click="setDateAndTimePost()"></span>
+        </div>
+       	<div class="bar bar-header item-input-inset">
+              <label class="item-input-wrapper">
+                <i class="icon ion-android-pin placeholder-icon"></i>
+                <input type="search" placeholder="Search" ng-model="aroundLocationSearchText" id="locationSearch_around" ng-focus="disableTap_around()" ng-change="checkSearchEmpty_around()" >
+              </label>
+  			<button class="button button-clear" ng-click="changePostView()" ng-class="post.postView==true?'search_loc':'search_list'"></button>
+		</div>
+  </div>
+                <ion-content class="has-tabs-top tab_mar70_new" ng-show="post.postView">
+                <div class="scroll mar_bot">
+               <!-- <div class="tab_pad115"></div>-->
+                    <ion-list class="post_list">    		
+                            <ion-item ng-repeat="postItem in postResponseFilter">
+                              <div class="section section2 arrange" ng-click="openPostDetailsView(postItem.id,postItem.user_id,postItem.event_date_timestamp)" ng-class="checkPostExpirey(postItem.event_date_timestamp)">
+                                 <!--<a class="item item-avatar lock_ico" href="#"> 
+                                    <div ng-class="getPostIcon(postItem.event_type,postItem.event_status)"></div>
+                                   <h2 ng-bind="postItem.post_title"></h2>
+                                    <p><span class="col col-75 gray_color" style="float:left"><span class="ion-ios-location gray_color"></span>  {{postItem.post_location}}</span> <span class="col col-25" style="float:right;">{{postItem.formated_time}}</span></p>
+                                    <p><span class="col col-75 gray_color" style="float:left">Posted by:<span>{{postItem.fullname}}</span></span> <span class="col col-25" style="float:right;">
+                                        <span  ng-class="postItem.gender=='female'?'ion-female':(postItem.gender=='male'?'ion-male':'ion-transgender')"></span>
+                                        <span class="ion-ios-arrow-thin-right gray_color"></span>
+                                         <span ng-class="postItem.joinee=='female'?'ion-female':(postItem.joinee=='male'?'ion-male':'ion-transgender')"></span>
+                                        </span></p>
+                                    </a>--> 
+                                    <div class="row">
+                              <div class="col col-90">
+                                 <a class="item item-avatar lock_ico" href="#"> <!--<img src="img/loca_ico.png">-->
+                                    <div ng-class="getPostIcon(postItem.event_type,postItem.event_status)"></div>
+                                   <h2 ng-bind="postItem.post_title"></h2>
+                                    <p><span class="col col-75 gray_color" style="float:left"><span class="ion-ios-location gray_color"></span>  {{postItem.post_location}}</span> <span class="col col-25" style="float:right;">{{postItem.formated_time}}</span></p>
+                                    <p><span class="col col-75 gray_color" style="float:left">Posted by  :  <span>{{postItem.fullname}}</span></span> <span class="col col-25" style="float:right;">
+                                        <span  ng-class="postItem.gender=='female'?'ion-female':(postItem.gender=='male'?'ion-male':'ion-transgender')"></span>
+                                        <span class="ion-ios-arrow-thin-right gray_color"></span>
+                                         <span ng-class="postItem.joinee=='female'?'ion-female':(postItem.joinee=='male'?'ion-male':'ion-transgender')"></span>
+                                        </span></p>
+                                    </a> 
+                              </div>
+                              <div class="col col-10 ribon_main" ng-show="postItem.is_featured=='1'">
+                              	<img ng-src="img/featured-ribbon.png">
+                              </div>
+                              </div>
+                                    
+                              </div> 
+                            </ion-item>
+                  </ion-list>
+                <div class="tab_pad120"></div>
+                  <div class="clear"></div>
+                  </div>
+                  <div class="clear"></div>
+                </ion-content>
+        <!-- This part for List View End-->
+        <!-- This part for Map View Start-->
+        		<ion-content class="has-tabs-top tab_pad110" ng-hide="post.postView">
+                	<div id="postMapView_around" data-tap-disabled="true"></div>
+                    <div class="tab_pad120"></div>
+                  	<div class="clear"></div>
+                </ion-content>
+        <!-- This part for Map View End-->
+      </ion-tab>
+      
+      <ion-tab title="MY EVENTS" icon-on="ion-alert-circled" icon-off="ion-alert-circled" on-select="onPostTabThreeSelect()">
+      			<!-- This part for List View Start-->
+                <div class="possitin_fix">
+				<div class="date_slider">
+        	<a href="" class="ion-ios-arrow-left date_arrow" ng-click="nextBackEvent('prev')"></a>
+            	<span>{{formateDate(post.postDate)}} </span>
+            <a href="" class="ion-ios-arrow-right date_arrow" ng-click="nextBackEvent('next')"></a>
+            <span class="ion-calendar right_float" ng-click="setDateAndTimePost()"></span>
+        </div>
+       	<div class="bar bar-header item-input-inset">
+              <label class="item-input-wrapper">
+                <i class="icon ion-android-pin placeholder-icon"></i>
+                <input type="search" placeholder="Search" ng-model="myeventLocationSearchText" id="locationSearch_myevent" ng-focus="disableTap_myevent()" ng-change="checkSearchEmpty_myevent()" >
+              </label>
+  			<button class="button button-clear" ng-click="changePostView()" ng-class="post.postView==true?'search_loc':'search_list'"></button>
+		</div>
+  </div>
+                <ion-content class="has-tabs-top tab_mar70_new" ng-show="post.postView">
+                <div class="scroll mar_bot">
+               <!-- <div class="tab_pad115"></div>-->
+                    <ion-list class="post_list">    		
+                            <ion-item ng-repeat="postItem in postResponseFilter">
+                              <div class="section section2 arrange" ng-click="openPostDetailsView(postItem.id,postItem.user_id,postItem.event_date_timestamp)" ng-class="checkPostExpirey(postItem.event_date_timestamp)">
+                                 <!--<a class="item item-avatar lock_ico" href="#"> 
+                                    <div ng-class="getPostIcon(postItem.event_type,postItem.event_status)"></div>
+                                   <h2 ng-bind="postItem.post_title"></h2>
+                                    <p><span class="col col-75 gray_color" style="float:left"><span class="ion-ios-location gray_color"></span>  {{postItem.post_location}}</span> <span class="col col-25" style="float:right;">{{postItem.formated_time}}</span></p>
+                                    <p><span class="col col-75 gray_color" style="float:left">Posted by:<span>{{postItem.fullname}}</span></span> <span class="col col-25" style="float:right;">
+                                        <span  ng-class="postItem.gender=='female'?'ion-female':(postItem.gender=='male'?'ion-male':'ion-transgender')"></span>
+                                        <span class="ion-ios-arrow-thin-right gray_color"></span>
+                                         <span ng-class="postItem.joinee=='female'?'ion-female':(postItem.joinee=='male'?'ion-male':'ion-transgender')"></span>
+                                        </span></p>
+                                    </a>--> 
+                                    <div class="row">
+                              <div class="col col-90">
+                                 <a class="item item-avatar lock_ico" href="#"> <!--<img src="img/loca_ico.png">-->
+                                    <div ng-class="getPostIcon(postItem.event_type,postItem.event_status)"></div>
+                                   <h2 ng-bind="postItem.post_title"></h2>
+                                    <p><span class="col col-75 gray_color" style="float:left"><span class="ion-ios-location gray_color"></span>  {{postItem.post_location}}</span> <span class="col col-25" style="float:right;">{{postItem.formated_time}}</span></p>
+                                    <p><span class="col col-75 gray_color" style="float:left">Posted by  :  <span>{{postItem.fullname}}</span></span> <span class="col col-25" style="float:right;">
+                                        <span  ng-class="postItem.gender=='female'?'ion-female':(postItem.gender=='male'?'ion-male':'ion-transgender')"></span>
+                                        <span class="ion-ios-arrow-thin-right gray_color"></span>
+                                         <span ng-class="postItem.joinee=='female'?'ion-female':(postItem.joinee=='male'?'ion-male':'ion-transgender')"></span>
+                                        </span></p>
+                                    </a> 
+                              </div>
+                              <div class="col col-10 ribon_main" ng-show="postItem.is_featured=='1'">
+                              	<img ng-src="img/featured-ribbon.png">
+                              </div>
+                              </div>
+                              </div> 
+                            </ion-item>
+                  </ion-list>
+                <div class="tab_pad120"></div>
+                  <div class="clear"></div>
+                  </div>
+                  <div class="clear"></div>
+                </ion-content>
+        <!-- This part for List View End-->
+        <!-- This part for Map View Start-->
+        		<ion-content class="has-tabs-top tab_pad110" ng-hide="post.postView">
+                	<div id="postMapView_myevent" data-tap-disabled="true"></div>
+                    <div class="tab_pad120"></div>
+                  	<div class="clear"></div>
+                </ion-content>
+        <!-- This part for Map View End-->
+      </ion-tab>
+      
+      <!--<ion-tab title="AROUND ME" icon-on="ion-android-walk" icon-off="ion-android-walk">
+        <ion-content class="padding has-tabs-top tab_pad110"> Work in progress </ion-content>
+      </ion-tab>
+      <ion-tab title="MY EVENTS" icon-on="ion-alert-circled" icon-off="ion-alert-circled">
+        <ion-content class="padding has-tabs-top tab_pad110"> Work in progress </ion-content>
+      </ion-tab>-->
+      
+    </ion-tabs>
+  </ion-content>
+  
+  <div class="bar bar-footer ico_size">
+  <div class="col">
+  		<span class="ion-ios-location green"></span>
+        <span class="bot_icon_txt">Available</span> 
+  </div>
+  <div class="col">
+  	<span class="ion-ios-location red1"></span>
+    <span class="bot_icon_txt">PENDING</span>
+  </div>
+  <div class="col">
+  	<span class="ion-ios-location blue2"></span>
+    <span class="bot_icon_txt">GOING</span>
+  </div>
+  <div class="col">
+  	<span class="ion-ios-location red2"></span>
+    <span class="bot_icon_txt">CLOSED</span>
+  </div>
+  <div class="col" ng-click="openPopover($event)">
+  	<span class="ion-ios-color-filter gray"></span>
+   <span class="bot_icon_txt">Filter</span>
+  </div>
+</div>
+</ion-view>

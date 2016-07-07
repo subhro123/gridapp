@@ -1,0 +1,102 @@
+<ion-view title="PAYMENT" class="my_interests import_contact cont_list custom_bg_border">
+            
+    <ion-content scroll="true" class="" padding="true">       	
+      <div class="logo"><img src="img/logo.png" alt=""></div>
+      		<div class="post_feature_pannel nopad">
+            	<div class="row p_featured common_st">
+                	 <div class="col col-80">Subcription</div>
+                  <div class="col col-20">$ {{payment.paymentVal}}</div>
+                  <div class="clear"></div>
+                </div>
+                
+                <div class="clear"></div>
+            
+            </div>
+            
+                <h3 class="p_detail_heading">Enter your payment details</h3>
+            <form name="paymentForm" novalidate="" ng-submit="showConfirm(paymentForm)">
+            <div class="post_feature_pannel nopad">
+            <div class="row">
+            	<label class="no_border">Card Holder Name</label>
+           </div>
+            <div class="row">
+            <label  class="item item-input" ng-class="{ 'has-error-lr' : paymentForm.cardholder.$invalid  && paymentForm.$submitted, 'valid-lr' : paymentForm.cardholder.$valid  && paymentForm.$submitted}">
+            <input type="text" placeholder="Enter card holder name" name="cardholder" class="payment_t_box" required autocomplete="off"  ng-model="payment.cardHolderName">
+            </label>
+            </div>
+            <div class="row">
+            	<label class="no_border">Card Number</label>
+           </div>
+             <div class="row">
+             <label class="item item-input" ng-class="{ 'has-error-lr' : paymentForm.cardnumber.$invalid  && paymentForm.$submitted, 'valid-lr' : paymentForm.cardnumber.$valid  && paymentForm.$submitted}">
+            <input type="tel" placeholder="xxxxxxxxxxxxxxxx" name="cardnumber" class="payment_t_box" required autocomplete="off"  ng-model="payment.cardNumber" maxlength="20">
+            </label>
+            </div>
+            <div class="row">
+            	<label class="no_border">Card Type </label>
+           </div>
+            <div class="row">
+           
+            <div class="ctrat_post_content creat_drop card_select">
+            
+            	
+      	<select ng-options="item as item.name for item in cardOption track by item.val" ng-model="selectedCard" ng-change="onCardChange(selectedCard)"></select>
+            </div>
+            </div>
+            <div class="row">
+            	<label class="no_border">Expiry Date (MM/YY)</label>
+           </div>
+            <div class="row mar_adjust">
+            <div class="col col-50">
+            	<div class="ctrat_post_content creat_drop card_select no_mar">
+                <select ng-options="item as item.name for item in monthOption track by item.val" ng-model="selectedMonth" ng-change="onMonthChange(selectedMonth)"></select>
+            </div>
+            </div>
+            <div class="col col-50">
+            	<div class="ctrat_post_content creat_drop card_select no_mar">
+                <select ng-options="item as item.name for item in yearOption track by item.val" ng-model="selectedYear" ng-change="onYearChange(selectedYear)"></select>
+            </div>
+            </div>
+            
+            </div>
+            <div class="row">
+            	<label class="no_border">CVV/CVC </label>
+           </div>
+            <div class="row">
+            <label class="item item-input" ng-class="{ 'has-error-lr' : paymentForm.cvv.$invalid  && paymentForm.$submitted, 'valid-lr' : paymentForm.cvv.$valid  && paymentForm.$submitted}"> 
+            <input type="password" placeholder="3 digit number" name="cvv" class="payment_t_box" required autocomplete="off" maxlength="4"  ng-model="payment.cvvNumber">
+            </label>
+            </div>
+            <div class="row">
+                	<div class="col costom_chk costom_chk2 ">
+                    	 <ion-checkbox ng-model="isChecked"></ion-checkbox><a ng-click='openLink()' class="pop_txt">Terms and conditions</a>
+                    
+                    </div>
+                </div>
+            
+            <div class="row pay_btn">
+           <button class="button button-block button-balanced" type="submit" ng-disabled="payment.userSubscription=='paiduser'&& payment.userPaymentType=='subscription'">Make payment</button>
+            </div>
+            </div>
+            </form>
+             <button class="button button-block button_bor" ng-click="cancelPayment()">CANCEL</button>
+            </div>
+            	
+                <!--<div class="row">
+                	<div class="col costom_chk">
+                    	 <ion-checkbox ng-model="isChecked">Terms and conditions</ion-checkbox>
+                    
+                    </div>
+                </div>
+                 <div class="row pay_btn">
+                 	<button class="button button-block button-balanced" type="submit">Make payment</button>
+                 </div>
+
+
+                <div class="blank"></div>
+                
+            </div>-->
+      
+	  </ion-content>
+    
+</ion-view>

@@ -1,0 +1,26 @@
+
+
+<ion-view class="login_main forgot_main">
+            
+    <ion-content>
+    <form name="resendActivForm" novalidate="" ng-submit="resendActiovation(resendActivForm)">
+        <div class="padding">
+        <div class="logo"><img src="img/logo.png" alt=""></div>
+        
+        <div class="list">
+        <h4>RESEND ACTIVATION CODE</h4>
+        <!--<label class="item item-input ion-email2">
+        <input type="text" placeholder="E-MAIL">
+        </label>-->
+        <label class="item item-input ion-email2" ng-class="{ 'has-error-lr' : resendActivForm.email.$invalid  && resendActivForm.$submitted, 'valid-lr' : resendActivForm.email.$valid  && resendActivForm.$submitted}">
+            <input type="email" placeholder="E-MAIL" name="email" ng-model="resendActive.email" required>
+            </label>
+        </div>
+       <p>Please check your spam/junk e-mail filter and enable e-mails from GRID. Press “Resend” to receive another e-mail verification code.</p>
+        <button  class="button button-block button-balanced" type="submit">RESEND</button>
+        <button class="button button-block button_bor" ng-click="cancel()">CANCEL</button>
+        </div>
+        </form>
+    </ion-content>
+    
+</ion-view>
