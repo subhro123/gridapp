@@ -4664,7 +4664,7 @@ function checkDeviceId($user_id){
 		
 function getDeviceId($user_id){
 
-										$SQL = 'SELECT device_id  FROM device_track WHERE user_id= "'.$user_id.'"'  ;
+										$SQL = 'SELECT device_id,platform  FROM device_track WHERE user_id= "'.$user_id.'"'  ;
 
 										$query = $this->db->query($SQL);
 						

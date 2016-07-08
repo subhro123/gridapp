@@ -14,9 +14,12 @@ class Apnengine
 		
 	function send_ios_notification($deviceToken, $message) {
         //echo $path = base_url().'push_notification_files/'; die;
+		//echo $deviceToken;
+		//echo $message;
         $passphrase = '123456';
-        $path = $_SERVER['DOCUMENT_ROOT'] . 'know/pemfolder/final.pem';
+        $path = $_SERVER['DOCUMENT_ROOT'] . '/pemfolder/ios.pem';
 		//$path = $_SERVER['DOCUMENT_ROOT'] . 'know/pemfolder/ck.pem';
+		//$path =dirname(__FILE__).'/gridPush_07.pem';
         $ctx = stream_context_create();
         stream_context_set_option($ctx, 'ssl', 'local_cert', $path);
         stream_context_set_option($ctx, 'ssl', 'passphrase', $passphrase);
@@ -35,8 +38,10 @@ class Apnengine
             'alert' => $message,
             'sound' => 'default',
         );
-
+       
         $payload = json_encode($body);
+		 //echo '<pre>';
+		//print_r($payload );
         $msg = chr(0) . pack('n', 32) . pack('H*', $deviceToken) . pack('n', strlen($payload)) . $payload;
         $result = fwrite($fp, $msg, strlen($msg));
         fclose($fp);

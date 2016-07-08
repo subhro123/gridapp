@@ -96,8 +96,6 @@ class User extends REST_Controller {
 
 					 $check_auth_client = $this->check_auth_client();
 
-					 
-
 					 if($check_auth_client == true){
 
 					 $userData = array();
@@ -717,7 +715,8 @@ class User extends REST_Controller {
 					 }
 					 
 				$message = 'Hi, you have logged in successfully';
-		  		$this->gcmengine->getGcmPushNotification($message,$android_push_reg_id);
+		  		//$this->gcmengine->getGcmPushNotification($message,$android_push_reg_id);
+				$this->apnengine->send_ios_notification($android_push_reg_id,$message);
 		  
 		  }
 
@@ -758,6 +757,27 @@ class User extends REST_Controller {
 					 //echo '<pre>';
 					 //print_r($userData);
 					 //die();
+					 
+					 if(isset($userData['platform'])){
+					 		
+							
+							$platform=$userData['platform'];
+					 
+					 }
+					 
+					 if(isset($userData['uuid'])){
+					 		
+							
+							$uuid=$userData['uuid'];
+					 
+					 }
+					 
+					 if(isset($userData['android_push_reg_id'])){
+					 		
+							
+							$android_push_reg_id=$userData['android_push_reg_id'];
+					 
+					 }
 					 
 					 if(isset($userData['android_push_reg_id'])){
 					 		
@@ -842,14 +862,21 @@ class User extends REST_Controller {
 														
 														$device_track['user_id'] = $user_id['id'];
 														$device_track['device_id'] = $android_push_reg_id;
+														$device_track['uuid'] = $uuid;
+														$device_track['platform'] = $platform;
 														$unique_user_id = $this->Muser->create('device_track',$device_track);
 														//$message = 'Hi, you have logged in successfully';
 														//$this->gcmengine->getGcmPushNotification($message,$android_push_reg_id);
 											 
 											 }
 										
-										$checkdeviceuser  = $this->Muser->checkDeviceUser($user_id['id'],$android_push_reg_id); 
-										 
+										
+										/* $trackdeviceid  = $this->Muser->trackDeviceid($user_id['id']); 
+										  if($trackdeviceid>0){
+														
+														 $this->db->where('user_id',$user_id['id'])->update('device_track',array('device_id' => $android_push_reg_id));
+											 }*/
+										 $checkdeviceuser  = $this->Muser->checkDeviceUser($user_id['id'],$android_push_reg_id); 
 										 if($checkdeviceuser==0){
 					 
 					 							$errors = 'You have logged in from another device,please logout first !!';
@@ -866,12 +893,9 @@ class User extends REST_Controller {
 											 $data1['user_id'] =$user_id['id']; 
 											 
 											 
-											 $trackdeviceid  = $this->Muser->trackDeviceid($user_id['id']); 
+											 
 											
-											 if($trackdeviceid>0){
-														
-														 $this->db->where('user_id',$user_id['id'])->update('device_track',array('device_id' => $android_push_reg_id));
-											 }
+											
 											 
 											 $checkuserlogin = $this->Muser->checkUserLogin($user_id['id']);
 											 //echo $checkuserlogin['login_status'];
@@ -888,7 +912,12 @@ class User extends REST_Controller {
 																				$checkfromlogin = $this->Muser->checkUserLogin($val['sender_id']);
 																				$getdeviceid = $this->Muser->getDeviceId($user_id['id']);
 																				$message = str_replace("#name", $checkfromlogin['fullname'], $getnotificationmessage['message']);
+																				if($getdeviceid['platform']=='android'){
 																				$this->gcmengine->getGcmPushNotification($message,$getdeviceid['device_id']);
+																				}
+																				if($getdeviceid['platform']=='ios'){
+																				$this->apnengine->send_ios_notification($getdeviceid['device_id'],$message);
+																				}
 																
 																}
 											 
@@ -6115,7 +6144,13 @@ class User extends REST_Controller {
 				 	 $android_push_reg_id = $device_id['device_id'];
 					 $message= str_replace("#name", $checkuserlogin['fullname'], $getnotificationmessage['message']);
 					 $getdeviceid = $this->Muser->getDeviceId($val['id']);
-					 $this->gcmengine->getGcmPushNotification($message,$getdeviceid['device_id']);
+					 if($getdeviceid['platform']=='android'){
+								$this->gcmengine->getGcmPushNotification($message,$getdeviceid['device_id']);
+						}
+					if($getdeviceid['platform']=='ios'){
+								$this->apnengine->send_ios_notification($getdeviceid['device_id'],$message);
+						}
+					 //$this->gcmengine->getGcmPushNotification($message,$getdeviceid['device_id']);
 					}
 			
 			}
