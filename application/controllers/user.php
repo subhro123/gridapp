@@ -1091,7 +1091,7 @@ class User extends REST_Controller {
 		   	 		 	 $user_id =$getuserid['id'];
 						 $uuid = $userData['uuid'];
 						 $result = $this->Muser->delete('device_track',$uuid,'uuid');
-						 $pushresult = $this->Muser->delete('push_notification_message_user_relation',$user_id,'sender_id');
+						 $pushresult = $this->Muser->delete('push_notification_message_user_relation',$user_id,'receiver_id');
 						 //$user_id = $userData['user_id'];
 					 }
 					 
@@ -5964,9 +5964,9 @@ class User extends REST_Controller {
 
 			{
 
-				/*$getauthresponse = $this->auth();
+				$getauthresponse = $this->auth();
 
-				if($getauthresponse == 200){*/
+				if($getauthresponse == 200){
 
 				
 
@@ -6175,7 +6175,7 @@ class User extends REST_Controller {
 
 			
 
-				/*}*/
+				}
 
 		}
 
