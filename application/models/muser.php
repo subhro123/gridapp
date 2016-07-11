@@ -4654,6 +4654,29 @@ function checkAllReceiverPush($user_id){
 										
 										return $data;
 }
+
+function getSenderUUid($user_id){
+										
+										$SQL = ' SELECT uuid FROM device_track WHERE user_id='.$user_id ;
+
+										$query = $this->db->query($SQL);
+						
+										$row=$query->row_array();
+										
+										return $row;
+					
+}
+function getReceiverUUid($user_id){
+										
+										$SQL = ' SELECT uuid FROM device_track WHERE user_id='.$user_id ;
+
+										$query = $this->db->query($SQL);
+						
+										$row=$query->row_array();
+										
+										return $row;
+					
+}
 function getSenderNamePush($user_id){
 				
 									    $SQL = ' SELECT fullname FROM user WHERE id='.$user_id ;
@@ -4690,7 +4713,7 @@ function checkDeviceId($user_id,$uuid){
 		
 function getDeviceId($user_id,$uuid){
 
-										$SQL = 'SELECT device_id,platform  FROM device_track WHERE user_id= "'.$user_id.'" AND uuid="'.$uuid.'"'  ;
+										$SQL = 'SELECT device_id,platform,user_id,uuid  FROM device_track WHERE user_id= "'.$user_id.'" AND uuid="'.$uuid.'"'  ;
 
 										$query = $this->db->query($SQL);
 						

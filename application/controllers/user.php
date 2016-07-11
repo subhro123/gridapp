@@ -855,6 +855,8 @@ class User extends REST_Controller {
 										 $device_id = $this->Muser->checkDeviceId($user_id['id'],$uuid);
 											 
 										 $device_track = array();
+										 
+										 
 											 
 											 if($device_id==0){
 														
@@ -899,9 +901,9 @@ class User extends REST_Controller {
 											
 											
 											 
-											 $checkreceiverpush = $this->Muser->checkReceiverPush($uuid);
+											 //$checkreceiverpush = $this->Muser->checkReceiverPush($uuid);
 											 //echo $checkuserlogin['login_status'];
-											 if($checkreceiverpush['login_status']=='1'){
+											/* if($checkreceiverpush['login_status']=='1'){
 													
 																$getreceivermessages = $this->Muser->getReceiverMessages($user_id['id']);
 																
@@ -911,8 +913,8 @@ class User extends REST_Controller {
 																foreach($getreceivermessages as $key=>$val){
 																
 																				$getnotificationmessage = $this->Muser->getNotificationMessage($val['message_id']);
-																				$checkfromlogin = $this->Muser->checkReceiverPush($val['sender_id']);
-																				$getdeviceid = $this->Muser->getDeviceId($user_id['id']);
+																				$checkfromlogin = $this->Muser->getSenderNamePush($val['sender_id']);
+																				$getdeviceid = $this->Muser->getDeviceId($user_id['id'],$uuid);
 																				$message = str_replace("#name", $checkfromlogin['fullname'], $getnotificationmessage['message']);
 																				if($getdeviceid['platform']=='Android'){
 																				$this->gcmengine->getGcmPushNotification($message,$getdeviceid['device_id']);
@@ -923,7 +925,7 @@ class User extends REST_Controller {
 																
 																}
 											 
-											 }
+											 }*/
 											 /*else{
 											 
 														 $message = 'Hi, you have logged in successfully';
@@ -1085,7 +1087,7 @@ class User extends REST_Controller {
 
 					 $userData = json_decode($json, true);
 					 
-					 if(isset($userData['platform'])){
+					/* if(isset($userData['platform'])){
 					 
 					 	 $getuserid = $this->Muser->getuseridByToken($userData['user_ID']);
 		   	 		 	 $user_id =$getuserid['id'];
@@ -1093,9 +1095,9 @@ class User extends REST_Controller {
 						 $result = $this->Muser->delete('device_track',$uuid,'uuid');
 						 $pushresult = $this->Muser->delete('push_notification_message_user_relation',$user_id,'receiver_id');
 						 //$user_id = $userData['user_id'];
-					 }
+					 }*/
 					 
-					 $this->db->where('id',$user_id)->update('user',array('login_status' => '0'));
+					 //$this->db->where('id',$user_id)->update('user',array('login_status' => '0'));
 					 
 					 return $this->Response->outputResponse(true, false, array("response" =>  '' ), '', '', 'You have logged out successfully !!');
 					 
@@ -6123,42 +6125,55 @@ class User extends REST_Controller {
 			
 			    $device_id = $this->Muser->getDeviceId($val['id']);
 				
-				$checkupdate = $this->Muser->checkUpdate($user_id,$val['id'],$message_id);
 				
-				
-				if($checkupdate==0){
-				
-				$pushmsg['message_id']=$message_id;
-				$pushmsg['sender_id']=$user_id;
-				$pushmsg['receiver_id']=$val['id'];
-				$pushmsg['created']=date('Y-m-d H:i:s');
-				
-					$this->Muser->create('push_notification_message_user_relation',$pushmsg);
-					
-					}
-					if($checkupdate!=0){
-					
-					$pushmsg['created']=date('Y-m-d H:i:s');
-					$this->functions->update('push_notification_message_user_relation',$pushmsg,$user_id,'sender_id');
-				   
-				   }
 				
 						$checkallreceiverpush = $this->Muser->checkAllReceiverPush($val['id']);
+						//$getsenderuuid = $this->Muser->getSenderUUid($user_id);
+						//$getreceiveruuid = $this->Muser->getReceiverUUid($val['id']);
 						//echo $checkuserlogin;
 						
+								
+								$checkupdate = $this->Muser->checkUpdate($user_id,$val['id'],$message_id);
+				
+				
+									if($checkupdate==0){
+									
+									$pushmsg['message_id']=$message_id;
+									$pushmsg['sender_id']=$user_id;
+									$pushmsg['receiver_id']=$val['id'];
+									$pushmsg['created']=date('Y-m-d H:i:s');
+									
+										$this->Muser->create('push_notification_message_user_relation',$pushmsg);
+										
+										}
+									if($checkupdate!=0){
+										
+										$pushmsg['created']=date('Y-m-d H:i:s');
+										$this->functions->update('push_notification_message_user_relation',$pushmsg,$user_id,'sender_id');
+									   
+									   }
+						
+					
 						foreach($checkallreceiverpush as $key=>$valpush){
 						//echo $val['login_status'];
 						 if($valpush['login_status']=='1'){
+						 //echo $valpush['login_status'];
 							 //echo $getnotificationmessage;
-								 $android_push_reg_id = $device_id['device_id'];
+								 //$android_push_reg_id = $device_id['device_id'];
 								 $getsendernamepush = $this->Muser->getSenderNamePush($user_id);
 								 $message= str_replace("#name", $getsendernamepush['fullname'], $getnotificationmessage['message']);
-								 $getdeviceid = $this->Muser->getDeviceId($val['id'],$valpush['uuid']);
-									 if($getdeviceid['platform']=='Android'){
-									 $this->gcmengine->getGcmPushNotification($message,$getdeviceid['device_id']);
+								 $getdeviceidsender = $this->Muser->getDeviceId($val['id'],$valpush['uuid']);
+								 //$getdeviceidreceiver = $this->Muser->getDeviceId($user_id,$valpush['uuid']);
+								//echo $getdeviceid['uuid'];
+								//echo 'device1 ->'.$getsenderuuid['uuid'];
+								//echo '<br/>';
+								//echo 'device2 ->'.$getreceiveruuid['uuid'];
+									 if($getdeviceidsender['platform']=='Android' ){
+									 //echo $user_id;
+									 $this->gcmengine->getGcmPushNotification($message,$getdeviceidsender['device_id']);
 									  }
-									  if($getdeviceid['platform']=='iOS'){
-									  $this->apnengine->send_ios_notification($getdeviceid['device_id'],$message);
+									  if($getdeviceidsender['platform']=='iOS' ){
+									  $this->apnengine->send_ios_notification($getdeviceidsender['device_id'],$message);
 									  }
 								 //$this->gcmengine->getGcmPushNotification($message,$getdeviceid['device_id']);
 								}
@@ -6171,7 +6186,7 @@ class User extends REST_Controller {
 
 			return $this->Response->outputResponse(true, false, array("response" =>  ''), '', '', 'Profile updated successfully!!');
 			
-			}
+						}
 
 			
 
