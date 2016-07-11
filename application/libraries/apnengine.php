@@ -30,13 +30,14 @@ class Apnengine
             exit("Failed to connect: $err $errstr" . PHP_EOL);
         } else {
 
-            echo 'Connected to APNS' . PHP_EOL;
+            //echo 'Connected to APNS' . PHP_EOL;
         }
 
         $body['aps'] = array(
             //'badge' => +1,
             'alert' => $message,
             'sound' => 'default',
+			'priority'=>"high",
         );
        
         $payload = json_encode($body);

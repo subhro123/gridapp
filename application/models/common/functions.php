@@ -12,6 +12,7 @@ class Functions extends CI_Model
 	{
 				 $this->db->where($col, $id);
 				 $this->db->update($table, $data);
+				 return '1';
 				 //echo $this->db->last_query();
 	}
 	
@@ -19,6 +20,7 @@ class Functions extends CI_Model
 	 {
 			 $this->db->where('id', $id);
 			 $this->db->update($table, $data);
+			 
 			 //echo $this->db->last_query(); die();
 	 }
 

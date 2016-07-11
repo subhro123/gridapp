@@ -21,6 +21,8 @@ class Gcmengine
 			$fields = array(
 							'registration_ids'  => array($android_push_reg_id),
 							'data'              => array( "message" => $message ),
+							 'content_available'    => true,                 
+                    		 'priority'              => 'high' 
 							);
 			
 			$headers = array( 

@@ -401,13 +401,13 @@
 
 		}
 
-		public function checkDeviceUser($user_id,$android_push_reg_id){
+		public function checkDeviceUser($user_id,$uuid){
 	
 				     $this->db->select('*');
 					 $this->db->from('device_track');
-					 if($android_push_reg_id!=''){
+					 if($uuid!=''){
 
-						$this->db->where('device_id',$android_push_reg_id);
+						$this->db->where('uuid',$uuid);
 
 					 }
 					 if($user_id!=''){
@@ -421,13 +421,18 @@
 					return $query->num_rows; 
 		}	
 		
-     public function trackDeviceid($user_id){
+     public function trackDeviceid($user_id,$uuid){
 	 
 	 				$this->db->select('*');
 					$this->db->from('device_track');
 					if($user_id!=''){
 
 						$this->db->where('user_id',$user_id);
+
+					}
+					if($uuid!=''){
+
+						$this->db->where('uuid',$uuid);
 
 					}
 					$query = $this->db->get();
@@ -4639,9 +4644,30 @@ function checkUpdate($sender_id,$receiver_id,$message_id){
 
 	
     }
-function checkUserLogin($user_id){
+function checkAllReceiverPush($user_id){
+
+										$SQL = ' SELECT device_track.login_status,device_track.uuid FROM device_track WHERE user_id='.$user_id ;
+
+										$query = $this->db->query($SQL);
+						
+										$data=$query->result_array();
 										
-										$SQL = ' SELECT login_status,fullname  FROM user WHERE id='.$user_id ;
+										return $data;
+}
+function getSenderNamePush($user_id){
+				
+									    $SQL = ' SELECT fullname FROM user WHERE id='.$user_id ;
+
+										$query = $this->db->query($SQL);
+						
+										$row=$query->row_array();
+										
+										return $row;
+
+}
+function checkReceiverPush($uuid){
+										
+										$SQL = ' SELECT device_track.login_status,user.fullname  FROM user, device_track WHERE user.id=device_track.user_id AND device_track.uuid="'.$uuid.'"' ;
 
 										$query = $this->db->query($SQL);
 						
@@ -4650,9 +4676,9 @@ function checkUserLogin($user_id){
 										return $row;
 
 		}
-function checkDeviceId($user_id){
+function checkDeviceId($user_id,$uuid){
 
-										$SQL = 'SELECT id  FROM device_track WHERE user_id= "'.$user_id.'"'  ;
+										$SQL = 'SELECT id  FROM device_track WHERE user_id= "'.$user_id.'" AND uuid ="'.$uuid.'"'  ;
 
 										$query = $this->db->query($SQL);
 						
@@ -4662,9 +4688,9 @@ function checkDeviceId($user_id){
 
 		}
 		
-function getDeviceId($user_id){
+function getDeviceId($user_id,$uuid){
 
-										$SQL = 'SELECT device_id,platform  FROM device_track WHERE user_id= "'.$user_id.'"'  ;
+										$SQL = 'SELECT device_id,platform  FROM device_track WHERE user_id= "'.$user_id.'" AND uuid="'.$uuid.'"'  ;
 
 										$query = $this->db->query($SQL);
 						
