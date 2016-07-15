@@ -713,10 +713,10 @@ class User extends REST_Controller {
 							$android_push_reg_id=$userData['android_push_reg_id'];
 					 
 					 }
-					 
+				//echo 'aaaa';	 
 				$message = 'Hi, you have logged in successfully';
-		  		//$this->gcmengine->getGcmPushNotification($message,$android_push_reg_id);
-				$this->apnengine->send_ios_notification($android_push_reg_id,$message);
+		  		$this->gcmengine->getGcmPushNotification($message,$android_push_reg_id);
+				//$this->apnengine->send_ios_notification($android_push_reg_id,$message);
 		  
 		  }
 
@@ -837,6 +837,7 @@ class User extends REST_Controller {
 									 $this->Response->outputResponse( 500, false, array("response" =>  ''), '', '', 'User not activated !!');
 									  
 									 }
+									 
 							else {
 		
 									$flag = true;
@@ -874,7 +875,11 @@ class User extends REST_Controller {
 											 
 											 }
 										
-										
+										 if($device_id==1){
+										 		
+														$query = $this->db->query("UPDATE device_track SET login_status='1' WHERE user_id = ".$user_id['id']."  AND uuid='".$uuid."'");
+										 
+										 }
 										/*$trackdeviceid  = $this->Muser->trackDeviceid($user_id['id'],$uuid); 
 										if($trackdeviceid>0){
 														
@@ -1096,8 +1101,16 @@ class User extends REST_Controller {
 						 $pushresult = $this->Muser->delete('push_notification_message_user_relation',$user_id,'receiver_id');
 						 //$user_id = $userData['user_id'];
 					 }*/
-					 
-					 //$this->db->where('id',$user_id)->update('user',array('login_status' => '0'));
+					 if(isset($userData['user_ID']) && isset($userData['uuid'])){
+					 	
+						$uuid = $userData['uuid'];
+						$getuserid = $this->Muser->getuseridByToken($userData['user_ID']);
+		   	 		 	$user_id =$getuserid['id'];
+						$query = $this->db->query("DELETE FROM device_track WHERE user_id = ".$user_id."  AND uuid='".$uuid."'");
+						//echo "UPDATE device_track SET login_status=0 WHERE user_id = ".$user_id."  AND uuid='".$uuid."'";
+						//$query = $this->db->query("UPDATE device_track SET login_status='0' WHERE user_id = ".$user_id."  AND uuid='".$uuid."'");
+					 	//$this->db->where('id',$user_id)->db->where('id',$user_id)->update('user',array('login_status' => '0'));
+					 }
 					 
 					 return $this->Response->outputResponse(true, false, array("response" =>  '' ), '', '', 'You have logged out successfully !!');
 					 
@@ -1388,7 +1401,7 @@ class User extends REST_Controller {
 
 				
 
-				 $getauthresponse = $this->auth();
+				$getauthresponse = $this->auth();
 
 				 
 
@@ -1418,13 +1431,13 @@ class User extends REST_Controller {
 				 
 				 }
 				 if($data['loginType']=='email' ){
-				 
+
 				 $user_id = $this->Muser->getUserIdFromEmail($data['email'],$data['loginType']);
 
 				 $getuserid = $this->Muser->getuseridByToken($user_id['token'],'');
 				 
 				 }
-
+                 //echo $getuserid['id'];
 				 if(!empty($userData['subinterest_ids'])){
 
 					 $datarelation=array();
@@ -1464,6 +1477,89 @@ class User extends REST_Controller {
 					 
 
 					 		}
+							
+							/////////////////////// PUSH NOTIFICATION SECTION START ////////////////////////////////
+			
+								$message_id=2;
+								$getnotificationmessage = $this->Muser->getNotificationMessage($message_id);
+								
+								$getfrienddeviceid = $this->Muser->getFriendDeviceId($getuserid['id']);
+								
+								//$android_push_reg_id = $getdeviceid;
+								
+								$pushmsg=[];
+								
+								foreach($getfrienddeviceid as $key=>$val){
+			
+			   					 //$device_id = $this->Muser->getDeviceId($val['id']);
+				
+								$checkallreceiverpush[$key] = $this->Muser->checkAllReceiverPush($val['id']);
+					
+								
+								$checkupdate = $this->Muser->checkUpdate($getuserid['id'],$val['id'],$message_id);
+				
+				
+									if($checkupdate==0){
+									
+									$pushmsg['message_id']=$message_id;
+									$pushmsg['sender_id']=$getuserid['id'];
+									$pushmsg['receiver_id']=$val['id'];
+									$pushmsg['created']=date('Y-m-d H:i:s');
+									
+										$this->Muser->create('push_notification_message_user_relation',$pushmsg);
+										
+										}
+									if($checkupdate!=0){
+										
+										$pushmsg['created']=date('Y-m-d H:i:s');
+										$this->functions->update('push_notification_message_user_relation',$pushmsg,$getuserid['id'],'sender_id');
+									   
+									   }
+						
+					
+					
+					
+					}
+			   
+								foreach($checkallreceiverpush as $newkey=>$valpush){
+				
+								
+								foreach($valpush as $x=>$y){	
+								  		
+											 $getsendernamepush = $this->Muser->getSenderNamePush($getuserid['id']);
+											 $message= str_replace("#name", $getsendernamepush['fullname'], $getnotificationmessage['message']);
+											 $getdeviceidsender[$newkey][$x] = $this->Muser->getDeviceId($y['user_id'],$y['uuid']);
+											 
+											}
+											
+											 
+								   }
+				  
+							    foreach($getdeviceidsender as $receiverkey=>$valreceiver){
+					
+					   			//
+							   foreach($valreceiver as $a=>$b){	
+							   //echo $b['id'];
+																		 if($b['platform']=='Android' ){
+																				$this->gcmengine->getGcmPushNotification($message,$b['device_id']);
+																		  }
+																		  if($b['platform']=='iOS' ){
+																				$this->apnengine->send_ios_notification($b['device_id'],$message);
+																		  }
+																  
+												}					
+						
+							//if($result)
+				
+							//return $this->Response->outputResponse(true, false, array("response" =>  ''), '', '', 'Profile updated successfully!!');
+			
+						}
+						
+						
+						    /////////////////////// PUSH NOTIFICATION SECTION END ////////////////////////////////			
+						 
+						
+						
 
 							$this->Response->outputResponse(true, false, array("response" =>  '1' ), '', '', 'Details inserted successfully !!');
 
@@ -3235,58 +3331,121 @@ class User extends REST_Controller {
 			//$getuserdetails=$this->Muser->getuserdetails($email);
 
 			$data = array();
+			
+			if(isset($userData['user_id'])){
 
 			$getuserid = $this->Muser->getuseridByToken($userData['user_id'],'');
 			
 			//$data['user_id']=$userData['user_id'];
 			
 			$data['user_id']=$getuserid['id'];
+			
+			}
 
 			$data['postnumber']=$this->generatenumber->generateNumber(9, 1, 5, 3);
+			
+			if(isset($userData['event_type'])){
 
 			$data['event_type'] =$userData['event_type'];
-
+			
+			}
+            if(isset($userData['date'])){
+			
 			$date =$userData['date'];
-
+			
+            }
+			if(isset($userData['time'])){
+			
 			$time =$userData['time'];
-
+            
+			}
 			$x = strtotime($date.' '.$time);
 
 			//$data['event_type']  =$userData['date'];
 
 			$data['event_date'] = date('Y-m-d H:i:s', $x);
-
+			
+			if($userData['date'])	{
+			
 			$data['formated_date']  = $userData['date'];
-
+			
+			}
+            
+			if($userData['time'])	{
+			
 			$data['formated_time']  = $userData['time'];
-
+			
+			}
+            
+			if($userData['event_date'])	{
+			
 			$data['event_date_timestamp']  = strtotime($data['event_date']);
-
+			
+			}
+			
+			if($userData['maxpersonallowed'])	{
+			
 			$data['maxpersonallowed'] =$userData['maxpersonallowed'];
+			
+			}
+			
+			if($userData['post_title'])	{
 
 			$data['post_title'] =$userData['post_title'];
-
+			
+			}
+			
+			if($userData['post_location'])	{
+			
 			$data['post_location'] =$userData['post_location'];
+			
+			}
+			
+			if($userData['post_lat'])	{
 
 			$data['post_lat'] =$userData['post_lat'];
-
+			
+			}
+			
+			if($userData['post_long'])	{
+			
 			$data['post_long'] =$userData['post_long'];
+			
+			}
+			
+			if($userData['joinee'])	{
 
  			$data['joinee'] =$userData['joinee'];
-
+			
+			}
+			
+			if($userData['payee'])	{
+			
 			$data['payee'] =$userData['payee'];
-
+			
+			}
+			
+			if($userData['description'])	{
+			
 			$data['description'] =$userData['description'];
-
-			$data['is_featured'] =$userData['is_featured'];
+			
+			}
+			
+			if($userData['description'])	{
+			
+			$data['is_featured'] =$userData['description'];
+			
+			}
 
 			//$data['event_status'] =$userData['event_status'];
 
 			$data['created_date'] =date('Y-m-d H:i:s');
 
-			
+			if($userData['transaction_id'])	{
 
 			$transaction_id = $userData['transaction_id'];
+			
+			}
 
 			//print_r($data);
 
@@ -3325,7 +3484,87 @@ class User extends REST_Controller {
 				
 
 			}
-
+				
+				
+								/////////////////////// PUSH NOTIFICATION SECTION START ////////////////////////////////
+			
+								$message_id=3;
+								$getnotificationmessage = $this->Muser->getNotificationMessage($message_id);
+								
+								$getfrienddeviceid = $this->Muser->getFriendDeviceId($getuserid['id']);
+								
+								//$android_push_reg_id = $getdeviceid;
+								
+								$pushmsg=[];
+								
+								foreach($getfrienddeviceid as $key=>$val){
+			
+			   					 //$device_id = $this->Muser->getDeviceId($val['id']);
+				
+								$checkallreceiverpush[$key] = $this->Muser->checkAllReceiverPush($val['id']);
+					
+								
+								$checkupdate = $this->Muser->checkUpdate($getuserid['id'],$val['id'],$message_id);
+				
+				
+									if($checkupdate==0){
+									
+									$pushmsg['message_id']=$message_id;
+									$pushmsg['sender_id']=$getuserid['id'];
+									$pushmsg['receiver_id']=$val['id'];
+									$pushmsg['created']=date('Y-m-d H:i:s');
+									
+										$this->Muser->create('push_notification_message_user_relation',$pushmsg);
+										
+										}
+									if($checkupdate!=0){
+										
+										$pushmsg['created']=date('Y-m-d H:i:s');
+										$this->functions->update('push_notification_message_user_relation',$pushmsg,$getuserid['id'],'sender_id');
+									   
+									   }
+						
+					
+					
+					
+					}
+			   
+								foreach($checkallreceiverpush as $newkey=>$valpush){
+				
+								
+								foreach($valpush as $x=>$y){	
+								  		
+											 $getsendernamepush = $this->Muser->getSenderNamePush($getuserid['id']);
+											 $message= str_replace("#name", $getsendernamepush['fullname'], $getnotificationmessage['message']);
+											 $getdeviceidsender[$newkey][$x] = $this->Muser->getDeviceId($y['user_id'],$y['uuid']);
+											 
+											}
+											
+											 
+								   }
+				  
+							    foreach($getdeviceidsender as $receiverkey=>$valreceiver){
+					
+					   			//
+							   foreach($valreceiver as $a=>$b){	
+							   //echo $b['id'];
+																		 if($b['platform']=='Android' ){
+																				$this->gcmengine->getGcmPushNotification($message,$b['device_id']);
+																		  }
+																		  if($b['platform']=='iOS' ){
+																				$this->apnengine->send_ios_notification($b['device_id'],$message);
+																		  }
+																  
+												}					
+						
+							//if($result)
+				
+							//return $this->Response->outputResponse(true, false, array("response" =>  ''), '', '', 'Profile updated successfully!!');
+			
+						}
+						
+						
+								/////////////////////// PUSH NOTIFICATION SECTION END ////////////////////////////////
 			
 
 							  if (!$unique_user_id OR $unique_user_id == 0)
@@ -3340,6 +3579,9 @@ class User extends REST_Controller {
 
 							
 								$post_id = array('post_id'=>$lastpostid);
+								
+								
+
 								$this->Response->outputResponse(true, false, array("response" =>  $post_id), '', '', 'Event created successfully!!');	
 
 					}
@@ -6109,6 +6351,8 @@ class User extends REST_Controller {
 
 			$result = $this->functions->update('user',$data,$user_id,'id');
 			
+			/////////////////////// PUSH NOTIFICATION SECTION START ////////////////////////////////
+			
 			if($result==1){
 			
 			$message_id=1;
@@ -6120,18 +6364,12 @@ class User extends REST_Controller {
 			
 			$pushmsg=[];
 			
-			
 			foreach($getfrienddeviceid as $key=>$val){
 			
-			    $device_id = $this->Muser->getDeviceId($val['id']);
+			    //$device_id = $this->Muser->getDeviceId($val['id']);
 				
-				
-				
-						$checkallreceiverpush = $this->Muser->checkAllReceiverPush($val['id']);
-						//$getsenderuuid = $this->Muser->getSenderUUid($user_id);
-						//$getreceiveruuid = $this->Muser->getReceiverUUid($val['id']);
-						//echo $checkuserlogin;
-						
+				$checkallreceiverpush[$key] = $this->Muser->checkAllReceiverPush($val['id']);
+					
 								
 								$checkupdate = $this->Muser->checkUpdate($user_id,$val['id'],$message_id);
 				
@@ -6154,33 +6392,42 @@ class User extends REST_Controller {
 									   }
 						
 					
-						foreach($checkallreceiverpush as $key=>$valpush){
-						//echo $val['login_status'];
-						 if($valpush['login_status']=='1'){
-						 //echo $valpush['login_status'];
-							 //echo $getnotificationmessage;
-								 //$android_push_reg_id = $device_id['device_id'];
-								 $getsendernamepush = $this->Muser->getSenderNamePush($user_id);
-								 $message= str_replace("#name", $getsendernamepush['fullname'], $getnotificationmessage['message']);
-								 $getdeviceidsender = $this->Muser->getDeviceId($val['id'],$valpush['uuid']);
-								 //$getdeviceidreceiver = $this->Muser->getDeviceId($user_id,$valpush['uuid']);
-								//echo $getdeviceid['uuid'];
-								//echo 'device1 ->'.$getsenderuuid['uuid'];
-								//echo '<br/>';
-								//echo 'device2 ->'.$getreceiveruuid['uuid'];
-									 if($getdeviceidsender['platform']=='Android' ){
-									 //echo $user_id;
-									 $this->gcmengine->getGcmPushNotification($message,$getdeviceidsender['device_id']);
-									  }
-									  if($getdeviceidsender['platform']=='iOS' ){
-									  $this->apnengine->send_ios_notification($getdeviceidsender['device_id'],$message);
-									  }
-								 //$this->gcmengine->getGcmPushNotification($message,$getdeviceid['device_id']);
-								}
-								
-						   }
+					
 					
 					}
+			   
+				foreach($checkallreceiverpush as $newkey=>$valpush){
+				
+								
+								foreach($valpush as $x=>$y){	
+								  		
+											 $getsendernamepush = $this->Muser->getSenderNamePush($user_id);
+											 $message= str_replace("#name", $getsendernamepush['fullname'], $getnotificationmessage['message']);
+											 $getdeviceidsender[$newkey][$x] = $this->Muser->getDeviceId($y['user_id'],$y['uuid']);
+											 
+									}
+											
+											 
+								   }
+				  
+					foreach($getdeviceidsender as $receiverkey=>$valreceiver){
+					
+					   //
+					   foreach($valreceiver as $a=>$b){	
+					   // echo $b['id'];
+																 if($b['platform']=='Android' ){
+																		$this->gcmengine->getGcmPushNotification($message,$b['device_id']);
+																  }
+																  if($b['platform']=='iOS' ){
+																		$this->apnengine->send_ios_notification($b['device_id'],$message);
+																  }
+														  
+										}					
+						
+								
+					}
+			
+			/////////////////////// PUSH NOTIFICATION SECTION END ////////////////////////////////
 			
 			//if($result)
 
@@ -6326,6 +6573,13 @@ class User extends REST_Controller {
 							 $userdetails=array('unique_id'=>$lastid ,'status'=>$data['status']);
 
 					  		 $this->Response->outputResponse(true, false, array("response" =>  $userdetails), '', '', 'Friend request sent successfully !!');
+							 
+							 /////////////////////// PUSH NOTIFICATION SECTION START ////////////////////////////////
+			
+							/*$message_id=4;
+							$getnotificationmessage = $this->Muser->getNotificationMessage($message_id);
+							
+							$getfriendrequestdeviceid = $this->Muser->getFriendRequestDeviceId($user_id);*/
 
 						
 

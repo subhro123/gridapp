@@ -4646,7 +4646,7 @@ function checkUpdate($sender_id,$receiver_id,$message_id){
     }
 function checkAllReceiverPush($user_id){
 
-										$SQL = ' SELECT device_track.login_status,device_track.uuid FROM device_track WHERE user_id='.$user_id ;
+										$SQL = ' SELECT device_track.login_status,device_track.uuid,device_track.user_id FROM device_track WHERE login_status="1" AND user_id='.$user_id ;
 
 										$query = $this->db->query($SQL);
 						
@@ -4713,15 +4713,26 @@ function checkDeviceId($user_id,$uuid){
 		
 function getDeviceId($user_id,$uuid){
 
-										$SQL = 'SELECT device_id,platform,user_id,uuid  FROM device_track WHERE user_id= "'.$user_id.'" AND uuid="'.$uuid.'"'  ;
+										$SQL = 'SELECT device_id,platform,user_id,uuid,device_track.user_id,device_track.id  FROM device_track WHERE login_status="1"  AND uuid="'.$uuid.'" AND  user_id= "'.$user_id.'" '  ;
 
 										$query = $this->db->query($SQL);
 						
-										$row=$query->row_array();
+										$data=$query->row_array();
 										
-										return $row;
+										return $data;
 }
-		  
+
+/*function getFriendRequestDeviceId($user_id){
+							
+							$SQLREQUEST = ' SELECT receiver_id FROM `friendsrelation` WHERE sender_id='.$user_id.'  and relationshipstatus= "request"  '  ;
+							
+							$query = $this->db->query($SQLREQUEST);
+						
+							$row=$query->row_array();
+										
+							return $row;
+
+}*/		  
 function getFriendDeviceId($user_id){
 								
 								

@@ -17,21 +17,26 @@ class Gcmengine
 			// Message to be sent
 			//$message = $_POST['message'];
 			// Set POST variables
+			//echo $message ;
 			$url = 'https://android.googleapis.com/gcm/send';
 			$fields = array(
 							'registration_ids'  => array($android_push_reg_id),
 							'data'              => array( "message" => $message ),
-							 'content_available'    => true,                 
-                    		 'priority'              => 'high' 
+							'content_available'    => true,                 
+                    		'priority'              => 'high' 
 							);
 			
 			$headers = array( 
 								'Authorization: key=AIzaSyApOYWK7LSM5sW570-ConAkh3CoEhIxJpQ',
 								'Content-Type: application/json'
 							);
+			/*$headers = array( 
+								'Authorization: key=AIzaSyDDLT--FGTUlHN4CzQF_QjHwyqA_9pCwzs',
+								'Content-Type: application/json'
+							);*/
 							
 	        //echo '<pre>';
-			//echo ($android_push_reg_id);
+			//echo json_encode($headers);
 			//die();
 			// Open connection
 			
