@@ -446,11 +446,12 @@ form.frmLogin label.error, label.error {
 													</div>
 													<div>
 													<span class="btn btn-default btn-file btn btn-info">
-													<span class="btn btn-info" style="padding:0;"> Select image </span>
+													<span class="btn btn-info" style="padding:0;"> Select Image </span>
 													<span class="fileinput-exists"> Change </span>
 													<input type="file"  id="image" name="image"  value="">
 													<!--<input type="hidden"  id="imagename" name="imagename"  value="">--><!--<span style="float:right; padding-left:120px;padding-right:715px;margin:-30px">
 													</span>-->
+													</span>
 													</div>
 													</div>
                                             </div>

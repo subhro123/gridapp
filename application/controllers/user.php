@@ -7,11 +7,6 @@ if (!defined('BASEPATH')) {
 }
 
 
-
-
-
-
-
 require APPPATH . 'libraries/REST_Controller.php';
 
 require_once APPPATH .'libraries/Braintree_lib.php';
@@ -55,6 +50,9 @@ class User extends REST_Controller {
 		$this->load->library('payeezy');
 		
 		$this->load->library('firebaselib');
+		
+		// Load the ARB lib
+		$this->load->library('authorize_arb');
 
 		$this->load->model('Emailoneseven', 'emailoneseven');
 
@@ -720,7 +718,9 @@ class User extends REST_Controller {
 		  
 		  }
 
-	    
+	 
+		
+		
 
 		/********************************/
 
@@ -741,8 +741,6 @@ class User extends REST_Controller {
 					 
 
 			         $check_auth_client = $this->check_auth_client();
-
-					 
 
 					 if($check_auth_client == true){
 
@@ -853,13 +851,15 @@ class User extends REST_Controller {
 											
 										$user_id = $this->Muser->get_final_user_id($data['email']);
 										
-										 $device_id = $this->Muser->checkDeviceId($user_id['id'],$uuid);
+										 // TEMPORARILY CLOSED FOR CHAT
+										 
+										 $device_id = $this->Muser->checkDeviceId($user_id['id']);
 											 
 										 $device_track = array();
 										 
 										 
 											 
-											 if($device_id==0){
+											if($device_id==0){
 														
 														
 														
@@ -875,11 +875,14 @@ class User extends REST_Controller {
 											 
 											 }
 										
-										 if($device_id==1){
-										 		
-														$query = $this->db->query("UPDATE device_track SET login_status='1' WHERE user_id = ".$user_id['id']."  AND uuid='".$uuid."'");
-										 
-										 }
+										    if($device_id==1){
+									 		
+														$query = $this->db->query("UPDATE device_track SET device_id='".$android_push_reg_id."',uuid='".$uuid."',platform='".$platform."',login_status='1' WHERE user_id = ".$user_id['id']."");
+									
+										    }
+											
+										 // TEMPORARILY CLOSED FOR CHAT
+											
 										/*$trackdeviceid  = $this->Muser->trackDeviceid($user_id['id'],$uuid); 
 										if($trackdeviceid>0){
 														
@@ -1106,7 +1109,8 @@ class User extends REST_Controller {
 						$uuid = $userData['uuid'];
 						$getuserid = $this->Muser->getuseridByToken($userData['user_ID']);
 		   	 		 	$user_id =$getuserid['id'];
-						$query = $this->db->query("DELETE FROM device_track WHERE user_id = ".$user_id."  AND uuid='".$uuid."'");
+						$query = $this->db->query("DELETE FROM device_track WHERE user_id = ".$user_id."  AND uuid='".$uuid."'");             
+						//$query = $this->db->query("UPDATE user SET chat_window_active='0' WHERE id = ".$userData['from_id']."");
 						//echo "UPDATE device_track SET login_status=0 WHERE user_id = ".$user_id."  AND uuid='".$uuid."'";
 						//$query = $this->db->query("UPDATE device_track SET login_status='0' WHERE user_id = ".$user_id."  AND uuid='".$uuid."'");
 					 	//$this->db->where('id',$user_id)->db->where('id',$user_id)->update('user',array('login_status' => '0'));
@@ -1413,7 +1417,9 @@ class User extends REST_Controller {
 				 $json = file_get_contents('php://input');
 
 				 $userData = json_decode($json, true);
-
+                 //echo '<pre>';
+				 //print_r($userData);
+				 //die();
 				 
 
 				 $data['interest_id']=$userData['interest_id'];
@@ -1479,7 +1485,8 @@ class User extends REST_Controller {
 					 		}
 							
 							/////////////////////// PUSH NOTIFICATION SECTION START ////////////////////////////////
-			
+								//echo $getuserid['id'];
+								//die();
 								$message_id=2;
 								$getnotificationmessage = $this->Muser->getNotificationMessage($message_id);
 								
@@ -1488,6 +1495,9 @@ class User extends REST_Controller {
 								//$android_push_reg_id = $getdeviceid;
 								
 								$pushmsg=[];
+								
+								//print_r($getfrienddeviceid);
+								//die();
 								
 								foreach($getfrienddeviceid as $key=>$val){
 			
@@ -1520,6 +1530,8 @@ class User extends REST_Controller {
 					
 					
 					}
+					//echo '<pre>';
+					//print_r($checkallreceiverpush);
 			   
 								foreach($checkallreceiverpush as $newkey=>$valpush){
 				
@@ -1540,6 +1552,7 @@ class User extends REST_Controller {
 					   			//
 							   foreach($valreceiver as $a=>$b){	
 							   //echo $b['id'];
+							   
 																		 if($b['platform']=='Android' ){
 																				$this->gcmengine->getGcmPushNotification($message,$b['device_id']);
 																		  }
@@ -2079,15 +2092,15 @@ class User extends REST_Controller {
 
 				  //echo $social = $userData['social'];
 
-				   //echo $role = $userData['role'];
+				 //echo $role = $userData['role'];
 
-				  //echo '<pre>';
+				//echo '<pre>';
 
-				 //print_r($userData);
+			   //print_r($userData);
 
-				  //die();
+			  //die();
 
-				  $fblogindata = $userData['fbProfileData'];
+			  $fblogindata = $userData['fbProfileData'];
 
 				  
 
@@ -2104,11 +2117,33 @@ class User extends REST_Controller {
 						 
 					}
 					
-				    if(isset($fblogindata['id'])){
+				    if(isset($userData['platform'])){
+					 		
+							
+							$platform=$userData['platform'];
+					 
+					 }
+					 
+				    if(isset($userData['uuid'])){
+					 		
+							
+							$uuid=$userData['uuid'];
+					 
+					 }
+					 
+					if(isset($userData['android_push_reg_id'])){
+					 		
+							
+							$android_push_reg_id=$userData['android_push_reg_id'];
+					 
+					 }
+					
+					if(isset($fblogindata['id'])){
 
 					$data['social_id']= $fblogindata['id'];
 
 					}
+					
 
 					 if(isset($fblogindata['id'])){
 
@@ -2118,7 +2153,7 @@ class User extends REST_Controller {
 
 					
 
-					if(isset($fblogindata['gender']) && $fblogindata['gender']=='male'){
+				    if(isset($fblogindata['gender']) && $fblogindata['gender']=='male'){
 
 						
 
@@ -2186,10 +2221,44 @@ class User extends REST_Controller {
 					//echo $fblogindata['id'];
 					//die();
 					$email = $this->Muser->get_final_user_email_social($fblogindata['id']);
+					
+					$check_user_id = $this->Muser->get_final_user_id($data['email']);
+										
+					// TEMPORARILY CLOSED FOR CHAT
+										 
+					$device_id = $this->Muser->checkDeviceId($check_user_id['id']);
+											 
+					$device_track = array();
+										 
+										 
+											 
+					if($device_id==0){
+														
+														
+														
+														$device_track['user_id'] = $check_user_id['id'];
+														$device_track['device_id'] = $android_push_reg_id;
+														$device_track['uuid'] = $uuid;
+														$device_track['platform'] = $platform;
+														$device_track['login_status'] = '1';
+														$device_track['created_date'] = date('Y-m-d H:i:s');
+														$unique_user_id = $this->Muser->create('device_track',$device_track);
+														//$message = 'Hi, you have logged in successfully';
+														//$this->gcmengine->getGcmPushNotification($message,$android_push_reg_id);
+											 
+											 }
+										
+					if($device_id==1){
+									 		
+														$query = $this->db->query("UPDATE device_track SET device_id='".$android_push_reg_id."',uuid='".$uuid."',platform='".$platform."',login_status='1' WHERE user_id = ".$check_user_id['id']."");
+										 
+										    }
 					//echo $email['email'];
 					//die();
 					
-				      if($email['email']!=''){
+					
+					
+				    if($email['email']!=''){
 
 										//$getsubscription = $this->Muser->getSubscription($payment_type);
 
@@ -2199,15 +2268,19 @@ class User extends REST_Controller {
 	
 									
 	
-									  $getRadiusBySubscription = $this->Muser->getRadiusBySubscription($getSubscriptionStatus['role']);
+									$getRadiusBySubscription = $this->Muser->getRadiusBySubscription($getSubscriptionStatus['role']);
 									  
 									  if($user_id==0){
 											
 											$new_user_details = array(
 	
 																'email' => true,
+															
+																'fullname' =>$fblogindata['name'],
+															
+																'image' =>$getSubscriptionStatus['image'],
 	
-																'social_id' => $twtlogindata['id'],
+																'social_id' => $fblogindata['id'],
 	
 																'loginType'=>$userData['loginType'],
 																
@@ -2264,6 +2337,12 @@ class User extends REST_Controller {
 											$new_user_details = array(
 	
 																'email' => true,
+																
+																'user_id' =>$user_id['id'],
+															
+															    'fullname' =>$fblogindata['name'],
+															
+																'image' =>$getSubscriptionStatus['image'],
 	
 																'social_id' => $twtlogindata['id'],
 	
@@ -2287,11 +2366,11 @@ class User extends REST_Controller {
 
 									}
 
-					  if($email['email']==''){
+					if($email['email']==''){
 
 									
 
-									/*	$new_user_details = array(
+					/*	$new_user_details = array(
 
 															'email' => false,
 
@@ -2301,7 +2380,7 @@ class User extends REST_Controller {
 
 															);*/
 															
-										$getSubscriptionStatus = $this->Muser->getSubscriptionStatus($unique_user_id);
+				$getSubscriptionStatus = $this->Muser->getSubscriptionStatus($unique_user_id);
 
 								
 
@@ -2311,8 +2390,12 @@ class User extends REST_Controller {
 										$new_user_details = array(
 
 															'email' => false,
+															
+															'fullname' =>$fblogindata['name'],
+															
+														    'image' =>$getSubscriptionStatus['image'],
 
-															'social_id' => $twtlogindata['id'],
+															'social_id' => $fblogindata['id'],
 
 															'loginType'=>'facebook',
 															
@@ -2369,6 +2452,12 @@ class User extends REST_Controller {
 										$new_user_details = array(
 
 															'email' => false,
+															
+															'user_id' =>$user_id['id'],
+															
+															'fullname' =>$user_id['fullname'],
+															
+															'image' =>$user_id['image'],
 
 															'social_id' => $twtlogindata['id'],
 															
@@ -2512,7 +2601,7 @@ class User extends REST_Controller {
 
 									}
 								
-								if(isset($twtlogindata['formattedName'])){
+								if(isset($linkedinlogindata['formattedName'])){
 
 										$data['fullname']= $linkedinlogindata['formattedName'];
 
@@ -2522,6 +2611,27 @@ class User extends REST_Controller {
 										$data['location']= $linkedinlogindata['location'];
 
 								}*/
+								
+								if(isset($userData['platform'])){
+					 		
+							
+									$platform=$userData['platform'];
+					 
+								 }
+								 
+								if(isset($userData['uuid'])){
+										
+										
+								    $uuid=$userData['uuid'];
+								 
+								 }
+								 
+								if(isset($userData['android_push_reg_id'])){
+										
+										
+									$android_push_reg_id=$userData['android_push_reg_id'];
+								 
+								 }
 
 							  if(isset($linkedinlogindata['emailAddress'])){
 
@@ -2559,6 +2669,38 @@ class User extends REST_Controller {
 									
 
 								$email = $this->Muser->get_final_user_email_social($linkedinlogindata['id']);
+								
+								$check_user_id = $this->Muser->get_final_user_id($data['email']);
+								
+								// TEMPORARILY CLOSED FOR CHAT
+										 
+								$device_id = $this->Muser->checkDeviceId($check_user_id['id']);
+														 
+								$device_track = array();
+													 
+													 
+														 
+								if($device_id==0){
+																	
+																	
+																	
+																	$device_track['user_id'] = $check_user_id['id'];
+																	$device_track['device_id'] = $android_push_reg_id;
+																	$device_track['uuid'] = $uuid;
+																	$device_track['platform'] = $platform;
+																	$device_track['login_status'] = '1';
+																	$device_track['created_date'] = date('Y-m-d H:i:s');
+																	$unique_user_id = $this->Muser->create('device_track',$device_track);
+																	//$message = 'Hi, you have logged in successfully';
+																	//$this->gcmengine->getGcmPushNotification($message,$android_push_reg_id);
+														 
+														 }
+													
+								if($device_id==1){
+														
+																	$query = $this->db->query("UPDATE device_track SET device_id='".$android_push_reg_id."',uuid='".$uuid."',platform='".$platform."',login_status='1' WHERE user_id = ".$check_user_id['id']."");
+													 
+														}
                                
 										
                                   //$getInterestbyId = $this->Muser->getInterestbyId($user_id['id']);
@@ -2640,7 +2782,11 @@ class User extends REST_Controller {
 	
 																'social_id' => $linkedinlogindata['id'],
 	
-																'loginType'=>$getsocialid['social'],
+																'loginType'=>'linkedin',
+																
+																'fullname'=>$data['fullname'],
+															
+																'image'=>$getSubscriptionStatus['image'],
 																
 																'token'=>$updatedtoken,
 											
@@ -2688,6 +2834,10 @@ class User extends REST_Controller {
 															'social_id' => $data['social_id'],
 	
 															'loginType'=>'linkedin',
+															
+															'fullname'=>$data['fullname'],
+															
+															'image'=>$getSubscriptionStatus['image'],
 															
 															'token'=>$auth_key,
 										
@@ -2848,12 +2998,35 @@ class User extends REST_Controller {
 							$data['social_id']= $twtlogindata['id'];
 
 							}
+							
+							if(isset($userData['platform'])){
+					 		
+							
+									$platform=$userData['platform'];
+					 
+								 }
+								 
+								if(isset($userData['uuid'])){
+										
+										
+								    $uuid=$userData['uuid'];
+								 
+								 }
+								 
+								if(isset($userData['android_push_reg_id'])){
+										
+										
+									$android_push_reg_id=$userData['android_push_reg_id'];
+								 
+								 }
 
 							 if(isset($twtlogindata['name'])){
 
 							$data['fullname']= $twtlogindata['name'];
 
 							}
+							
+							
 
 							
 
@@ -2900,6 +3073,38 @@ class User extends REST_Controller {
 									
 
 								$email = $this->Muser->get_final_user_email_social($twtlogindata['id']);
+								
+								$check_user_id = $this->Muser->get_final_user_social_id($twtlogindata['id']);
+								
+								// TEMPORARILY CLOSED FOR CHAT
+										 
+								$device_id = $this->Muser->checkDeviceId($check_user_id['id']);
+														 
+								$device_track = array();
+													 
+													 
+														 
+								if($device_id==0){
+																	
+																	
+																	
+																	$device_track['user_id'] = $check_user_id['id'];
+																	$device_track['device_id'] = $android_push_reg_id;
+																	$device_track['uuid'] = $uuid;
+																	$device_track['platform'] = $platform;
+																	$device_track['login_status'] = '1';
+																	$device_track['created_date'] = date('Y-m-d H:i:s');
+																	$unique_user_id = $this->Muser->create('device_track',$device_track);
+																	//$message = 'Hi, you have logged in successfully';
+																	//$this->gcmengine->getGcmPushNotification($message,$android_push_reg_id);
+														 
+														 }
+													
+								if($device_id==1){
+														
+																	$query = $this->db->query("UPDATE device_track SET device_id='".$android_push_reg_id."',uuid='".$uuid."',platform='".$platform."',login_status='1' WHERE user_id = ".$check_user_id['id']."");
+													 
+														}
                                //echo $email['email'];
 							   //die();
 										
@@ -2984,6 +3189,10 @@ class User extends REST_Controller {
 	
 																'loginType'=>$getsocialid['social'],
 																
+																'fullname'=>$data['fullname'],
+															
+																'image'=>$getSubscriptionStatus['image'],
+																
 																'token'=>$updatedtoken,
 											
 																'user_id'=>$getsocialid['id'],
@@ -3031,6 +3240,10 @@ class User extends REST_Controller {
 															'social_id' => $twtlogindata['id'],
 
 															'loginType'=>'twitter',
+															
+															'fullname'=>$data['fullname'],
+															
+															'image'=>$getSubscriptionStatus['image'],
 															
 															'token'=>$data['token'],
 										
@@ -3224,13 +3437,70 @@ class User extends REST_Controller {
 
 	
 
-	/*protected function change_password_post() {
+	 function change_password_post() {
 
 	
 
+					$getauthresponse = $this->auth();
+
+					if($getauthresponse == 200){
+		
+					$userData = array();
+		
+					$json = file_get_contents('php://input');
+		
+					$userData = json_decode($json, true);
+					
+					$data = array();
+			
+					if(isset($userData['user_id'])){
+			
+						$getuserid = $this->Muser->getuseridByToken($userData['user_id'],'');
+						
+						}
+				if(isset($userData['old_password'])){
+					
+						 $data['old_password']=md5($userData['old_password']);
+					   
+					   }
+						
+					if(isset($userData['new_password'])){
+					
+						 $data['new_password']=md5($userData['new_password']);
+					   
+					   }
+					   
+					   $unique_user_id = $this->Muser->get_user_password_id($getuserid['id'],$data['old_password'],$data['new_password']);
+					
+						if ($unique_user_id == 0)
+
+						{
+
 					
 
-					$data=array();
+							$errors = 'Please enter correct password !!';
+
+            				return $this->Response->outputResponse(false, $error->msg_content, 'Fail', '', '', $errors);
+
+						
+
+					
+
+					}else{
+
+					
+
+							
+
+							$this->Response->outputResponse(true, false, array("response" =>  'Success' ), '', '', 'Password updated successfully !!');
+
+					
+
+					}
+					
+			}
+
+					//$data=array();
 
 					 //$userData=array();
 
@@ -3238,9 +3508,11 @@ class User extends REST_Controller {
 
 					 //$userData = json_decode($json, true);
 
+					 //$data['old_password']=md5($userData['old_password']);
+					 
 					 
 
-					 $data['old_password']=md5($userData['old_password']);
+					 /*$data['old_password']=md5($userData['old_password']);
 
 					 $data['new_password']=md5($userData['new_password']);
 
@@ -3279,7 +3551,7 @@ class User extends REST_Controller {
 					
 
 					}
-
+*/
 					 
 
 					 
@@ -3288,7 +3560,7 @@ class User extends REST_Controller {
 
 	
 
-	}*/
+	}
 
 	
 
@@ -3370,6 +3642,12 @@ class User extends REST_Controller {
 			$data['formated_date']  = $userData['date'];
 			
 			}
+			
+			if($userData['subinterest_ids'])	{
+			
+			$data['subinterest_ids'] =$userData['subinterest_ids'];
+			
+			}
             
 			if($userData['time'])	{
 			
@@ -3422,6 +3700,12 @@ class User extends REST_Controller {
 			if($userData['payee'])	{
 			
 			$data['payee'] =$userData['payee'];
+			
+			}
+			
+			if($userData['share'])	{
+			
+			$data['share'] =$userData['share'];
 			
 			}
 			
@@ -3487,10 +3771,73 @@ class User extends REST_Controller {
 				
 				
 								/////////////////////// PUSH NOTIFICATION SECTION START ////////////////////////////////
+								
+								if($data['subinterest_ids']!=''){
+						
+								$message_id=7;
+								$getnotificationmessages = $this->Muser->getNotificationMessage($message_id);
+								
+								$getuseridbysubinterest =  $this->Muser->getUseridBysubInterest($data['subinterest_ids'],$data['user_id']);
+								
+								$getsubinterestname  =  $this->Muser->getSubInterestName($data['subinterest_ids']);
+								
+								
+								foreach($getuseridbysubinterest  as $key=>$val){
+											
+											//$getsendernamepush = $this->Muser->getSenderNamePush($getuserid['id']);
+											//$message= str_replace("#name", $getsendernamepush['fullname'], $getnotificationmessage['message']);
+											//echo $val['user_id'];
+											$checkallreceiverpushs[$key] = $this->Muser->checkAllReceiverPush($val['user_id']);
+												
+								
+								}
+						//echo '<pre>';
+						//print_r($checkallreceiverpushs);
+						
+						foreach($checkallreceiverpushs as $newkey=>$valpush){
+				              
+							  
+							  if(!empty($valpush)){
+								//echo '<pre>';
+								//print_r($valpush);
+									foreach($valpush as $x=>$y){	
+											
+												 
+												 $getdeviceidsenders[$newkey][$x] = $this->Muser->getDeviceId($y['user_id'],$y['uuid']);
+												 
+												}
+											}
+											
+											 
+								   }
+								   
+							$getsendernamepushs = $this->Muser->getSenderNamePush($getuserid['id']);
+							 //echo $getsubinterestname;
+							//echo $getnotificationmessages['message'];
+							$messages= str_replace("#name",$getsendernamepushs['fullname'],$getnotificationmessages['message']);
+							
+							$newmessage = str_replace("#subinterest_name",$getsubinterestname,$messages);
+				  
+							foreach($getdeviceidsenders as $receiverkey=>$valreceiver){
+					
+							   foreach($valreceiver as $a=>$b){	
+									//echo $b['id'];
+																			 if($b['platform']=='Android' ){
+																					$this->gcmengine->getGcmPushNotification($newmessage,$b['device_id']);
+																			  }
+																			  if($b['platform']=='iOS' ){
+																					$this->apnengine->send_ios_notification($b['device_id'],$newmessage);
+																			  }
+																	  
+													}					
+							
+								
+				
+							}
+						}else{
 			
 								$message_id=3;
 								$getnotificationmessage = $this->Muser->getNotificationMessage($message_id);
-								
 								$getfrienddeviceid = $this->Muser->getFriendDeviceId($getuserid['id']);
 								
 								//$android_push_reg_id = $getdeviceid;
@@ -3514,7 +3861,7 @@ class User extends REST_Controller {
 									$pushmsg['receiver_id']=$val['id'];
 									$pushmsg['created']=date('Y-m-d H:i:s');
 									
-										$this->Muser->create('push_notification_message_user_relation',$pushmsg);
+									$this->Muser->create('push_notification_message_user_relation',$pushmsg);
 										
 										}
 									if($checkupdate!=0){
@@ -3532,13 +3879,13 @@ class User extends REST_Controller {
 								foreach($checkallreceiverpush as $newkey=>$valpush){
 				
 								
-								foreach($valpush as $x=>$y){	
-								  		
-											 $getsendernamepush = $this->Muser->getSenderNamePush($getuserid['id']);
-											 $message= str_replace("#name", $getsendernamepush['fullname'], $getnotificationmessage['message']);
-											 $getdeviceidsender[$newkey][$x] = $this->Muser->getDeviceId($y['user_id'],$y['uuid']);
-											 
-											}
+									foreach($valpush as $x=>$y){	
+											
+												 $getsendernamepush = $this->Muser->getSenderNamePush($getuserid['id']);
+												 $message= str_replace("#name", $getsendernamepush['fullname'], $getnotificationmessage['message']);
+												 $getdeviceidsender[$newkey][$x] = $this->Muser->getDeviceId($y['user_id'],$y['uuid']);
+												 
+												}
 											
 											 
 								   }
@@ -3561,10 +3908,11 @@ class User extends REST_Controller {
 				
 							//return $this->Response->outputResponse(true, false, array("response" =>  ''), '', '', 'Profile updated successfully!!');
 			
+								}
+						
 						}
 						
-						
-								/////////////////////// PUSH NOTIFICATION SECTION END ////////////////////////////////
+								 /////////////////////// PUSH NOTIFICATION SECTION END ////////////////////////////////
 			
 
 							  if (!$unique_user_id OR $unique_user_id == 0)
@@ -4268,7 +4616,144 @@ class User extends REST_Controller {
 
 			}
 
-	
+	   /********************************/
+
+		
+
+		// PRIVACY UPDATE
+
+		
+
+		/********************************/
+		
+		public function privacy_post() {
+					
+					
+					$getauthresponse = $this->auth();
+					
+					//echo $getauthresponse;
+					
+					if($getauthresponse == 200){
+					
+							$userData = array();
+
+							$json = file_get_contents('php://input');
+		
+							$userData = json_decode($json, true);
+							
+							if(isset($userData['user_id'])){
+
+								$getuserid = $this->Muser->getuseridByToken($userData['user_id']);
+								$user_id = $getuserid['id'];
+
+							}
+							
+							if(isset($userData['email_flag'])){
+
+								
+								if($userData['email_flag']==true){
+								
+								$email_flag = 'true';
+								
+								}else if($userData['email_flag']==false){
+								
+								$email_flag = 'false';
+								
+								}
+								
+								
+
+							}
+							
+							if(isset($userData['gender_flag'])){
+
+								//$gender_flag = $userData['gender_flag'];
+								
+								if($userData['gender_flag']==true){
+								
+								$gender_flag = 'true';
+								
+								}else if($userData['gender_flag']==false){
+								
+								$gender_flag = 'false';
+								
+								}
+
+							}
+							
+							if(isset($userData['dob_flag'])){
+
+								//$dob_flag = $userData['dob_flag'];
+								
+								
+								if($userData['dob_flag']==true){
+								
+								$dob_flag = 'true';
+								
+								}else if($userData['dob_flag']==false){
+								
+								$dob_flag = 'false';
+								
+								}
+
+							}
+							
+							if(isset($userData['occupation_flag'])){
+
+								//$occupation_flag = $userData['occupation_flag'];
+								
+								if($userData['occupation_flag']==true){
+								
+								$occupation_flag = 'true';
+								
+								}else if($userData['occupation_flag']==false){
+								
+								$occupation_flag = 'false';
+								
+								}
+
+							}
+							
+							if(isset($userData['phone_flag'])){
+
+								//$phone_flag = $userData['phone_flag'];
+								
+								if($userData['phone_flag']==true){
+								
+								$phone_flag = 'true';
+								
+								}else if($userData['phone_flag']==false){
+								
+								$phone_flag = 'false';
+								
+								}
+
+							}
+							
+							if(isset($userData['social_flag'])){
+
+								//$phone_flag = $userData['phone_flag'];
+								
+								if($userData['social_flag']==true){
+								
+								$social_flag = 'true';
+								
+								}else if($userData['social_flag']==false){
+								
+								$social_flag = 'false';
+								
+								}
+
+							}
+							
+							
+							$updateprivacy = $this->Muser->updatePrivacy($email_flag,$gender_flag,$dob_flag,$occupation_flag,$phone_flag,$social_flag,$user_id);
+							$this->Response->outputResponse(true, false, array("response" => 'privacy updated successfully !!'), '', '', 'Privacy Update');
+							
+							
+					}
+			
+		}
 
 	
 
@@ -6207,18 +6692,28 @@ class User extends REST_Controller {
 	public function profile_save_post()
 
 			{
+                $json = file_get_contents('php://input');
 
+				$userData = json_decode($json, true);
+
+				
+				$checkuserdevicebyToken = $this->Muser->checkUserDevicebyToken($userData['user_id']);
+				
+				if($checkuserdevicebyToken==0){
+					
+					$errors = 'Failed';
+					return $this->Response->outputResponse(false, false, array("response" =>  ''), '', '', $errors); 
+					
+				}else{
+				
 				$getauthresponse = $this->auth();
 
 				if($getauthresponse == 200){
 
 				
-
-				$json = file_get_contents('php://input');
-
-				$userData = json_decode($json, true);
-
-					 
+			//echo 'aaaa';
+				
+			    
 
 				if(isset($userData['user_id'])){
 
@@ -6232,7 +6727,7 @@ class User extends REST_Controller {
 
 				
 
-				if(isset($userData['description'])){
+				/*if(isset($userData['description'])){*/
 
 					 
 
@@ -6240,7 +6735,7 @@ class User extends REST_Controller {
 
 					 
 
-					 }
+					 /*}*/
 
 				
 
@@ -6348,12 +6843,12 @@ class User extends REST_Controller {
 				
 
 				}
-
+            //echo $user_id;
 			$result = $this->functions->update('user',$data,$user_id,'id');
 			
 			/////////////////////// PUSH NOTIFICATION SECTION START ////////////////////////////////
 			
-			if($result==1){
+			/*if($result==1){
 			
 			$message_id=1;
 		    $getnotificationmessage = $this->Muser->getNotificationMessage($message_id);
@@ -6405,7 +6900,7 @@ class User extends REST_Controller {
 											 $message= str_replace("#name", $getsendernamepush['fullname'], $getnotificationmessage['message']);
 											 $getdeviceidsender[$newkey][$x] = $this->Muser->getDeviceId($y['user_id'],$y['uuid']);
 											 
-									}
+											}
 											
 											 
 								   }
@@ -6429,14 +6924,17 @@ class User extends REST_Controller {
 			
 			/////////////////////// PUSH NOTIFICATION SECTION END ////////////////////////////////
 			
-			//if($result)
+			if($result)
 
 			return $this->Response->outputResponse(true, false, array("response" =>  ''), '', '', 'Profile updated successfully!!');
 			
-						}
+						}*/
 
 			
 
+				/*}*/
+				return $this->Response->outputResponse(true, false, array("response" =>  ''), '', '', 'Profile updated successfully!!');   }
+				
 				}
 
 		}
@@ -6830,6 +7328,16 @@ class User extends REST_Controller {
 				 $json = file_get_contents('php://input');
 
 				 $userData = json_decode($json, true);
+				 
+				 
+				$checkuserdevicebyToken = $this->Muser->checkUserDevicebyToken($userData['user_id']);
+				
+				if($checkuserdevicebyToken==0){
+					
+					$errors = 'Failed';
+					return $this->Response->outputResponse(false, false, array("response" =>  ''), '', '', $errors); 
+					
+				}else{
 
 				 
 
@@ -6923,6 +7431,9 @@ class User extends REST_Controller {
 
 				
 
+				}
+				
+				
 				}
 
 				
@@ -7914,6 +8425,108 @@ class User extends REST_Controller {
 		}
 
 	 }
+	 
+	 
+	 /************************************************/
+
+	
+
+	//  PAYMENT THROUGH AUTHORIZE.NET
+
+			
+
+    /************************************************/
+	
+	
+	public function get_authorize_post()
+    {
+		
+		$check_auth_client = $this->check_auth_client();
+		$getauthresponse = $this->auth();
+
+	    if($getauthresponse == 200 || $check_auth_client == true){
+
+			$json = file_get_contents('php://input');
+	
+			$userData = json_decode($json, true);
+			
+			// Start with a create object
+			$this->authorize_arb->startData('create');
+			// Locally-defined reference ID (can't be longer than 20 chars)
+			$refId = substr(md5( microtime() . 'ref' ), 0, 20);
+			$this->authorize_arb->addData('refId', $refId);
+			
+			// Data must be in this specific order
+			// For full list of possible data, refer to the documentation:
+			// http://www.authorize.net/support/ARB_guide.pdf
+			
+			if(isset($userData['payment_type'])){
+
+					 $payment_type =$userData['payment_type'];
+
+					 }
+
+			$getsubscription = $this->Muser->getSubscription($payment_type);
+			
+			$amount = $getsubscription['price'];
+			
+			$name = $this->processInput($userData['cardHolderName']);
+			
+			$fullname = explode(' ',$name);
+		
+			$subscription_data = array(
+			'name' => 'Subscription',
+			'paymentSchedule' => array(
+				'interval' => array(
+					'length' => 7,
+					'unit' => 'days',
+					),
+				'startDate' => date('Y-m-d'),
+				'totalOccurrences' => 9999, // Unlimited
+				),
+			'amount' => $amount,
+			'payment' => array(
+				'creditCard' => array(
+					'cardNumber' =>  $this->processInput($userData['cardNumber']),
+					'expirationDate' => $this->processInput($userData['expDate']),
+					'cardCode' => $this->processInput($userData['cvvCode']),
+					),
+				),
+				'billTo' => array(
+				'firstName' => $fullname[0],
+				'lastName' => $fullname[1],
+				'address' => '',
+				'city' => '',
+				'state' => '',
+				'zip' => '',
+				'country' => '',
+				),
+			);
+		
+			$this->authorize_arb->addData('subscription', $subscription_data);
+			
+			// Send request
+			if( $this->authorize_arb->send())
+			{
+				//echo '<h1>Success! ID: ' . $this->authorize_arb->getId() . '</h1>';
+				$responses = array('transaction_status'=>'success','transaction_id'=>$this->authorize_arb->getId());
+				$this->Response->outputResponse(true, false, array("response" =>  $responses), '', '', 'Transaction details!!');
+			}
+			else
+			{	
+				
+
+				$responses = array('transaction_status'=>'fail','error'=>$this->authorize_arb->getError());
+				return $this->Response->outputResponse(false, false, array("response" =>  $responses), '', '', 'Failed Transaction details!!');
+				//echo '<h1>Epic Fail!</h1>';
+				//echo '<p>' . $this->authorize_arb->getError() . '</p>';
+			}
+			
+			// Show debug data
+			//$this->authorize_arb->debug();
+		
+		}
+	}
 
 	
 
@@ -8299,7 +8912,7 @@ class User extends REST_Controller {
 		 		
 				
 				
-				 $getauthresponse = $this->auth();
+				$getauthresponse = $this->auth();
 
 			    if($getauthresponse == 200){
 				
@@ -8325,10 +8938,12 @@ class User extends REST_Controller {
 
 				 	if(!empty($getpersonusinggrid)){
 
-				
+				             
 
 							//$responses = array('transaction_status'=>$response["validation_status"],'transaction_id'=>$response["transaction_id"]);
-							$this->Response->outputResponse(true, false, array("response" => $getpersonusinggrid), '', '', 'List of persons using gridapp !!');              
+							$this->Response->outputResponse(true, false, array("response" => $getpersonusinggrid), '', '', 'List of persons using gridapp !!'); 
+							
+							           
 
 							   
 
@@ -8358,9 +8973,9 @@ class User extends REST_Controller {
 	public function get_events_stubhub_post()
 	{
 	
-				  $getauthresponse = $this->auth();
+				  /*$getauthresponse = $this->auth();
 
-			      if($getauthresponse == 200){
+			      if($getauthresponse == 200){*/
 				  
 				  $json = file_get_contents('php://input');
 				  $userData = json_decode($json, true);
@@ -8397,11 +9012,11 @@ class User extends REST_Controller {
 				  
 				  //echo "point=".$post_lat.",".$post_long."&radius=".$radius."&date=".$from_date." TO ".$to_date."&sort=distance asc";
 				  //die();
-				  $authorization = "Authorization:Bearer 3ba813bccaeeb9c77c81b40343f7f7c";
+				  $authorization = "Authorization:Bearer 8fc0c25069456cfbbacef1a82deb535b";
 				  $url = 'https://api.stubhub.com/search/catalog/events/v2?';
 				  $param = urlencode("point=".$post_lat.",".$post_long."&radius=".$radius."&date=".$from_date." TO ".$to_date."&sort=distance asc");
 				  //$param = urlencode("point=22.5,88.3&radius=120&minAvailableTickets=1&date=2014-06-01T00:00 TO 2014-06-01T23:59&sort=distance asc");
-				  
+				  echo $url.$param;
 				   $ch = curl_init();
 				   curl_setopt($ch, CURLOPT_URL, $url.$param);
 				   curl_setopt($ch, CURLOPT_HTTPHEADER, array( $authorization ));
@@ -8426,7 +9041,7 @@ class User extends REST_Controller {
 				   
 				   if(!empty($arr)){
 
-				   			$this->Response->outputResponse(true, false, array("response" => $arr), '', '', 'List of events in Gridapp !!');          
+				   			$this->Response->outputResponse(true, false, array("response" => $arr), '', '', 'List of  stubhub events in Gridapp !!');          
 		           
 				    }else{
 					
@@ -8436,7 +9051,7 @@ class User extends REST_Controller {
 
 					}
 					
-			}
+			/*}*/
 	
 	}
 		 
@@ -8449,7 +9064,7 @@ class User extends REST_Controller {
 	
 	public function  invite_person_grid_post()
 		 {
-		 		 $getauthresponse = $this->auth();
+		 		$getauthresponse = $this->auth();
 
 			    if($getauthresponse == 200){
 				
@@ -8470,11 +9085,15 @@ class User extends REST_Controller {
 						
 						if(isset($userData['post_id'])){
 							
-							
-							$post_id = $userData['post_id'];
+					     $post_id = $userData['post_id'];
 						
 					  }
-				
+				    
+					$message_id=6;
+					$getnotificationmessage = $this->Muser->getNotificationMessage($message_id);
+					
+					$getpostcreatorid = $this->Muser->getPostCreatorId($post_id);
+					$pushmsg = [];
 					if(!empty($invite_list)){
 							foreach($invite_list as $key=>$val){
 							
@@ -8482,28 +9101,146 @@ class User extends REST_Controller {
 										$getuserid = $this->Muser->getuseridByToken($val);
 										$user_id =$getuserid['id'];
 										$checkinvitebyuser = $this->Muser->checkInviteByUser($user_id,$post_id);
+										
 										if($checkinvitebyuser ==0){
+										
 										$data[$key]['user_id'] =$user_id;
 										$data[$key]['event_id'] =$post_id;
 										$data[$key]['created_date'] = date('Y-m-d H:i:s');
 										$unique_user_id = $this->Muser->create('event_invite',$data[$key]);
+										
+										/////////////////////// PUSH NOTIFICATION SECTION START ////////////////////////////////
+										
+										$checkupdate = $this->Muser->checkUpdate($getpostcreatorid['user_id'],$data[$key]['user_id'],$message_id);
+										
+										if($checkupdate==0){
+									
+											$pushmsg['message_id']=$message_id;
+											$pushmsg['sender_id']=$getpostcreatorid['user_id'];
+											$pushmsg['receiver_id']=$data[$key]['user_id'];
+											$pushmsg['created']=date('Y-m-d H:i:s');
+									
+											$this->Muser->create('push_notification_message_user_relation',$pushmsg);
+										
+										}
+									 
+									  if($checkupdate!=0){
+										
+											$pushmsg['created']=date('Y-m-d H:i:s');
+											$this->functions->update('push_notification_message_user_relation',$pushmsg,$getpostcreatorid['user_id'],'sender_id');
+									   
+									   }
+									   
+									    //$getsendernamepush = $this->Muser->getSenderNamePush($getpostcreatorid['user_id']);
+										//$message= str_replace("#name", $getsendernamepush['fullname'], $getnotificationmessage['message']);
+										
+										$checkallreceiverpush[$key]  = $this->Muser->checkAllReceiverPush($data[$key]['user_id']);
+										
+														 
+									   
+										
 										}else{
 										
 										$this->Response->outputResponse(false, false, array("response" => ''), '', '', 'Invitation already sent  !!'); 
 										break;      
 										}
 								}
+								
+								foreach($checkallreceiverpush as $newkey=>$valpush){
+				
+								
+								foreach($valpush as $x=>$y){	
+								  		
+											 $getsendernamepush = $this->Muser->getSenderNamePush($getpostcreatorid['user_id']);
+											 $message= str_replace("#name", $getsendernamepush['fullname'], $getnotificationmessage['message']);
+											 $getdeviceidsender[$newkey][$x] = $this->Muser->getDeviceId($y['user_id'],$y['uuid']);
+											 
+											}
+											
+											 
+								   }
+								   
+						     $checkinvitepersontogridevent = $this->Muser->checkInvitePersonToGrid($getpostcreatorid['user_id']);
+							  
+							  if($checkinvitepersontogridevent>0){
+				  
+							   foreach($getdeviceidsender as $receiverkey=>$valreceiver){
 					
-							$this->Response->outputResponse(true, false, array("response" => ''), '', '', 'Invitation sent successfully !!'); 
+					   			//
+										   foreach($valreceiver as $a=>$b){	
+										   //echo $b['id'];
+																					 if($b['platform']=='Android' ){
+																							$this->gcmengine->getGcmPushNotification($message,$b['device_id']);
+																					  }
+																					  if($b['platform']=='iOS' ){
+																							$this->apnengine->send_ios_notification($b['device_id'],$message);
+																					  }
+																			  
+															}					
+										/////////////////////// PUSH NOTIFICATION SECTION END ////////////////////////////////
+										//if($result)
+							
+										//return $this->Response->outputResponse(true, false, array("response" =>  ''), '', '', 'Profile updated successfully!!');
+			
+						  			}
+						  
+						    }
+					
+							    $this->Response->outputResponse(true, false, array("response" => ''), '', '', 'Invitation sent successfully !!'); 
+							
+						
 						
 						}  else{
 						
 								$this->Response->outputResponse(false, false, array("response" => ''), '', '', 'No person found for invitation  !!'); 
 						}    
 						
-					}      
+					} 
 		}
 	
+	
+   /********************************************************************************************/
+
+	// GET ALL GROUP CHAT EVENTS
+
+	/*********************************************************************************************/
+	
+	public function get_group_chat_event_post()
+	{
+	
+				$getauthresponse = $this->auth();
+				
+				 if($getauthresponse == 200){
+				 
+						 $json = file_get_contents('php://input');
+						 $userData = json_decode($json, true);
+										
+						if(isset($userData['user_id'])){
+									
+								//$user_id = $userData['user_id'];
+								$getuserid = $this->Muser->getuseridByToken($userData['user_id']);
+								$user_id =$getuserid['id'];
+								
+						   }
+						   
+						 $getgroupchatevent = $this->Muser->getGroupChatEvent($user_id);
+						 
+						 if(!empty($getgroupchatevent)){
+
+				   			$this->Response->outputResponse(true, false, array("response" => $getgroupchatevent), '', '', 'List of events in Group Chat !!');          
+		           
+							}else{
+							
+							$errors = 'No event Found !!';
+		
+							return $this->Response->outputResponse(false, $error->msg_content, array("response" =>  ''), '', '', $errors);
+		
+					    }		
+								
+				 }
+				
+				
+	}
 
 	/*********************************************************/
 

@@ -1,0 +1,295 @@
+<html>
+   <head>
+    <title>Chat Application</title>
+    <!-- Font Awesome -->
+    <link href="/vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <link rel='stylesheet' href='/css/style.css' type='text/css'/>
+    <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+    <!---emoji -->
+    <!--<script src="//cdn.jsdelivr.net/emojione/2.2.0/lib/js/emojione.min.js"></script>
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/emojione/2.2.0/assets/css/emojione.min.css"/>-->
+   <script src="//twemoji.maxcdn.com/twemoji.min.js"></script>  
+   <script src="/js/emoji.js"></script>  
+   <script src="/css/emoji.css"></script>  
+    <!----AES--->
+    <script src="/js/aes/core-min.js"></script>
+    <script src="/js/aes/enc-utf16-min.js"></script>
+    <script src="/js/aes/enc-base64-min.js"></script>
+    <script src="/js/aes/aes.js"></script>
+  </head>
+  <body>
+    <ul id="notification_list">
+          <li id="show_msg" style="display:none;color:#1ABB9C;"></li>
+        <li id="show_user_status" style="background-color:#eee;"><b style="color:#009afd"><%=received_user[0].fullname%></b> offline</li>
+      </ul>
+      <ul>
+        <%if(row_count>5){%>
+        <li ><a onclick="load_previous()"><input type="hidden" value="0" id="load_timestamp"><input type="hidden" value="<%=row_count%>" id="rest_msges"><span style="text-align:middle;"><i style="display:none;" class="fa fa-spinner fa-spin"></i>&nbsp;&nbsp;Load Previous Messages</span></a></li>
+        <%}%>
+    </ul>
+    <ul id="messages" style="background: #eee;">
+    </ul>
+    <span id="notifyUser"></span>
+    <form id="form" action="" onsubmit="return false;" >
+        <table width="100%">
+            <tr>
+                <td width="70%" style="border: 1px solid #000;">
+      <input type="hidden" id="user" value="" /><input id="m" autocomplete="off" onkeyup="notifyTyping();" placeholder="Type yor message here.." />
+                </td>
+                <td width="10%">
+                     <div class="filebutton" style="width:100%;height:20px;"><img class="emoji" draggable="false" alt="☕" src="https://twemoji.maxcdn.com/16x16/1f600.png"></div>
+                </td>
+                <td width="10%">
+                     <div class="filebutton" style="width:100%;height:20px;">add image<input type="file" id="imagefile" accept="image/*"></div>
+                </td>
+                <td width="10%">
+                    <input type="button" id="button" value="Send" style="width:100%"/>
+                </td>
+            </tr>
+        </table>
+    </form>
+      <script>
+        var socket = io();
+          $(document).ready(function(){
+          var name = '<%=current_user[0].fullname%>';
+          $('#user').val(name);
+          details={};
+          details.from_id='<%=current_user[0].id%>';    
+          details.from_name='<%=current_user[0].fullname%>';    
+          details.to_id='<%=received_user[0].id%>';    
+          details.to_name='<%=received_user[0].fullname%>'; 
+          details.msg=''; 
+          details.image=''; 
+          load_previous();
+          socket.emit('is_connected', 'System', details);
+          socket.emit('chatMessage', 'System', details);
+        });
+          //-------Load messages----//
+          function load_previous(){
+              $('.fa-spinner').show();
+              var last_timestamp=$('#load_timestamp').val();
+              $.post("/moremessages", 
+                     {from_id:'<%=current_user[0].id%>',
+                      to_id:'<%=received_user[0].id%>',
+                      timestamp :last_timestamp 
+                     }, function(result){
+                        $('.fa-spinner').hide();
+                       if(result.msg_list.length>0){
+                            result.msg_list.forEach(function(all_msg){
+                                     var msg_content='<li>';
+                                     var msg_date=new Date(all_msg.created);
+                                      details.msg_token=all_msg.token;
+                                      if(all_msg.message !=null){ var msg_text=CryptoJS.AES.decrypt(all_msg.message, "Secret Passphrase").toString(CryptoJS.enc.Utf8);details.msg=msg_text;}
+                                      if(all_msg.image !=null){ var msg_text='<img src="' + all_msg.image + '" style="max-height:50px;max-width:50px;">';details.image=all_msg.image;}
+                                    
+                                    if(all_msg.sender_id=='<%=current_user[0].id%>'){
+                                        msg_content=msg_content+'<span style="float:right;" id="show_status_'+all_msg.token+'">';
+                                        if(all_msg.is_read=='Y'){
+                                         msg_content=msg_content+'| Read'; 
+                                        }else if(all_msg.is_received=='Y'){
+                                             msg_content=msg_content+'| Received'; 
+                                        }else{
+                                             msg_content=msg_content+'| Sent';}
+                                         msg_content=msg_content+'</span><b style="color:green"> me </b>: ' + msg_text + ' <br><span><b>'+msg_date+'</b></span></li>';
+                                        
+                                    }
+                                     else{     
+                                    msg_content=msg_content+'<li><span id="show_status_'+all_msg.token+'" style="float:right;">|  NotSent </span><b style="color:#009afd"><%=received_user[0].fullname%> </b>: ' + msg_text + '<br><span><b>'+msg_date+'</b></span></li>';  
+                                       if(all_msg.is_read=="N")
+                                        {
+                                            console.log('from other user===========================>');
+                                       socket.emit('is_read', details); 
+                                        }
+                                    }
+                                     $('#messages').prepend(msg_content);
+                                     $('#load_timestamp').val(last_timestamp);
+                            })
+                       }
+                    });
+          }
+          $('#imagefile').bind('change', function(e){
+              var data = e.originalEvent.target.files[0];
+              console.log('data==================================================>'+data.size);
+              if(data.size<=5000000)
+             {
+                 // details.image=resizebeforeUpload(data);
+                  var reader = new FileReader();
+                  reader.onload = function(evt){
+                 //-------------------image resizing------------------------------------------//
+                  var tempImg = new Image();
+                    tempImg.src = reader.result;
+                    tempImg.onload = function() {
+                        console.log('image width============================>'+tempImg.width);
+                        console.log('image height============================>'+tempImg.height);
+                        var MAX_WIDTH = 400;
+                        var MAX_HEIGHT = 300;
+                        var tempW = tempImg.width;
+                        var tempH = tempImg.height;
+                        if (tempW > tempH) {
+                            if (tempW > MAX_WIDTH) {
+                               tempH *= MAX_WIDTH / tempW;
+                               tempW = MAX_WIDTH;
+                            }
+                        } else {
+                            if (tempH > MAX_HEIGHT) {
+                               tempW *= MAX_HEIGHT / tempH;
+                               tempH = MAX_HEIGHT;
+                            }
+                        }
+
+                        var canvas = document.createElement('canvas');
+                        canvas.width = tempW;
+                        canvas.height = tempH;
+                        var ctx = canvas.getContext("2d");
+                        ctx.drawImage(this, 0, 0, tempW, tempH);
+                        var dataURL = canvas.toDataURL("image/jpeg");
+                        console.log('new image ==========================================>'+dataURL);
+                        details.image=dataURL;
+                         details.msg='';
+                     socket.emit('chatMessage', '<%=received_user[0].id%>', details);
+                        var msg_date=new Date();          
+                       $('#messages').append('<li><span id="msg_notsent" style="float:right;">|  NotSent </span><b style="color:green"> me </b>: <img src="' + details.image + '" style="max-height:50px;max-width:50px;"><br><span><b>'+msg_date+'</b></span></li>'); 
+                      }
+                 //-------------------image resizing------------------------------------------//
+                  };
+                  reader.readAsDataURL(data);
+              }
+              else{
+                  $('#notifyUser').css('background-color','#ff9999');
+                  $('#notifyUser').text('File size must be lesser than 5MB.');
+                  $('#imagefile').val('');
+                  setTimeout(function(){ $('#notifyUser').hide(); }, 5000);
+              }
+            });
+          //------Send message to another user----//
+          $('#button').click(function(){
+          var from = $('#user').val();
+          var message = $('#m').val()+' I \u2764\uFE0F \uDBBA\uDF0E emoji!';
+          if(message != '') {
+           var encrypted_message = '' + CryptoJS.AES.encrypt(message, "Secret Passphrase");
+          details.msg=encrypted_message;
+          details.image='';
+          socket.emit('chatMessage', from, details);
+            var msg_date=new Date();
+           $('#messages').append('<li><span id="msg_notsent" style="float:right;">|  NotSent </span><b style="color:green"> me </b>: ' + twemoji.parse(message) + '<br><span><b>'+msg_date+'</b></span></li>'); 
+          }
+            $('#m').val('').focus();
+            });
+        //-----------notify another user---------------//
+        function notifyTyping() {
+          socket.emit('notifyUser', details);
+        }
+        //-----------image resize--------------------------//
+        function resizebeforeUpload(file) {
+var reader = new FileReader();
+    reader.onloadend = function() {
+ 
+    var tempImg = new Image();
+    tempImg.src = reader.result;
+    tempImg.onload = function() {
+        console.log('image width============================>'+tempImg.width);
+        console.log('image height============================>'+tempImg.height);
+        var MAX_WIDTH = 400;
+        var MAX_HEIGHT = 300;
+        var tempW = tempImg.width;
+        var tempH = tempImg.height;
+        if (tempW > tempH) {
+            if (tempW > MAX_WIDTH) {
+               tempH *= MAX_WIDTH / tempW;
+               tempW = MAX_WIDTH;
+            }
+        } else {
+            if (tempH > MAX_HEIGHT) {
+               tempW *= MAX_HEIGHT / tempH;
+               tempH = MAX_HEIGHT;
+            }
+        }
+ 
+        var canvas = document.createElement('canvas');
+        canvas.width = tempW;
+        canvas.height = tempH;
+        var ctx = canvas.getContext("2d");
+        ctx.drawImage(this, 0, 0, tempW, tempH);
+        var dataURL = canvas.toDataURL("image/jpeg");
+        console.log('new image ==========================================>'+dataURL);
+        return dataURL;
+      }
+ 
+   }
+   reader.readAsDataURL(file);
+}
+        //-----------receive message from another user--------//  
+        socket.on('chatMessage_<%=current_user[0].id%>', function(from, details){
+          var me = $('#user').val();
+          var color = (from == me) ? 'green' : '#009afd';
+          var from = (from == me) ? 'Me' : from;
+          $('#notifyUser').text('');
+           if(details.msg =='' && details.image ==''){
+                if(details.from_id=='<%=received_user[0].id%>'){
+                    $('#show_user_status').html('<b style="color:' + color + '">' + details.from_name + '</b> online');
+              }
+              else{
+                  $('#notification_list').append('<li><b style="color:' + color + '">' + details.from_name + '</b> online</li>');
+              }
+              
+          }
+          else{
+               console.log('msg received to receiver end========>');
+              socket.emit('is_received', details); 
+              if(details.msg !=''){var received_mesage= CryptoJS.AES.decrypt(details.msg, "Secret Passphrase").toString(CryptoJS.enc.Utf8);}
+              if(details.image !=''){
+                  if(details.from_id=='<%=received_user[0].id%>'){ 
+                     var received_mesage= '<img src="' + details.image + '" style="max-height:50px;max-width:50px;">';
+                  }
+                  else{
+                     var received_mesage='Sent an image';
+                     }   
+                }
+              
+              if(details.from_id=='<%=received_user[0].id%>'){
+                    $('#messages').append('<li><b style="color:' + color + '"><%=received_user[0].fullname%></b>: ' + received_mesage + '</li>');  
+                    socket.emit('is_read', details); 
+              }
+              else{
+                  $('#show_msg').html('<a traget="_blank" href="/letschat/'+details.to_id+'/'+details.from_id+'"><b ><%=received_user[0].fullname%></b>: ' + received_mesage + '</a>');
+                 $('#show_msg').show();                     
+                   setTimeout(function(){ $('#show_msg').hide(); }, 5000);
+              }
+          }
+        });
+        socket.on('notifyUser_<%=current_user[0].id%>', function(user){
+          var me = $('#user').val();
+          if(user.from_name != me && user.from_id=='<%=received_user[0].id%>') {
+            $('#notifyUser').text(user.from_name + ' is typing ...');
+          }
+          setTimeout(function(){ $('#notifyUser').text(''); }, 10000);;
+        });   
+
+        socket.on('received_<%=current_user[0].id%>', function(user){
+                  console.log('message received====================>'+user.msg_token);
+                  $('#show_status_'+user.msg_token).html('| Received');
+        }); 
+          
+        socket.on('sent_<%=current_user[0].id%>', function(user){
+                  console.log('msg has been sent');
+                  $('#msg_notsent').attr('id','show_status_'+user.msg_token);
+                  $('#show_status_'+user.msg_token).html('| Sent');
+        });   
+
+        socket.on('read_<%=current_user[0].id%>', function(user){
+                   console.log('message read====================>'+user.msg_token);
+                  $('#show_status_'+user.msg_token).html('| Read');
+        });   
+
+        socket.on('is_connected_<%=current_user[0].id%>', function(user){
+                  socket.emit('connected', user);
+        });      
+
+        socket.on('connected_<%=current_user[0].id%>', function(user){
+                  $('#show_user_status').html('<b style="color:#009afd"><%=received_user[0].fullname%></b> online');
+        });   
+          
+      </script>
+  </body>
+</html>

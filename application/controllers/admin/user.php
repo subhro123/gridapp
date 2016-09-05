@@ -221,10 +221,10 @@ class User extends CI_Controller {
 						 $profile_id = $this->input->post('profile_id');
 						 //$data['admin_details'] = $this->muser->userdetails($data['session_data']['id']);
 						 
-						  $image  = $_FILES['image'];
+						           $image  = $_FILES['image'];
 								  //echo $image['name'];
 								  $file_element_name = 'image';
-								 	if($image['name']!=''){
+								  if($image['name']!=''){
 											
 											$edituser = $this->muser->userdetails(1);
 											$smallimage = explode('.',$edituser['image']);

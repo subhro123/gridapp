@@ -8,12 +8,6 @@
 
  */
 
- 
-
- 
-
- 
-
  class Muser extends CI_Model {
 
 
@@ -372,7 +366,23 @@
  					return $query->num_rows; 
 
 		 }
+         
+		 public function get_final_user_social_id($social_id){
+			 
+			 	    $this->db->select('id,token');
 
+   					$this->db->from('user');
+
+					if($social_id!=''){
+
+						$this->db->where('social_id',$social_id);
+
+					}
+
+					$query = $this->db->get();
+
+   					return $query->row_array(); 
+		 }
 		 public function get_final_user_id($email){
 
 					
@@ -496,13 +506,13 @@
 
     }
 
-	public function get_user_password_id($access_code,$new_password){
+	public function get_user_password_id($user_id,$old_password,$new_password){
 
 		
 
-		               if($access_code!=''){		
+		               if($old_password!=''){		
 
-						$rs=$this->db->select('*')->where('password',$access_code)->get('user');
+						$rs=$this->db->select('*')->where('password',$old_password)->where('id',$user_id)->get('user');
 
 						//echo $this->db->last_query();
 
@@ -536,7 +546,7 @@
 
 								if($new_password!=''){					
 
-										$update=$this->db->where('id',$row['id'])->update('user',$data2);
+										$update=$this->db->where('id',$user_id)->update('user',$data2);
 
 									}
 
@@ -1054,6 +1064,123 @@
 
 			   $row=$query->row_array();
 			   
+			   
+			    if($row['email_flag']=='true'){
+			   
+			   		$row['email_flag']=true;
+			   
+			   }else{
+			   		
+					$row['email_flag']=false;
+					
+			   }
+			   
+			    /*if($row['email_flag']=='false'){
+			   
+			   		$row['email_flag']=false;
+			   }
+			   */
+			   
+			   if($row['gender_flag']=='true'){
+			   
+			   		$row['gender_flag'] =true;
+			   
+			   }else{
+			   		
+					$row['gender_flag']=false;
+					
+			   }
+			   
+			    /*if($row['gender_flag']=='false'){
+			   
+			   		$row['gender_flag']=false;
+			   }*/
+			   
+			   if($row['dob_flag']=='true'){
+			   
+			   		$row['dob_flag'] =true;
+			   
+			   }else{
+			   		
+					$row['dob_flag']=false;
+					
+			   }
+			   
+			   /*if($row['dob_flag']=='false'){
+			   
+			   		$row['dob_flag'] =false;
+			   }*/
+			   
+			    if($row['occupation_flag']=='true'){
+			   
+			   		$row['occupation_flag'] =true;
+			   
+			   }else{
+			   		
+					$row['occupation_flag']=false;
+					
+			   }
+			   
+			   /* if($row['occupation_flag']=='false'){
+			   
+			   		$row['occupation_flag'] =false;
+			   }*/
+			   
+			   if($row['phone_flag']=='true'){
+			   
+			   		$row['phone_flag'] =true;
+			   
+			   }else{
+			   		
+					$row['phone_flag']=false;
+					
+			   }
+			   
+			    if($row['social_flag']=='true'){
+			   
+			   		$row['social_flag'] =true;
+			   
+			   }else{
+			   		
+					$row['social_flag']=false;
+					
+			   }
+			 /*  if($row['phone_flag']=='false'){
+			   
+			   		$row['phone_flag'] =false;
+			   }*/
+			   
+			   ///////////////////////////////////////////////////////////
+			   /* if($row['email_flag']==false){
+			   
+			   		//$row['email_flag']=false;
+					$row['email'] ='';
+			   }
+			   
+			   if($row['gender_flag']==false){
+			   
+			   		//$row['gender_flag']=false;
+					$row['gender'] ='';
+			   }
+			   
+			   if($row['dob_flag']==false){
+			   
+			   		//$row['dob_flag']=false;
+					$row['dob'] ='';
+			   }
+			   
+			    if($row['occupation_flag']==false){
+			   
+			   		//$row['occupation_flag']=false;
+					$row['occupation'] ='';
+			   }
+			   
+			   if($row['phone_flag']==false){
+			   
+			   		//$row['phone_flag']=false;
+					$row['phone'] ='';
+			   }*/
+			   
 			   if($row['dob']=='0000-00-00'){
 			   
 			   
@@ -1065,6 +1192,8 @@
 			   
 			   
 			   }
+			   
+			  
 
 			   
 
@@ -1282,17 +1411,17 @@
 
 			   $row2=$query->row_array();
 
-				   if(isset($row2['relationshipstatus'])){
+			   if(isset($row2['relationshipstatus'])){
+	
+					   $row['relation_status']=$row2['relationshipstatus'];
+	
+					   }else{
+	
+					   $row['relation_status']='';  
+	
+					   }
 
-				   $row['relation_status']=$row2['relationshipstatus'];
-
-				   }else{
-
-				   $row['relation_status']='';  
-
-				   }
-
-			   	}
+			   		}
 
 			   }
 
@@ -1384,16 +1513,11 @@
 
 	function getDisplayEvent($post_lat,$post_long,$radius,$event_date,$date_select_type,$user_id,$post_filter){
 
+		  //echo $post_filter;
 	
-
-	//echo $post_filter;
-
-	//echo $user_id;
-
-	//echo $date_select_type;
-
+		  //echo $user_id;
 	
-
+		  //echo $date_select_type;
 		  if($date_select_type=='next'){
 
 			
@@ -1512,15 +1636,106 @@
 
 			else if($post_filter=='around'){
 
-					
+			    $SQL1 = 'SELECT sender_id as userid FROM `friendsrelation` WHERE receiver_id="'.$user_id.'" and relationshipstatus="accept"';
 
-					$SQL = "SELECT * FROM `events` WHERE DATE(event_date) > '".$event_date."' AND user_id!='".$user_id."' ORDER BY event_date asc";		
+				$query = $this->db->query($SQL1);
+
+				$datasender=$query->result_array();
+
+				
+
+				if(!empty($datasender)){
+
+				foreach($datasender as $key=>$val){
+
+							$arrsender[$key]= $val;
+
+					}
+
+				}
+
+				
+
+				$SQL2 = 'SELECT receiver_id as userid  FROM `friendsrelation` WHERE sender_id="'.$user_id.'" and relationshipstatus="accept" ';
+
+				$query = $this->db->query($SQL2);
+
+				$datareceiver=$query->result_array();
+
+				
+
+				if(!empty($datareceiver)){
+
+				foreach($datareceiver as $key=>$val){
+
+							$arrreceiver[$key]= $val;
+
+					}
+
+				}
+
+				$data1=[];
+
+				
+
+				if(!empty($arrsender) && !empty($arrreceiver)){
+
+					$data1 = array_merge($arrsender,$arrreceiver);
+
+				}
+
+				if(!empty($arrsender) && empty($arrreceiver)){
+
+					$data1 = $arrsender;
+
+				}
+
+				if(!empty($arrreceiver) && empty($arrsender)){
+
+					$data1 = $arrreceiver;
+
+				}
+
+				if(empty($arrreceiver) && empty($arrsender)){
+
+					$data1 = [];
+
+				}
+
+				//echo '<pre>';
+
+				//print_r($data);
+
+				$arr=array();
+
+				if(!empty($data1)){
+
+				foreach($data1 as $key=>$val){
+
+						$arr[$key]= $val['userid'];
+
+					}
+
+				
+
+				 $str = implode(',',$arr);
+
+				 }
+
+				 else{
+
+				 $str='';	 
+
+				 }
+					if($sql!=''){
+					$SQL = "SELECT * FROM `events` WHERE DATE(event_date) > '".$event_date."' AND user_id NOT IN (".$str.") AND share='all' AND user_id!='".$user_id."' ORDER BY event_date asc";
+					}else{
+					$SQL = "SELECT * FROM `events` WHERE DATE(event_date) > '".$event_date."' AND share='all' AND user_id!='".$user_id."' ORDER BY event_date asc";	
+					}
 
 			
 
 			}
-
-			
 
 			else if($post_filter=='myevent'){
 
@@ -1561,8 +1776,12 @@
 					}
 
 					if($post_filter=='around'){
-
-						$SQL = "SELECT formated_date,id FROM `events` WHERE formated_date='".$val['formated_date']."' AND user_id!='".$user_id."'";	
+						
+						if($str!=''){
+						$SQL = "SELECT formated_date,id FROM `events` WHERE formated_date='".$val['formated_date']."' AND user_id NOT IN (".$str.") AND share='all' AND user_id!='".$user_id."'";
+						}else{
+						$SQL = "SELECT formated_date,id FROM `events` WHERE formated_date='".$val['formated_date']."'  AND share='all' AND user_id!='".$user_id."'";	
+						}
 
 					}
 
@@ -1618,7 +1837,7 @@
 
 			
 
-			 if($post_filter=='myfriend'){
+			if($post_filter=='myfriend'){
 
 			
 
@@ -1731,16 +1950,109 @@
 			}
 
 			else if($post_filter=='around'){
+				
+				$SQL1 = 'SELECT sender_id as userid FROM `friendsrelation` WHERE receiver_id="'.$user_id.'" and relationshipstatus="accept"';
 
-			
+				$query = $this->db->query($SQL1);
 
-				$SQL = "SELECT * FROM `events` WHERE DATE(event_date) < '".$event_date."'   AND user_id!=".$user_id." AND DATE(event_date) >= DATE(NOW()) ORDER BY event_date desc";		
+				$datasender=$query->result_array();
+
+				
+
+				if(!empty($datasender)){
+
+				foreach($datasender as $key=>$val){
+
+							$arrsender[$key]= $val;
+
+					}
+
+				}
+
+				
+
+				$SQL2 = 'SELECT receiver_id as userid  FROM `friendsrelation` WHERE sender_id="'.$user_id.'" and relationshipstatus="accept" ';
+
+				$query = $this->db->query($SQL2);
+
+				$datareceiver=$query->result_array();
+
+				
+
+				if(!empty($datareceiver)){
+
+				foreach($datareceiver as $key=>$val){
+
+							$arrreceiver[$key]= $val;
+
+					}
+
+				}
+
+				$data1=[];
+
+				
+
+				if(!empty($arrsender) && !empty($arrreceiver)){
+
+					$data1 = array_merge($arrsender,$arrreceiver);
+
+				}
+
+				if(!empty($arrsender) && empty($arrreceiver)){
+
+					$data1 = $arrsender;
+
+				}
+
+				if(!empty($arrreceiver) && empty($arrsender)){
+
+					$data1 = $arrreceiver;
+
+				}
+
+				if(empty($arrreceiver) && empty($arrsender)){
+
+					$data1 = [];
+
+				}
+
+				//echo '<pre>';
+
+				//print_r($data);
+
+				$arr=array();
+
+				if(!empty($data1)){
+
+				foreach($data1 as $key=>$val){
+
+						$arr[$key]= $val['userid'];
+
+					}
+
+				
+
+				 $str = implode(',',$arr);
+
+				 }
+
+				 else{
+
+				 $str='';	 
+
+				 }
+	
+			   
+				if($str!=''){
+				$SQL = "SELECT * FROM `events` WHERE DATE(event_date) < '".$event_date."' AND user_id NOT IN(".$str.") AND share='all' AND user_id!=".$user_id." AND DATE(event_date) >= DATE(NOW()) ORDER BY event_date desc";
+				}else{
+				$SQL = "SELECT * FROM `events` WHERE DATE(event_date) < '".$event_date."' AND share='all' AND user_id!=".$user_id." AND DATE(event_date) >= DATE(NOW()) ORDER BY event_date desc";	
+				}
 
 			
 
 			}
-
-			
 
 			else if($post_filter=='myevent'){
 
@@ -1784,7 +2096,11 @@
 
 					if($post_filter=='around'){
 
-					$SQL = "SELECT formated_date,id FROM `events` WHERE formated_date='".$val['formated_date']."' AND user_id!=".$user_id;	
+					if($str!=''){
+					$SQL = "SELECT formated_date,id FROM `events` WHERE formated_date='".$val['formated_date']."' AND AND user_id NOT IN (".$str.") AND share='all' AND user_id!=".$user_id;	
+					}else{
+					$SQL = "SELECT formated_date,id FROM `events` WHERE formated_date='".$val['formated_date']."' AND AND share='all' AND user_id!=".$user_id;	
+					}
 
 					}
 
@@ -1839,10 +2155,6 @@
 			  }
 
 		  else if($date_select_type=='calendar'){
-
-			
-
-			
 
 			//$datamain=$query->row_array();
 
@@ -1960,15 +2272,107 @@
 
 			else if($post_filter=='around'){
 
-			
+				$SQL1 = 'SELECT sender_id as userid FROM `friendsrelation` WHERE receiver_id="'.$user_id.'" and relationshipstatus="accept"';
 
-				$SQL = "SELECT * FROM `events` WHERE DATE(event_date) = '".$event_date."'   AND user_id!=".$user_id;		
+				$query = $this->db->query($SQL1);
+
+				$datasender=$query->result_array();
+
+				
+
+				if(!empty($datasender)){
+
+				foreach($datasender as $key=>$val){
+
+							$arrsender[$key]= $val;
+
+					}
+
+				}
+
+				
+
+				$SQL2 = 'SELECT receiver_id as userid  FROM `friendsrelation` WHERE sender_id="'.$user_id.'" and relationshipstatus="accept" ';
+
+				$query = $this->db->query($SQL2);
+
+				$datareceiver=$query->result_array();
+
+				
+
+				if(!empty($datareceiver)){
+
+				foreach($datareceiver as $key=>$val){
+
+							$arrreceiver[$key]= $val;
+
+					}
+
+				}
+
+				$data1=[];
+
+				
+
+				if(!empty($arrsender) && !empty($arrreceiver)){
+
+					$data1 = array_merge($arrsender,$arrreceiver);
+
+				}
+
+				if(!empty($arrsender) && empty($arrreceiver)){
+
+					$data1 = $arrsender;
+
+				}
+
+				if(!empty($arrreceiver) && empty($arrsender)){
+
+					$data1 = $arrreceiver;
+
+				}
+
+				if(empty($arrreceiver) && empty($arrsender)){
+
+					$data1 = [];
+
+				}
+
+				//echo '<pre>';
+
+				//print_r($data);
+
+				$arr=array();
+
+				if(!empty($data1)){
+
+				foreach($data1 as $key=>$val){
+
+						$arr[$key]= $val['userid'];
+
+					}
+
+				
+
+				 $str = implode(',',$arr);
+
+				 }
+
+				 else{
+
+				 $str='';	 
+
+				 }
+	
+				if($str!=''){	
+				$SQL = "SELECT * FROM `events` WHERE DATE(event_date) = '".$event_date."' AND user_id NOT IN(".$str.") AND share='all' AND user_id!=".$user_id;
+				}else{
+				$SQL = "SELECT * FROM `events` WHERE DATE(event_date) = '".$event_date."' AND share='all' AND user_id!=".$user_id;	
+				}
 
 			
 
 			}
-
-			
 
 			else if($post_filter=='myevent'){
 
@@ -2014,15 +2418,13 @@
 
 		  else if($date_select_type==''){
 
-			
-
 			//echo 'bbbbb';
 
 			if($post_filter=='myfriend'){
 
 			
 
-						//echo 'bbbbb'; 
+				//echo 'bbbbb'; 
 
 				$SQL1 = ' SELECT sender_id as userid FROM `friendsrelation` WHERE receiver_id="'.$user_id.'" and relationshipstatus="accept" ';
 
@@ -2132,19 +2534,109 @@
 
 			}
 
-			
-
 			else if($post_filter=='around'){
+				
+			    $SQL1 = 'SELECT sender_id as userid FROM `friendsrelation` WHERE receiver_id="'.$user_id.'" and relationshipstatus="accept"';
 
-			
+				$query = $this->db->query($SQL1);
 
-				$SQL = "SELECT * FROM `events` WHERE DATE(event_date) = '".$event_date."'   AND user_id!=".$user_id;		
+				$datasender=$query->result_array();
+
+				
+
+				if(!empty($datasender)){
+
+				foreach($datasender as $key=>$val){
+
+							$arrsender[$key]= $val;
+
+					}
+
+				}
+
+				
+
+				$SQL2 = 'SELECT receiver_id as userid  FROM `friendsrelation` WHERE sender_id="'.$user_id.'" and relationshipstatus="accept" ';
+
+				$query = $this->db->query($SQL2);
+
+				$datareceiver=$query->result_array();
+
+				
+
+				if(!empty($datareceiver)){
+
+				foreach($datareceiver as $key=>$val){
+
+							$arrreceiver[$key]= $val;
+
+					}
+
+				}
+
+				$data1=[];
+
+				
+
+				if(!empty($arrsender) && !empty($arrreceiver)){
+
+					$data1 = array_merge($arrsender,$arrreceiver);
+
+				}
+
+				if(!empty($arrsender) && empty($arrreceiver)){
+
+					$data1 = $arrsender;
+
+				}
+
+				if(!empty($arrreceiver) && empty($arrsender)){
+
+					$data1 = $arrreceiver;
+
+				}
+
+				if(empty($arrreceiver) && empty($arrsender)){
+
+					$data1 = [];
+
+				}
+
+				//echo '<pre>';
+
+				//print_r($data);
+
+				$arr=array();
+
+				if(!empty($data1)){
+
+				foreach($data1 as $key=>$val){
+
+						$arr[$key]= $val['userid'];
+
+					}
+
+				
+
+				 $str = implode(',',$arr);
+
+				 }
+
+				 else{
+
+				 $str='';	 
+
+				 }
+
+			if($str!=''){
+			$SQL = "SELECT * FROM `events` WHERE DATE(event_date) = '".$event_date."' AND share='all' AND user_id NOT IN (".$str.") AND user_id!=".$user_id;
+			}else{
+			$SQL = "SELECT * FROM `events` WHERE DATE(event_date) = '".$event_date."' AND share='all' AND user_id!=".$user_id;	
+			}
 
 			
 
 			}
-
-			
 
 			else if($post_filter=='myevent'){
 
@@ -2418,41 +2910,205 @@
 
 	   }
 
-			  
-
-			  $strs=implode(',',$id);	 
+		  $strs=implode(',',$id);	 
 
 			  //die();
+		  if($strs!=''){
 
-			  
+		 $SQL = "SELECT *, ( 3959 * acos( cos( radians(".$post_lat.") ) * cos( radians( post_lat ) ) * cos( radians( post_long ) - radians(".$post_long.") ) + sin( radians(".$post_lat.") ) * sin( radians( post_lat ) ) ) ) AS distance FROM events WHERE id IN(".$strs.") HAVING distance < ".$radius." ORDER BY is_featured desc,event_date";
 
-			  
+		  $query = $this->db->query($SQL);
 
-			  if($strs!=''){
-
-				
-
-				
-
-				$SQL = "SELECT *, ( 3959 * acos( cos( radians(".$post_lat.") ) * cos( radians( post_lat ) ) * cos( radians( post_long ) - radians(".$post_long.") ) + sin( radians(".$post_lat.") ) * sin( radians( post_lat ) ) ) ) AS distance FROM events WHERE id IN(".$strs.") HAVING distance < ".$radius." ORDER BY is_featured desc,event_date";
-
-			
-
-						$query = $this->db->query($SQL);
-
-						$data=$query->result_array();
-
-						
-
-						if($post_filter=='myfriend' || $post_filter=='around')
-
+		  $data=$query->result_array();
+						/*if($post_filter=='around')
 						{
+						  
 
 						foreach($data as $key=>$val){
 
-							
+						$SQL3 = "SELECT * FROM event_view WHERE event_id=".$val['id']." and status='accept'";
+
+						$query = $this->db->query($SQL3);
+
+						$countevent=$query->num_rows();
 
 						
+
+						if($countevent==$val['maxpersonallowed']){
+
+							
+
+							
+
+							$data[$key]['event_status']   = 'unavailable';
+
+							
+
+							
+
+						}
+
+						if($countevent==0){
+
+							
+
+							$SQL2 = "SELECT status FROM event_view WHERE event_join_id='".$user_id."' AND event_id=".$val['id'];        
+
+								
+
+								$query = $this->db->query($SQL2);
+
+								$eventtype=$query->row_array();
+
+								
+
+								if(is_null($eventtype['status'])){
+
+									
+
+								$data[$key]['event_status']   = '';
+
+								
+
+								}else{
+
+								if($eventtype['status']=='cancel'){
+
+								$data[$key]['event_status']   = '';	
+
+								}else{
+
+								$data[$key]['event_status']   = $eventtype['status'];
+
+									}
+
+								}
+
+						}
+
+						
+
+						if($countevent!=0 && $countevent<$val['maxpersonallowed']){
+
+								//echo 'cccc';
+
+						$SQL2 = "SELECT status FROM event_view WHERE event_join_id='".$user_id."' AND event_id=".$val['id'];        
+
+								
+
+								$query = $this->db->query($SQL2);
+
+								$eventtype=$query->row_array();
+
+								
+
+								
+
+								if(is_null($eventtype['status'])){
+
+									
+
+								$data[$key]['event_status']   = '';
+
+								
+
+								}else{
+
+									
+
+								if($eventtype['status']=='cancel'){
+
+								$data[$key]['event_status']   = ''	;
+
+								}else{
+
+								$data[$key]['event_status']   = $eventtype['status'];
+
+									}
+
+								}
+
+								
+
+								
+
+							}
+
+						
+									
+								  $this->db->select('is_invite');
+
+								   $this->db->from('event_invite');
+								   
+								   $this->db->where('event_id',$val['id']);
+
+								   $this->db->where('user_id',$user_id);
+
+								   $query = $this->db->get();
+								   
+								   //echo $this->db->last_query();
+
+								   $row_event=$query->row_array(); 
+								   
+								    if(isset($row_event['is_invite'])){
+
+								   	$data[$key]['is_invite']   = $row_event['is_invite'];
+
+								   }else{
+								   
+								   $data[$key]['is_invite']   = 0;
+								   
+								   }
+								   
+								   
+								   $this->db->select('fullname,gender,token');
+
+								   $this->db->from('user');
+
+								   $this->db->where('id',$val['user_id']);
+
+								   $query = $this->db->get();
+
+								   //return	$query->num_rows; 
+
+								   //echo $this->db->last_query();
+
+								   $row=$query->row_array(); 
+
+								   $data[$key]['fullname'] = $row['fullname'];
+
+								   
+
+								   if($row['gender']=='M'){
+
+								   	$data[$key]['gender']   = 'male';
+
+								   }
+
+								    if($row['gender']=='F'){
+
+								   	$data[$key]['gender']   = 'female';
+
+								   }	
+								   
+								    if(isset($row['token'])){
+									
+										$data[$key]['user_token']   = $row['token'];
+
+								
+									}
+								
+
+								
+
+							}
+
+							
+						}*/
+		  				if($post_filter=='myfriend' || $post_filter=='around')
+						{
+
+						foreach($data as $key=>$val){
 
 						$SQL3 = "SELECT * FROM event_view WHERE event_id=".$val['id']." and status='accept'";
 
@@ -2632,9 +3288,7 @@
 							}
 
 						}
-
 						else if($post_filter=='myevent')
-
 						{
 
 							foreach($data as $key=>$val){
@@ -2761,6 +3415,8 @@
 									$i++;
 
 							 }
+					    //echo '<pre>';
+						//print_r($finalarr);
 
 						//echo $formated_date;
 
@@ -3237,14 +3893,9 @@ public function getEventUser($user_id,$type){
 
 			   $data=$query->result_array();
 
-			 
-
 			   foreach($data as $key=>$val){
 
 				   		
-
-						
-
 						$SQL1 = "SELECT events.created_date,events.user_id as event_creator_id,events.id as post_id,events.formated_date,events.formated_time,events.description,events.post_location FROM events WHERE events.id =".$val['event_id']." AND DATE(events.event_date) >= DATE(NOW())";
 
 						
@@ -3253,6 +3904,7 @@ public function getEventUser($user_id,$type){
 
 			     	    $arr[$key]=$query->row_array();
 
+						if(!empty($arr[$key])){
 						
 						 $SQL1 = "SELECT token FROM user WHERE id='".$arr[$key]['event_creator_id']."'";
 						 $query = $this->db->query($SQL1);
@@ -3288,7 +3940,7 @@ public function getEventUser($user_id,$type){
 
 						$current_time = time();
 
-						if(!empty($arr[$key])){
+						
 
 					    $remain_time[$key] = $current_time-strtotime($arr[$key]['created_date']);
 
@@ -3539,6 +4191,8 @@ public function friendAcceptList($user_id){
 				$data[$key]['unique_id']=$val['uniuqe_id'];
 
 				$data[$key]['user_id']=$row['token'];
+				
+				$data[$key]['chat_user_id']=$row['id'];
 
 				$data[$key]['fullname']=$row['fullname'];
 
@@ -3561,6 +4215,8 @@ public function friendAcceptList($user_id){
 				$data[$key]['unique_id']=$val['uniuqe_id'];
 
 				$data[$key]['user_id']=$row['token'];
+				
+				$data[$key]['chat_user_id']=$row['id'];
 
 				$data[$key]['fullname']=$row['fullname'];
 
@@ -3578,6 +4234,17 @@ public function friendAcceptList($user_id){
 
 }
 
+public function checkUserDevicebyToken($token){
+		
+					$SQL = "SELECT * FROM user WHERE token='".$token."'";
+					
+					$query = $this->db->query($SQL);
+
+			 	 	$count=$query->num_rows();
+					
+					return $count;
+	
+}
 public function getuseridByToken($token,$email){
 	
 				 if($email!='' && $token==''){
@@ -3612,6 +4279,54 @@ public function getuseridByToken($token,$email){
 	
 }
 
+public function updatePrivacy($email_flag,$gender_flag,$dob_flag,$occupation_flag,$phone_flag,$user_id){
+				
+				
+				 
+				 if(isset($email_flag)){
+				 
+				 $SQL = "UPDATE user SET email_flag= '".$email_flag."' WHERE id='".$user_id."'";
+				 $query = $this->db->query($SQL);
+				 }
+				 
+				 if(isset($gender_flag)){
+				 
+				 $SQL = "UPDATE user SET gender_flag= '".$gender_flag."' WHERE id='".$user_id."'";
+				 $query = $this->db->query($SQL);
+				 }
+				 
+				  if(isset($dob_flag)){
+				 
+				 $SQL = "UPDATE user SET dob_flag='".$dob_flag."' WHERE id='".$user_id."'";
+				 $query = $this->db->query($SQL);
+				 }
+				 
+				  if(isset($occupation_flag)){
+				 
+				 $SQL = "UPDATE user SET  occupation_flag='".$occupation_flag."'  WHERE id='".$user_id."'";
+				 $query = $this->db->query($SQL);
+				 }
+				 
+				  if(isset($phone_flag)){
+				 
+				 $SQL = "UPDATE user SET phone_flag='".$phone_flag."'  WHERE id='".$user_id."'";
+				 $query = $this->db->query($SQL);
+				 }
+				 
+				  if(isset($social_flag)){
+				 
+				 $SQL = "UPDATE user SET social_flag='".$social_flag."'  WHERE id='".$user_id."'";
+				 $query = $this->db->query($SQL);
+				 }
+				 
+				 
+				 
+				 
+
+				 
+
+}
+
 public function chkUserPositionByUserid($user_id){
 
 
@@ -3622,15 +4337,38 @@ public function chkUserPositionByUserid($user_id){
 
 			 	 $row=$query->num_rows();
 
-				 
-
-		         return $row;
+				 return $row;
 
 				 
 
 }
 
+public function getSubInterestName($subinterest_ids){
 
+				$SQL="SELECT subinterest_name FROM interest WHERE id IN (".$subinterest_ids.")";
+				$query = $this->db->query($SQL);
+                $result=$query->result_array();
+				$arr=[];
+				foreach($result as $key=>$val){
+						
+						$arr[$key] = $val['subinterest_name'];
+						
+				}
+				$string = implode(',',$arr);	
+				
+				return $string;		
+}
+
+public function getUseridBysubInterest($subinterest_ids,$user_id){
+
+				$SQL = " SELECT GROUP_CONCAT(subinterest_id), user_id FROM `interest_user_relation` WHERE subinterest_id IN(".$subinterest_ids.") AND user_id!=".$user_id." GROUP BY `user_id` ";
+
+				$query = $this->db->query($SQL);
+
+				$result=$query->result_array();
+				
+				return $result;
+}
 
 public function chkFriendPositionByUserid($user_id,$radius,$post_lat,$post_long){
 
@@ -3850,7 +4588,245 @@ public function getPhoneCodeByCountryName($country_name){
 
 }
 
+public function getGroupChatEvent($user_id){
+			
+			
+			$SQLOWNEREVENT = "SELECT id,post_title,user_id,created_date FROM events WHERE  user_id='".$user_id."'  ";
+			$queryownerevent = $this->db->query($SQLOWNEREVENT);
+			$dataownerevent = $queryownerevent->result_array();
+			
+			$arrownevent =[];
+			
+			
+			$m=0;
+			foreach($dataownerevent as $keyevent=>$valevent){
+			
+						//echo 'count---->'.$keyevent;
+						$SQLEVENTINVITE = "SELECT id FROM event_view WHERE  event_id=".$valevent['id']." AND status='accept' ";
+				        $queryeventinvite = $this->db->query($SQLEVENTINVITE);
+						$dataeventinvite = $queryeventinvite->num_rows();
+						
+						//echo 'count---->'.$m;
+						//echo $dataeventinvite ;
+						if($dataeventinvite >0 ){
+						//echo 'count---->'.$m;
+									$arrownuser =[];
+									$arrownevent[$m]['id'] =  $valevent['id'];
+									$arrownevent[$m]['post_title'] =  $valevent['post_title'];
+									$arrownevent[$m]['created_date'] =  date('D, M jS Y',strtotime($valevent['created_date']));
+									
+									$SQLGROUPCHECK = "SELECT id FROM groups WHERE  group_id=".$valevent['id']."  ";
+									$querygroupcheck = $this->db->query($SQLGROUPCHECK);
+									$datagroupcheck[$m]  = $querygroupcheck->num_rows();
+									
+									if($datagroupcheck[$m] == 0){
+									
+										$arrgroup = [];
+										$arrgroup[$m]['group_id'] =  $valevent['id'];	
+										$arrgroup[$m]['group_name'] =  $valevent['post_title'];
+										$table='groups';
+										$this->db->insert($table,$arrgroup[$m]); 
+									}
+									
+									$SQLEVENTUSERINVITE = "SELECT event_join_id FROM event_view WHERE  event_id=".$valevent['id']." AND status='accept' ";
+							        $queryeventuserinvite = $this->db->query($SQLEVENTUSERINVITE);
+									$dataeventuserinvite = $queryeventuserinvite->result_array();
+									
+									$SQLCREATORUSER =   "SELECT id as user_id,token,fullname,image FROM user WHERE  id=".$valevent['user_id']."";
+									$querycreatorowneruser = $this->db->query($SQLCREATORUSER);
+									$datacreatorowneruser[0]=$querycreatorowneruser->row_array();
+									
+									$SQLGROUPMEMBERCHECK = "SELECT id FROM groups_member WHERE  member_id=".$datacreatorowneruser[0]['user_id']." AND group_id=".$valevent['id']."  ";
+									$querygroupmemcheck = $this->db->query($SQLGROUPMEMBERCHECK);
+									$datagroupmemcheck  = $querygroupmemcheck->num_rows();
+												
+												if($datagroupmemcheck == 0){
+												
+													$arrmemgroup = [];
+													$arrmemgroup['group_id'] =  $valevent['id'];	
+													$arrmemgroup['member_id'] =  $datacreatorowneruser[0]['user_id'];
+													$table='groups_member';
+													$this->db->insert($table,$arrmemgroup); 
+												}
+									$i=0;
+									
+									foreach($dataeventuserinvite as $keyeventuserinvite=>$valeventuserinvite){
+												$i++;
+												$SQLUSER =   "SELECT id,token,fullname,image FROM user WHERE  id=".$valeventuserinvite['event_join_id']."";
+												$queryownuser = $this->db->query($SQLUSER);
+												$dataownuser = $queryownuser->row_array();
+												//echo  $dataownuser['id'];
+												$arrownuser[$i]['user_id'] = $dataownuser['id'];
+												$arrownuser[$i]['token']= $dataownuser['token'];
+												$arrownuser[$i]['fullname'] = $dataownuser['fullname'];
+												$arrownuser[$i]['image'] = $dataownuser['image'];
+												
+												$SQLGROUPMEMBERCHECKS = "SELECT id FROM groups_member WHERE  member_id=".$arrownuser[$i]['user_id']." AND group_id=".$valevent['id']."  ";
+												$querygroupmemchecks = $this->db->query($SQLGROUPMEMBERCHECKS);
+												$datagroupmemchecks[$i]  = $querygroupmemchecks->num_rows();
+												
+												if($datagroupmemchecks[$i] == 0){
+												
+													$arrmemgroups = [];
+													$arrmemgroups[$i]['group_id'] =  $valevent['id'];	
+													$arrmemgroups[$i]['member_id'] =  $arrownuser[$i]['user_id'];
+													$table='groups_member';
+													$this->db->insert($table,$arrmemgroups[$i]); 
+												}
+									
+									}
+									//echo '<pre>';
+									//print_r($arrownuser);
+									
+									/* $SQLCREATOR = "SELECT id,token,fullname,image FROM user WHERE  id=".$valevent['user_id']."";
+									 $queryowncreator = $this->db->query($SQLCREATOR);
+									 $dataowncreator= $queryowncreator->row_array();
+									 
+									 echo $dataowncreator['fullname'];*/
+								
+								$arrownevent[$m]['user']=array_merge($datacreatorowneruser ,$arrownuser);
+								$m++;
+						}
+						
+						
+					
+			}
+			
+			$SQLOTHEREVENT = "SELECT event_id,event_creator_id FROM event_view WHERE  event_join_id='".$user_id."'  AND status='accept'  ";
+			$queryotherevent = $this->db->query($SQLOTHEREVENT);
+			$dataotherevent = $queryotherevent->result_array();
+			
+			
+			
+			$arrotherevent =[];
+			
+			$k=0;
+			
+			foreach($dataotherevent as $keyotherevent=>$valotherevent){
+			
+			
+						$SQLEVENTINVITE = "SELECT id FROM event_view WHERE  event_id=".$valotherevent['event_id']." AND status='accept' ";
+				        $queryeventinvite = $this->db->query($SQLEVENTINVITE);
+						$dataeventinvite = $queryeventinvite->num_rows();
+						
+						//echo 'count---->'.$k;
+						
+						if($dataeventinvite >0 ){
+									
+									$arrotheruser =[];
+									$SQLEVENT = "SELECT post_title,created_date FROM events WHERE  id='".$valotherevent['event_id']."'  ";
+									$queryevent = $this->db->query($SQLEVENT);
+									$dataevent = $queryevent->row_array();
+									
+									
+									$arrotherevent[$k]['id'] =  $valotherevent['event_id'];
+									$arrotherevent[$k]['post_title'] =  $dataevent['post_title'];
+									$arrotherevent[$k]['created_date'] =   date('D, M jS Y',strtotime($dataevent['created_date']));
+									
+									$SQLGROUPCHECK = "SELECT id FROM groups WHERE  group_id=".$valotherevent['event_id']."  ";
+									$querygroupcheck = $this->db->query($SQLGROUPCHECK);
+									$datagroupcheck[$k]  = $querygroupcheck->num_rows();
+									
+									if($datagroupcheck[$k] == 0){
+									
+										$arrgroup = [];
+										$arrgroup[$k]['group_id'] =  $valotherevent['event_id'];	
+										$arrgroup[$k]['group_name'] =  $dataevent['post_title'];
+										$table='groups';
+										$this->db->insert($table,$arrgroup[$k]); 
+									}
+									
+									$SQLEVENTUSERINVITE = "SELECT event_join_id FROM event_view WHERE  event_id=".$valotherevent['event_id']." AND status='accept' ";
+							        $queryeventuserinvite = $this->db->query($SQLEVENTUSERINVITE);
+									$dataeventuserinvite = $queryeventuserinvite->result_array();
+									
+									$SQLCREATORUSER =   "SELECT id as user_id,token,fullname,image FROM user WHERE  id=".$valotherevent['event_creator_id']."";
+									$querycreatorotheruser = $this->db->query($SQLCREATORUSER);
+									$datacreatorotheruser[0]=$querycreatorotheruser->row_array();
+									
+									$SQLGROUPMEMBERCHECK = "SELECT id FROM groups_member WHERE  member_id=".$datacreatorotheruser[0]['user_id']." AND group_id=".$valotherevent['event_id']."  ";
+									$querygroupmemcheck = $this->db->query($SQLGROUPMEMBERCHECK);
+									$datagroupmemcheck  = $querygroupmemcheck->num_rows();
+												
+												if($datagroupmemcheck == 0){
+												
+													$arrmemgroup = [];
+													$arrmemgroup['group_id'] =  $valotherevent['event_id'];	
+													$arrmemgroup['member_id'] =  $datacreatorotheruser[0]['user_id'];
+													$table='groups_member';
+													$this->db->insert($table,$arrmemgroup); 
+												}
+												
+									$i=0;
+									foreach($dataeventuserinvite as $keyeventuserinvite=>$valeventuserinvite){
+												$i++;
+												//echo $i;
+												$SQLUSER =   "SELECT id,token,fullname,image FROM user WHERE  id=".$valeventuserinvite['event_join_id']."";
+												$queryotheruser = $this->db->query($SQLUSER);
+												$dataotheruser = $queryotheruser->row_array();
+												//echo  $dataownuser['id'];
+												$arrotheruser[$i]['user_id'] = $dataotheruser['id'];
+												$arrotheruser[$i]['token']= $dataotheruser['token'];
+												$arrotheruser[$i]['fullname'] = $dataotheruser['fullname'];
+												$arrotheruser[$i]['image'] = $dataotheruser['image'];
+												
+												$SQLGROUPMEMBERCHECKS = "SELECT id FROM groups_member WHERE  member_id=".$arrotheruser[$i]['user_id']." AND group_id=".$valotherevent['event_id']."  ";
+												$querygroupmemchecks = $this->db->query($SQLGROUPMEMBERCHECKS);
+												$datagroupmemchecks[$i]  = $querygroupmemchecks->num_rows();
+												
+												if($datagroupmemchecks[$i] == 0){
+												
+													$arrmemgroups = [];
+													$arrmemgroups[$i]['group_id'] =  $valotherevent['event_id'];	
+													$arrmemgroups[$i]['member_id'] =  $arrotheruser[$i]['user_id'];
+													$table='groups_member';
+													$this->db->insert($table,$arrmemgroups[$i]); 
+												}
+									
+									}
+									//echo '<pre>';
+									//print_r($arrownuser);
+									
+							   
+								
+								
+								//echo '<pre>';
+								//print_r($datacreatorotheruser);
+								
+								$arrotherevent[$k]['user']=array_merge($datacreatorotheruser ,$arrotheruser);
+								$k++;
+						}
+			}
+			
+			
+			/*echo '<pre>';
+			print_r($arrownevent);*/						
+							
+			$arr=[];
+			if(!empty($arrownevent) && empty($arrotherevent) ){
+			
+						$arr = $arrownevent;
+			}
+			
+			if(!empty($arrotherevent) && empty($arrownevent) ){
+			
+						$arr = $arrotherevent;
+			}
+			
+			if(!empty($arrotherevent) && !empty($arrownevent) ){
+			
+						
+						$arr = array_merge($arrownevent,$arrotherevent);
+						
+						
+			}
+			
+			
+			return $arr;
+			
 
+
+}
 
 public function eventUpdateViewDetails($row_id,$status){
 
@@ -4496,7 +5472,7 @@ public function getPersonUsingGrid($user_id){
 	
 					}
 	
-					$str = implode(',',$arr);
+					$str =  implode('", "',$arr);
 					
 					//echo '<pre>';
 					//print_r($arr);
@@ -4505,21 +5481,24 @@ public function getPersonUsingGrid($user_id){
 				
 				
 				$SQL4 = ' SELECT id,fullname,phone FROM userimport  where user_id=" '.$user_id.' " AND phone NOT IN ("'.$str.'") ';
+				
+				//echo $SQL4 = ' SELECT id,fullname,phone FROM userimport  WHERE user_id="'.$user_id.'" AND phone NOT IN (SELECT id FROM userimport WHERE phone IN ("'.$str.'") )';
 
 				$query = $this->db->query($SQL4);
 
 				$dataimport=$query->result_array();
 				//print_r($data1);
-				
+				//echo '<pre>';
+				//print_r($dataimport);
 				//$this->load->model('common/functions','',TRUE);
 				
 				$arrphone = [];
-				foreach($dataimport as $keyphone=>$val){
+				foreach($dataimport as $keyphone=>$valphone){
 					
 					//echo $val['id'].'---->'. $val['fullname'].'---->'.$this->Functions->appsbee_decode($val['phone'],"salt.crypt");
 					//echo '<br/>';
 					
-					$phone[$keyphone] = $this->Functions->appsbee_decode($val['phone'],"salt.crypt");
+					$phone[$keyphone] = $this->Functions->appsbee_decode($valphone['phone'],"salt.crypt");
 					
 					$SQL5 = ' SELECT id  FROM user where user.phone = "'.$phone[$keyphone].'" '  ;
 
@@ -4538,25 +5517,25 @@ public function getPersonUsingGrid($user_id){
 				$newarr=[];
 				
 				if(!empty($data1) && !empty($arrphone)){
-				
+				    //echo 'aaaaa';
 					$newarr = array_merge($data1,$arrphone);
 				
 				}
 				
 				if(!empty($data1) && empty($arrphone)){
-
+					//echo 'bbbbb';
 					$newarr = $data1;
 
 				}
 
 				if(!empty($arrphone) && empty($data1)){
-
+					//echo 'ccccc';
 					$newarr = $arrphone;
 
 				}
 
 				if(empty($data1) && empty($arrphone)){
-
+					//echo 'dddddd';
 					$newarr = [];
 
 				}
@@ -4576,6 +5555,8 @@ public function getPersonUsingGrid($user_id){
 					//$str = implode(',',$arr);
 				
 				}
+				//echo '<pre>';
+				//print_r($newarr);
 		$finalarr=[];
 			if(!empty($arrimport)){
 						
@@ -4605,6 +5586,17 @@ public function getPersonUsingGrid($user_id){
 				}
 
 
+}
+
+function getPostCreatorId($post_id){
+
+									    $SQL = ' SELECT user_id  FROM events WHERE id='.$post_id ;
+
+										$query = $this->db->query($SQL);
+						
+										$row=$query->row_array();
+										
+										return $row;
 }
 
 function getReceiverMessages($user_id){
@@ -4699,9 +5691,9 @@ function checkReceiverPush($uuid){
 										return $row;
 
 		}
-function checkDeviceId($user_id,$uuid){
+function checkDeviceId($user_id){
 
-										$SQL = 'SELECT id  FROM device_track WHERE user_id= "'.$user_id.'" AND uuid ="'.$uuid.'"'  ;
+										$SQL = 'SELECT id  FROM device_track WHERE user_id= "'.$user_id.'"'  ;
 
 										$query = $this->db->query($SQL);
 						
@@ -4722,6 +5714,16 @@ function getDeviceId($user_id,$uuid){
 										return $data;
 }
 
+function checkInvitePersonToGrid($user_id){
+
+										$SQL = 'SELECT id  FROM push_notification_message_user_relation WHERE sender_id= "'.$user_id.'" AND message_id 	="6" '  ;
+
+										$query = $this->db->query($SQL);
+						
+										$count=$query->num_rows();
+										
+										return $count;
+}
 /*function getFriendRequestDeviceId($user_id){
 							
 							$SQLREQUEST = ' SELECT receiver_id FROM `friendsrelation` WHERE sender_id='.$user_id.'  and relationshipstatus= "request"  '  ;
