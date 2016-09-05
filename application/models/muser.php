@@ -4279,7 +4279,7 @@ public function getuseridByToken($token,$email){
 	
 }
 
-public function updatePrivacy($email_flag,$gender_flag,$dob_flag,$occupation_flag,$phone_flag,$user_id){
+public function updatePrivacy($email_flag,$gender_flag,$dob_flag,$occupation_flag,$phone_flag,$social_flag,$user_id){
 				
 				
 				 
